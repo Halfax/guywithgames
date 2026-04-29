@@ -1,0 +1,14 @@
+# OS artifacts
+.DS_Store
+Thumbs.db
+*~
+*.swp
+*.swo
+
+# Editor
+.vscode/
+.idea/
+
+# Backup files that accumulate during edits
+*.bak
+*.orig
