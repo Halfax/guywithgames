@@ -970,99 +970,155 @@
       <h3 class="project-category fade-in">AI &amp; Story</h3>
       <div class="deep-grid">
         <article class="card deep fade-in">
-          <h3>Story Universe Ecosystem <span class="tag">a fictional world that writes itself</span></h3>
+          <h3>Story Universe Ecosystem <span class="tag">distributed narrative system</span></h3>
           <p>
-            A fictional world that generates its own stories around the clock, spread across three computers in
-            the homelab. A <strong>Chronicle Keeper</strong> (Raspberry Pi) holds the master record of every
-            character, location, and past event, and broadcasts a world clock. A <strong>Narrative Engine</strong>
-            (main server) listens for those ticks and uses the Halfax AI server to generate each new event. A
-            <strong>World Browser</strong> (cloud host) shows the live chronicle as a public web page anyone can
-            watch.
+            A distributed, AI-driven narrative world that runs continuously across three hosts. The
+            <strong>Chronicle Keeper</strong> (hera-pi, Raspberry Pi 5) holds canonical world state &mdash;
+            characters, factions, locations, events &mdash; in SQLite, and broadcasts a world clock via ZeroMQ
+            pub/sub. The <strong>Narrative Engine</strong> (Betelgeuse) subscribes to those ticks and generates
+            arcs and events through the Halfax AI API, targeting Dark Champion. The <strong>World Browser</strong>
+            (Guy VPS) presents the live chronicle as a public dashboard reading from both the Chronicle Keeper
+            REST API and the arcs API.
           </p>
           <p>
-            <strong>It actually remembers.</strong> Every accepted event is written into <strong>MemPalace</strong>,
-            a long-term memory store. Before generating the next event, the engine searches MemPalace for related
-            past events and feeds them in as background, so the AI builds on continuity instead of contradicting
-            itself. A quality filter rejects clichéd openings and time-of-day contradictions, then feeds the
-            rejection reasons back into the next attempt as live counter-examples.
+            Connecting them is <strong>MemPalace</strong> &mdash; a ChromaDB-backed semantic memory framework
+            co-created by actress <strong>Milla Jovovich</strong> and engineer Ben Sigman, designed to give AI
+            models long-term memory that mimics human spatial recall (organized into wings and rooms). Every
+            accepted story event and arc update is written to MemPalace in real time. Before each generation
+            call, the engine searches MemPalace for relevant past events and injects them as narrative context,
+            so the LLM builds on what happened before rather than generating in isolation. When a story is
+            archived, MemPalace is purged so the next story starts with a clean slate.
           </p>
           <p>
-            <strong>If something breaks, the world pauses &mdash; it never lies.</strong> A health monitor checks
-            every dependency each tick. If the AI server is down, the universe stops generating and waits silently
-            until service returns. No fake fallback, no hallucinated events.
+            <strong>Prose-quality pipeline.</strong> Every generated event passes through a post-generation regex
+            filter that rejects atmospheric-formula openings (&ldquo;Dawn sunlight filters through the windows&hellip;&rdquo;),
+            tension-family clichés, and time-of-day contradictions. Rejected attempts feed back into the next
+            retry as real-time negative examples, letting the LLM escape its trained reflexes. Up to six retries
+            with rising temperature before force-accept. JSON envelopes are guaranteed-valid via grammar-constrained
+            decoding at the API boundary &mdash; every retry is now a productive prose-quality retry, not a wasted
+            call on malformed output (parse failures dropped from ~51% to 0%).
+          </p>
+          <p>
+            <strong>Health-gated tolerance &mdash; the world pauses, it never lies.</strong> All services auto-start
+            under systemd with infinite retry. A HealthMonitor probes the Chronicle Keeper and LLM endpoints every
+            tick &mdash; if either is unhealthy, the engine pauses instead of fabricating events, and resumes
+            silently when dependencies recover. There is <em>no template fallback</em>: when the LLM is down, the
+            universe simply waits.
           </p>
           <p style="font-size:0.9em;color:#b5e48c;margin-top:0.6em;">
-            <strong>Why it&rsquo;s different:</strong> Most AI story generators are one-shot &mdash; prompt in, text
-            out. This is a persistent, multi-machine world with a single source of truth, real long-term memory,
-            self-pausing dependency handling, and a measurable prose-quality feedback loop. The architecture is
-            closer to a game backend than a chatbot.
+            <strong>Why it&rsquo;s different:</strong> most AI story generators are single-shot &mdash; prompt in,
+            text out. This is a persistent, distributed world that evolves autonomously across three machines
+            with canonical state, ZeroMQ-synchronized continuity, semantic memory the LLM actually consults,
+            health-gated tolerance with no fabrication path, and a measurable prose-quality feedback loop. The
+            architecture is closer to an MMO backend than a chatbot.
           </p>
         </article>
 
         <article class="card deep fade-in d2">
-          <h3>Halfax AI Stack <span class="tag">my own AI server, running at home</span></h3>
+          <h3>Halfax AI Stack <span class="tag">multi-model serving + ops</span></h3>
           <p>
-            My personal AI &ldquo;brain&rdquo; running on my own hardware. Three models serve in parallel on one
-            GPU &mdash; one for code (Qwen3-Coder), one for story-writing and reasoning (Dark Champion), one
-            general-purpose (Mistral) &mdash; with a watchdog that auto-restarts any crash. The API speaks the
-            standard OpenAI dialect, so any tool built for ChatGPT (editors, chatbots, scripts) plugs in
-            unchanged.
+            A multi-model GPU-accelerated inference server built on llama.cpp with Vulkan (Mesa RADV) on AMD
+            gfx1151 (Strix Halo), 96 GB unified VRAM. Three LLMs serve concurrently &mdash; Qwen3-Coder (code),
+            Dark Champion (narrative + reasoning), Mistral (utility) &mdash; loaded VRAM-largest-first to minimize
+            fragmentation, each under a Python supervisor that auto-restarts on crash. The API exposes
+            OpenAI-compatible endpoints (<code>/v1/chat/completions</code>, <code>/v1/completions</code> with
+            fill-in-the-middle, <code>/v1/models</code>) plus per-request model targeting and automatic failover,
+            so any Copilot/Cursor/Continue-class client plugs in unchanged.
           </p>
           <p>
-            <strong>Three kinds of memory wrapped around it.</strong> A 99,000-chunk knowledge library of my PDFs,
-            offline encyclopedias, and notes &mdash; relevant pages get pulled in automatically when I ask
-            questions. <strong>MemPalace</strong>, a long-term memory store the Story Universe writes every event
-            into so narratives stay consistent across days. And a personal memory layer with rules, identity facts,
-            and preferences I&rsquo;ve told it &mdash; loaded into every chat the way ChatGPT&rsquo;s memory works,
-            except every byte lives on my disk in plain text I can read.
+            <strong>Three independent memory layers, opt-in per request.</strong> A
+            <strong>99,000-chunk RAG knowledge store</strong> over my PDFs, offline encyclopedia archives, and
+            notes &mdash; searched via an <code>hnswlib</code> approximate-nearest-neighbor index for
+            <strong>~4 ms median latency</strong> (down from ~50 ms linear scan), with embeddings cached per chunk
+            by SHA-256 of chunk text rather than file mtime &mdash; so adding or removing one document only
+            re-embeds that document, never the whole library. <strong>MemPalace</strong>, a ChromaDB-backed
+            long-term memory store organized into wings and rooms, shared with the Story Universe so any
+            connected system can search the full narrative timeline. And a <strong>two-tier personal memory</strong>:
+            a 60-bullet always-loaded CORE file for rules, identity, preferences, and active context, plus an
+            unbounded archive auto-retrieved per turn by cosine similarity above a configurable threshold.
           </p>
           <p>
-            <strong>The model literally can&rsquo;t produce broken JSON.</strong> When I need structured data back,
-            the server hands the model a strict template that blocks the model, letter by letter, from typing
-            anything that would break the format. Combined with the rest of the stack, this is the difference
-            between an AI that &ldquo;usually&rdquo; gives valid output and one that &ldquo;always&rdquo; does.
+            <strong>Grammar-constrained structured output.</strong> The API forwards <code>json_schema</code> and
+            <code>grammar</code> fields through to llama.cpp, which compiles them to GBNF and masks illegal tokens
+            at sampling time &mdash; the model is <em>physically blocked</em>, token by token, from emitting output
+            that would fail to parse or violate the schema. In the Story Universe narrative engine, wiring this
+            into event and character generation dropped the parse-failure retry rate from <strong>~51% of LLM
+            calls to 0%</strong>, roughly doubling effective throughput.
+          </p>
+          <p>
+            <strong>Vulkan-accelerated embeddings via dedicated supervised process.</strong> A second
+            <code>llama-server</code> on port 5001 runs <code>all-MiniLM-L6-v2</code> (converted to GGUF, F16,
+            mean-pooled) on the same Mesa RADV backend &mdash; necessary because Python sentence-transformers
+            hangs indefinitely on HIP device init on gfx1151. Same watchdog and auto-restart pipeline as the chat
+            models. Routing embeddings through llama.cpp&rsquo;s Vulkan path bypasses the broken ROCm path
+            entirely.
           </p>
           <p style="font-size:0.9em;color:#b5e48c;margin-top:0.6em;">
-            <strong>Why it&rsquo;s different:</strong> Not a wrapper around someone else&rsquo;s cloud. Three
-            models, three layers of memory, automatic failover, self-healing watchdog, guaranteed-valid structured
-            output &mdash; all on my own hardware. No monthly fee, no tokens billed, no data leaving the network.
+            <strong>Why it&rsquo;s different:</strong> Not a wrapper. Three concurrent LLMs under one supervisor
+            with VRAM-ordered loading and automatic failover, three independent memory layers clients can opt into
+            per request, grammar-constrained decoding for guaranteed-valid structured output, HNSW-indexed RAG
+            with content-keyed caching, and the embedding path engineered around a real driver bug. Engineered
+            end-to-end &mdash; the locality is incidental; the architecture is the point.
           </p>
         </article>
 
         <article class="card deep fade-in d2">
-          <h3>Halfax AI VSCode Extension <span class="tag">my own AI assistant inside the editor</span></h3>
+          <h3>Halfax AI VSCode Extension <span class="tag">native IDE client &mdash; TypeScript</span></h3>
           <p>
-            My own coding assistant inside VSCode &mdash; same role as GitHub Copilot, Cursor, or Claude Code, but
-            running entirely against my own AI server. Chat sidebar, autonomous agent mode, type-ahead
-            autocomplete, one-click apply on suggested edits, Cmd+K inline rewrites on any selection.
+            A native VSCode extension for AI-assisted coding &mdash; chat, autonomous agent, fill-in-the-middle
+            autocomplete, one-click apply on suggested edits, Cmd+K inline rewrites &mdash; running end-to-end
+            against my own AI server. Not a Continue.dev fork or wrapper around someone else&rsquo;s protocol:
+            written from scratch in TypeScript with custom React UI, Zustand state, an in-process MCP stdio client
+            (<code>@modelcontextprotocol/sdk</code>), and direct OpenAI-compatible streaming.
           </p>
           <p>
-            <strong>Agent that works on its own &mdash; transparently.</strong> Hand it a task like &ldquo;read the
-            README and fix the broken test&rdquo; and it loops: think, call a tool, read the result, decide the
-            next step. Every tool call shows up as an inline card with its arguments before it runs &mdash; I
-            approve once, approve always, or refuse. After three errors in a row it pauses and asks me what to do
-            instead of spinning. State is visible at every step.
+            <strong>Agent loop runs in-extension as a six-state finite state machine</strong> (<em>pending &rarr;
+            in_progress &rarr; completed | awaiting_user | error | cancelled</em>) driving multi-step work via a
+            strict JSON tool-call protocol. The extractor tolerates common model formatting mistakes (stray
+            trailing braces, fence variations, missing args), the validator normalizes no-arg tool calls before
+            rejecting, and consecutive-error thresholds pause cleanly into <em>awaiting_user</em> instead of
+            spinning. <strong>Mid-turn checkpointing:</strong> every successful turn flushes the agent&rsquo;s
+            history to disk before the next, so quit-mid-task or crash-mid-task is recoverable &mdash; reopening
+            VSCode auto-resumes the agent from where it stopped.
           </p>
           <p>
-            <strong>It remembers, and the memory is mine.</strong> Every chat and agent run auto-saves to a JSON
-            file in my home directory and auto-resumes when I reopen VSCode &mdash; even after a crash. Personal
-            memory works like Claude Code&rsquo;s skills and memory: rules I&rsquo;ve told it, identity facts, and
-            preferences load into every conversation. Custom slash commands are just markdown files I drop into
-            <code>~/.halfax/skills/</code>. Lifecycle hooks let me run shell commands on session start, tool call,
-            or agent stop. Everything configurable is a plain text file I edit, not a vendor settings UI.
+            <strong>Single-slot priority request queue</strong> across the entire extension. The local llama.cpp
+            backend has one GPU inference slot at a time; the queue prioritizes <code>FIM=0 &lt; chat=1 &lt;
+            agent=2</code>, so a long-running agent task never starves typing-time autocomplete and a chat reply
+            doesn&rsquo;t wait behind a background completion. Apply on suggested edits routes through
+            <code>vscode.diff</code> for preview and writes via the MCP <code>file_write</code> tool with
+            <code>expected_mtime</code> conflict detection (in seconds, not milliseconds &mdash; <code>FileStat.mtime/1000</code>);
+            falls back to <code>native:write</code> if the MCP path is unavailable. The write fails if the file
+            changed on disk between read and save.
           </p>
           <p>
-            <strong>How it differs from Claude Code, Windsurf, and GitHub Copilot.</strong> Those all send every
-            keystroke and chat to a corporate cloud, require an account, run telemetry, bill per token or seat,
-            and stop working without internet. Mine runs locally end-to-end &mdash; works offline, never phones
-            home, no token meter, no rate limits. The agent state machine is visible and pauseable; every
-            destructive tool call hits a permission prompt by default. Self-updates pull from my homelab, not a
-            marketplace.
+            <strong>Persistent memory + skills + hooks &mdash; all file-resident.</strong>
+            <code>/remember</code> writes to a CORE file always loaded into chat plus an embedding-searched
+            archive auto-injected per turn. Skills are markdown files in <code>~/.halfax/skills/</code> with a
+            tiny frontmatter (<code>name</code> / <code>description</code> / <code>mode</code>) parsed in-process;
+            they appear instantly as slash commands with a popover palette in the composer. Lifecycle hooks
+            (<code>on-session-start</code>, <code>on-tool-call</code>, <code>on-stop</code>) run shell commands of
+            my choice with structured event variables (<code>HALFAX_EVENT</code>, <code>HALFAX_TOOL</code>,
+            <code>HALFAX_REASON</code>, etc.). Self-update pulls a new VSIX from my homelab, streams it to disk,
+            and installs through <code>workbench.extensions.installExtension</code>.
+          </p>
+          <p>
+            <strong>How the agent differs from Claude Code, Windsurf Cascade, and GitHub Copilot.</strong> Those
+            three send every keystroke and chat to a corporate cloud &mdash; account-required, telemetry-by-default,
+            per-token or per-seat billing, hard rate and context limits, dead without internet. Mine: every
+            inference on my own GPU, every chat saved as a plain JSON file under <code>~/.halfax-sessions/</code>,
+            every memory bullet a line in a CORE.md I can edit. The agent FSM is <em>visible</em> in the UI and
+            <em>pauseable</em> mid-loop; every destructive tool call hits a per-call permission prompt by default
+            (vs Copilot&rsquo;s autonomous-by-default agent). <strong>Mid-turn checkpointing for crash recovery
+            is something none of the three commercial agents offer.</strong> Skills, hooks, memory, and the
+            update channel are all configured by editing files in <code>~/.halfax/</code>, not by clicking through
+            a vendor settings UI.
           </p>
           <p style="font-size:0.9em;color:#b5e48c;margin-top:0.6em;">
-            <strong>Why it&rsquo;s a good project:</strong> The full IDE assistant surface &mdash; chat, agent,
-            autocomplete, inline edits, sessions, skills, hooks, persistent memory, self-update &mdash; without a
-            byte leaving the box. A complete self-hosted parallel of an entire commercial ecosystem.
+            <strong>Why it&rsquo;s a good project:</strong> the full IDE assistant surface &mdash; chat,
+            autonomous agent, autocomplete, inline edits, sessions, skills, hooks, persistent memory, self-update
+            &mdash; built end-to-end in TypeScript with a real state machine, real conflict-aware writes, real
+            crash recovery, and real priority scheduling. Not a thin client over someone else&rsquo;s API.
           </p>
         </article>
       </div>
@@ -1070,52 +1126,97 @@
       <h3 class="project-category fade-in">Infrastructure &amp; Operations</h3>
       <div class="deep-grid">
         <article class="card deep fade-in">
-          <h3>Homelab MCP Server <span class="tag">tells my AI what every machine is doing</span></h3>
+          <h3>Homelab MCP Server <span class="tag">infrastructure monitoring &mdash; Python + Paramiko</span></h3>
           <p>
-            I can ask my AI &ldquo;is the Raspberry Pi okay?&rdquo; or &ldquo;why is the website slow?&rdquo; and
-            it actually checks &mdash; in real time. This server is the bridge between the AI and all five
-            machines in my homelab, using <strong>MCP</strong> (Model Context Protocol) &mdash; the same open
-            standard Claude Code uses to access tools. Checks <strong>35+ services across 5 hosts in under 2
-            seconds</strong>.
+            An MCP server that gives my AI assistants structured, real-time access to the entire homelab.
+            Monitors <strong>35+ services across 5 machines</strong> (Betelgeuse, hera-pi, Guy, Shop, UYScuti)
+            <strong>in under 2 seconds</strong>. Built on the FastMCP framework with Paramiko SSH, connection
+            pooling with 30-second keepalive that reuses sessions across tool calls, and a ThreadPoolExecutor
+            (8 workers) checking every host and service concurrently.
           </p>
           <p>
-            <strong>Local + remote in one surface.</strong> On my main server: services, Docker containers, AI
-            model response times, GPU temp/power/memory, DNS, VPN mesh, Kubernetes, the Story Universe engine.
-            Remote (Linux + Windows): list services, pull logs, check disk/memory, run arbitrary commands with a
-            destructive-pattern blocklist, transfer files, stream logs. Dedicated workflows for the Story Universe
-            (status, log analysis, full reset-the-world) and site deploy (this page was edited locally and pushed
-            live through these tools).
+            <strong>Local tools (Betelgeuse dashboard).</strong> systemd services, Docker containers, my AI model
+            endpoints with response timing, GPU telemetry (temperature, power, VRAM via <code>rocm-smi</code>),
+            disk/memory/load, BIND9 DNS, Netbird mesh status, k3d Kubernetes cluster health, and the Narrative
+            Engine API.
+          </p>
+          <p>
+            <strong>Fleet tools.</strong> SSH-based remote monitoring with YAML-driven host/service configuration
+            that hot-reloads on file change &mdash; no server restart needed to add hosts or services. systemd
+            units, Docker containers, and processes on Linux; PowerShell <code>Get-Service</code> on Windows.
+            Remote log retrieval, disk/memory inspection, arbitrary-command execution with a destructive-pattern
+            denylist (filesystem wipes, disk formats, reboots, fork bombs). SFTP upload/download between
+            workstation and any fleet host via pooled SSH. Service restarts gated behind an explicit environment
+            variable.
+          </p>
+          <p>
+            <strong>Story Universe orchestration.</strong> Dedicated tools that drive the multi-host narrative
+            stack end-to-end: <code>storyverse_status</code> checks every component across hosts in parallel,
+            <code>storyverse_check</code> parses the engine log from the last restart marker to report ticks,
+            accept/reject counts, top filter patterns, and active arcs in one call,
+            <code>storyverse_sync_engine</code> rsyncs the running engine to the canonical mirror, and
+            <code>storyverse_new_story</code> archives the current story (HTML + JSON + DB), purges MemPalace,
+            resets the world, and restarts services &mdash; a full universe reset in one command.
+          </p>
+          <p>
+            <strong>Site deploy.</strong> Local mirrors of web properties (like this site). I edit files locally,
+            then the server uploads via SFTP as root and automatically fixes ownership
+            (<code>chown apache:apache</code>) and permissions (<code>chmod 644</code>). Pull, deploy, and
+            status-compare tools keep local and remote in sync.
           </p>
           <p style="font-size:0.9em;color:#b5e48c;margin-top:0.6em;">
-            <strong>Why it&rsquo;s a good project:</strong> Most MCP examples online are toy demos. This one runs
-            against a real mixed fleet &mdash; Linux and Windows, local and remote, containers and bare metal
-            &mdash; with actual safety controls. Plain-English requests become structured queries the AI can act
-            on across the entire homelab.
+            <strong>Why it&rsquo;s a good project:</strong> MCP is the emerging standard for connecting AI systems
+            to external tools, and most examples online are toy demos. This one turns natural language into
+            structured infrastructure queries across a real heterogeneous fleet &mdash; Linux and Windows, local
+            and remote, containers and bare metal &mdash; with real security controls (denylist + gate flag),
+            connection pooling, parallel execution, and hot-reload config. This page was itself edited locally
+            and pushed live through these tools.
           </p>
         </article>
 
         <article class="card deep fade-in d2">
-          <h3>Halfax AI MCP Server <span class="tag">gives any AI assistant 30+ tools</span></h3>
+          <h3>Halfax AI MCP Server <span class="tag">AI bridge &mdash; Python + MCP</span></h3>
           <p>
-            The second MCP bridge: any AI assistant that speaks MCP (my own VSCode extension, Windsurf&rsquo;s
-            Cascade, Continue.dev) plugs in here and gains real abilities &mdash; reading and writing files,
-            running code analysis, remembering context across conversations, executing multi-step tasks on its
-            own. <strong>30+ tools</strong>, all pointed at my own AI models.
+            The second MCP server: bridges any MCP-capable client (my own VSCode extension, Windsurf&rsquo;s
+            Cascade, Continue.dev) directly to the Halfax AI stack &mdash; local LLM inference, MemPalace,
+            RAG knowledge store, training, file operations, code analysis, session memory, project awareness,
+            autonomous agent loop. <strong>30+ tools</strong>, all running against local hardware.
           </p>
           <p>
-            <strong>What an AI gets when it connects:</strong> chat with any of my three local models, side-by-side
-            comparison across all three, project-wide code analysis (entry points, language breakdown, import
-            graph), syntax checking, allowlist-scoped file ops with atomic writes / timestamped backups / conflict
-            detection on edits / dry-run preview. Per-conversation scratchpad on disk so tomorrow&rsquo;s session
-            picks up from today&rsquo;s. An autonomous task runner with a transparent six-state machine that
-            pauses cleanly on repeated errors instead of spinning. Full MemPalace search and feedback-driven
-            fine-tuning rounds.
+            <strong>Inference + code.</strong> Per-model targeting (<code>lm1</code>, <code>lm2</code>,
+            <code>lm3</code>) with multi-turn OpenAI-style messages, side-by-side comparison across all loaded
+            models on the same prompt, automatic RAG context injection from the knowledge store. The underlying
+            API exposes <code>/v1/chat/completions</code>, <code>/v1/completions</code> with FIM autocomplete
+            for Qwen-Coder/DeepSeek-Coder/StarCoder, and <code>/v1/models</code> &mdash; any OpenAI-compatible
+            client plugs in with zero changes. <code>code_analyze</code> wraps a file in a language-fenced prompt
+            for review. <code>project_analyze</code> walks a tree, classifies by language, finds entry points,
+            and builds an import graph (Python via <code>ast</code>, JS/TS via regex). <code>code_validate</code>
+            syntax-checks Python, JSON, and YAML.
+          </p>
+          <p>
+            <strong>File ops with safety nets.</strong> Path-validated <code>file_read</code>,
+            <code>file_write</code> (atomic temp+rename, timestamped <code>.bak</code> backups,
+            <code>dry_run</code> preview, mtime conflict detection that refuses if the file changed between read
+            and write), <code>file_list</code> with glob filtering. A configurable allowlist
+            (<code>HALFAX_FILE_OPS_ROOTS</code>) and symlink resolution keep the agent contained.
+          </p>
+          <p>
+            <strong>Session memory + autonomous task runner.</strong> File-backed JSON sessions with reserved-key
+            namespace, automatic trimming above 80% capacity, tool-execution logging (last 200 entries), and
+            archive-after-N-days &mdash; the API server auto-injects a session context block when a
+            <code>session_id</code> is passed. <code>task_create</code> / <code>task_execute</code> (sync or
+            <code>async_run=true</code> in a background thread) / <code>task_status</code> /
+            <code>task_cancel</code> / <code>task_resume</code>. Same six-state FSM as the VSCode agent, but
+            persisted server-side so any client gets the same state. Tool whitelist blocks recursive task
+            creation; consecutive-error thresholds pause cleanly into <em>awaiting_user</em>.
           </p>
           <p style="font-size:0.9em;color:#b5e48c;margin-top:0.6em;">
-            <strong>Why it&rsquo;s a good project:</strong> A complete self-hosted coding-agent backend. Local AI
-            assistants get the same tool surface as commercial cloud agents &mdash; read code, write with backups
-            and conflict detection, remember context across days, run multi-step jobs autonomously &mdash; with a
-            real state machine and explicit safety allowlists. No tokens billed, no data leaving the box.
+            <strong>Why it&rsquo;s a good project:</strong> a complete self-hosted coding-agent backend. Cascade,
+            Continue.dev, or my own extension all talk to it the same way they&rsquo;d talk to a hosted service
+            &mdash; reading code, writing with conflict-aware backups, remembering context across conversations,
+            analyzing whole projects, executing autonomous multi-step tasks &mdash; against my own three LLMs,
+            with a proper FSM, error recovery, allowlist-scoped file ops, and feedback-driven Phi-2 training
+            triggered from natural language.
           </p>
         </article>
 
@@ -1222,25 +1323,42 @@
         </article>
 
         <article class="card deep fade-in d3">
-          <h3>Halfax System Reporter <span class="tag">deep-dive hardware monitor</span></h3>
+          <h3>Halfax System Reporter <span class="tag">kernel driver + hardware telemetry</span></h3>
           <p>
-            Tells me <em>everything</em> about a machine&rsquo;s hardware &mdash; per-core CPU temperatures and
-            wattage, exact memory timings, SSD wear, GPU details, battery health, display info &mdash; all in one
-            window. Most of that information lives behind privileged OS layers normal apps can&rsquo;t touch, so I
-            wrote my own <strong>Windows kernel driver</strong> that loads into the deepest layer of the operating
-            system and reads sensors directly. Same approach commercial tools like HWiNFO use, written from
-            scratch.
+            A hardware monitoring platform with a custom <strong>Windows kernel driver</strong> (WDM, Ring 0)
+            that exposes privileged hardware primitives &mdash; MSR read/write, PCI config space, SMBus/I2C
+            &mdash; via IOCTL interface with admin-only security descriptors. Not a wrapper around existing
+            tools; the driver (<code>halfax_telemetry_driver.c</code>) loads into the Windows kernel directly.
+            Same access level commercial tools like HWiNFO use, written from scratch.
           </p>
           <p>
-            Multi-layer fallback per subsystem &mdash; if the kernel-driver method fails, the app tries Windows&rsquo;
-            built-in APIs, then a third method, before giving up. A 5,500-line graphical interface organizes
-            CPU/memory/storage/network/GPU/battery into tabs. The same app runs on Windows (kernel driver), Linux
-            (sysfs), and Raspberry Pi (device-tree).
+            <strong>Three-layer architecture.</strong> The kernel driver provides raw hardware access. A C++
+            user-mode broker (<code>halfax_kernel_broker.cpp</code>) wraps IOCTLs into structured JSON output. A
+            set of native C helper executables handle specialized hardware reads:
+            <code>cpuid_helper</code> (CPUID intrinsics, P/E core topology, APIC IDs, tile/die/module mapping),
+            <code>spd_helper</code> (RAM SPD EEPROM via I2C &mdash; DDR4/DDR5 timings, CAS latency, rank/bank
+            config), <code>nvme_helper</code> (NVMe SMART via kernel IOCTLs &mdash; temperature, wear,
+            power-on hours), <code>edid_helper</code> (display EDID parsing via SetupAPI).
+          </p>
+          <p>
+            <strong>What it pulls from MSRs:</strong> per-core temperatures with thermal margins, RAPL energy
+            counters for real-time power, turbo ratio analysis, C-state residency tracking, IPC efficiency
+            metrics, microcode version detection. Multi-method fallback chains on every subsystem (e.g., memory:
+            SPD helper &rarr; WMI &rarr; <code>dmidecode</code> &rarr; kernel) &mdash; if the deepest method fails,
+            the app tries each fallback in turn before giving up, so even on locked-down systems most readings
+            are still available.
+          </p>
+          <p>
+            5,500-line Tkinter GUI with tabbed display across CPU, memory, storage, network, GPU, battery, and
+            system. Cross-platform with full feature parity: Windows (kernel driver + WMI), Linux (sysfs +
+            <code>dmidecode</code>), Raspberry Pi (device tree). Closer to HWiNFO than to a typical Python
+            sysinfo script.
           </p>
           <p style="font-size:0.9em;color:#b5e48c;margin-top:0.6em;">
-            <strong>Why it&rsquo;s different:</strong> Most system monitors only show what Windows is willing to
-            reveal. Writing a kernel driver that loads into the most-privileged layer of the OS is a fundamentally
-            different level of work than calling an API.
+            <strong>Why it&rsquo;s different:</strong> most system monitors use WMI or <code>/proc</code> and call
+            it done. This one has a custom WDM driver reading MSR registers and PCI config space directly &mdash;
+            the same approach commercial tools use, but written from scratch. Writing a kernel driver that loads
+            into Ring 0 is a fundamentally different level of work than calling an API.
           </p>
         </article>
       </div>
@@ -1248,79 +1366,122 @@
       <h3 class="project-category fade-in">Systems &amp; Security</h3>
       <div class="deep-grid">
         <article class="card deep fade-in">
-          <h3>HalfaxOS <span class="tag">a real operating system, written from nothing</span></h3>
+          <h3>HalfaxOS <span class="tag">bare-metal x86_64 OS &mdash; from scratch</span></h3>
           <p>
-            A complete 64-bit operating system written entirely from scratch &mdash; no Linux, no BSD, no borrowed
-            code. About <strong>413,000 lines</strong> of original C and Assembly. Boots on real hardware and in
-            virtual machines.
+            A 64-bit capability-based operating system written entirely from scratch in C and x86_64 Assembly.
+            No Linux, no BSD, no borrowed kernel code &mdash; every line is original. About
+            <strong>413k lines</strong> of hand-written source. Boots via GRUB2 Multiboot2 on both VMware
+            Workstation and physical hardware.
           </p>
           <p>
-            <strong>Built around &ldquo;permissions can only shrink, never grow.&rdquo;</strong> Most operating
-            systems use a 1970s permissions model. HalfaxOS uses <em>capability-based security</em>: programs
-            hold typed permission tickets, and handing a ticket can only <em>reduce</em> what the receiver can
-            do, never grant more than the sender had. This makes whole classes of security bugs structurally
-            impossible &mdash; the same direction Google&rsquo;s Fuchsia OS and ARM&rsquo;s CHERI architecture are
-            heading.
+            <strong>Capability security model.</strong> Replaces UNIX file descriptors with typed, permission-
+            checked handles. 512 global kernel objects with refcounting; 128 handles per process with 12-bit
+            permission bitmasks. <code>cap_dup()</code> can only attenuate (reduce) permissions &mdash; never
+            escalate. This is the foundational design decision and makes whole classes of security bugs
+            structurally impossible. Same direction as Google Fuchsia and ARM CHERI.
           </p>
           <p>
-            <strong>It&rsquo;s a working OS, not a demo.</strong> Multi-core scheduler, virtual memory, message-
-            passing between programs, a from-scratch TCP/IP stack that actually browses the internet, an Intel
-            network card driver, a graphical window manager with draggable windows and a taskbar, multiple
-            filesystems including exFAT. 38 system services (Linux has 450+) &mdash; small and focused on purpose.
+            <strong>Kernel internals.</strong> 38 system calls (vs Linux&rsquo;s 450+). SMP-aware preemptive
+            scheduler with per-process CR3 switching. 4-level paging VMM, bitmap PMM, kernel heap.
+            Message-passing IPC with named ports and structured messages. Ring 3 userspace with ELF64 loader
+            and 5 user programs. ACPI/APIC multi-core CPU detection and IOAPIC routing.
+          </p>
+          <p>
+            <strong>Drivers and networking.</strong> Intel E1000 NIC driver. Full from-scratch TCP/IP stack:
+            ARP, IPv4, UDP, TCP, ICMP, DNS, HTTP, DHCP. PS/2 keyboard and mouse. PCI enumeration. PIT timer.
+          </p>
+          <p>
+            <strong>GUI and filesystem.</strong> Framebuffer window manager with free-form drag/resize, desktop,
+            taskbar, multi-window terminal with scrollback. VFS layer with RAM filesystem, device filesystem,
+            and exFAT driver.
           </p>
           <p style="font-size:0.9em;color:#b5e48c;margin-top:0.6em;">
-            <strong>Why it&rsquo;s different:</strong> Not a hello-world bootloader someone called an OS. A real
-            security thesis built on shrink-only permissions, plus a full networking stack, window manager, and
-            CPU-enforced user-program isolation. A working operating system built from nothing.
+            <strong>Why it&rsquo;s different:</strong> not a bootloader someone called an OS. A real security
+            thesis &mdash; capability handles that can only attenuate &mdash; in the same direction as Fuchsia
+            and CHERI. Combined with a working TCP/IP stack, a window manager, ELF64 user programs in Ring 3
+            isolation, and IOAPIC-routed multicore. A working operating system built from nothing.
           </p>
         </article>
 
         <article class="card deep fade-in d2">
-          <h3>ComboServer <span class="tag">do internet outages hurt video-game sales?</span></h3>
+          <h3>ComboServer <span class="tag">BGP + Steam forensic analytics</span></h3>
           <p>
-            A research-style platform asking a question nobody else has built tools for: <em>do internet routing
-            problems actually affect gaming?</em> It watches the live &ldquo;road map&rdquo; of the internet and
-            Steam at the same time, looking for real correlations &mdash; an outage in one country followed by a
-            player drop in that region, a network misconfiguration followed by reviews mentioning lag.
+            A forensic-style analytics platform that correlates <strong>BGP internet routing events</strong> with
+            <strong>Steam gaming platform</strong> behavioral data &mdash; detecting patterns nobody else has
+            built tooling for. BGP outages causing player count drops, route leaks triggering latency spikes,
+            country-level shutdowns shifting review volumes.
           </p>
           <p>
-            <strong>21 analyses across both sides.</strong> On the routing side: live anomaly detection,
-            attacks-vs-misconfiguration classification, &ldquo;personality profiles&rdquo; for major networks, a
-            real-time instability map. On the Steam side: a player-behavior-based game similarity engine,
-            sentiment drift, review-bomb detection, patch-impact maps, player migration between similar games,
-            review-style fingerprinting.
+            <strong>BGP side (10 features):</strong> real-time anomaly detection, hijack-vs-misconfiguration
+            classification, AS &ldquo;personality profiles&rdquo; (stability/chattiness/weirdness scores),
+            internet weather radar showing instability clusters, time-travel replay of historical outages,
+            prefix ghosting tracker (announced ranges that don&rsquo;t actually carry traffic), AS relationship
+            drama detection.
+          </p>
+          <p>
+            <strong>Steam side (11 features):</strong> game similarity engine based on player behavior rather
+            than publisher tags, sentiment-drift visualizer, coordinated review-bomb detector, patch-impact
+            shockwave maps, player migration constellations, game life-cycle autopsy with narrative
+            classification, review DNA fingerprinting that matches similar reviewers across games.
+          </p>
+          <p>
+            <strong>Hybrid storage and ingest.</strong> TimescaleDB for time-series, MongoDB for documents.
+            RIPE/RouteViews BGP feeds in real time. WebSocket dashboard, REST API, NLP analysis, geographic
+            mapping. Auto-bootstrap pulls 4 weeks of BGP and 60 days of Steam history on first run, then catches
+            up intelligently after any downtime.
           </p>
           <p style="font-size:0.9em;color:#b5e48c;margin-top:0.6em;">
-            <strong>Why it&rsquo;s different:</strong> Internet-routing analysis and Steam analytics exist
-            separately &mdash; tying them together to detect how infrastructure events affect gaming populations is
-            an original angle. The framing goes well beyond dashboards into actual pattern hunting.
+            <strong>Why it&rsquo;s different:</strong> nobody builds this. BGP routing analysis and Steam
+            behavioral analytics exist separately &mdash; correlating them to detect how internet infrastructure
+            events affect gaming populations is original. The forensic framing (AS personality profiles, prefix
+            ghosting, review DNA fingerprinting) goes beyond dashboards into actual pattern analysis.
           </p>
         </article>
 
         <article class="card deep fade-in d2">
-          <h3>Halfax KeySecrets <span class="tag">my own family password manager</span></h3>
+          <h3>Halfax KeySecrets <span class="tag">multi-user secrets vault &mdash; HTTPS-only</span></h3>
           <p>
-            A self-hosted password manager for me, my family, and close friends &mdash; like 1Password or Bitwarden,
-            but running on my own server. Each user has their own account and master password. The server only
-            ever sees encrypted blobs &mdash; even with full database access, an admin can&rsquo;t read anyone&rsquo;s
+            A self-hosted, end-to-end encrypted secrets vault for me, my family, and a couple of trusted friends.
+            Everyone has their own account, their own master password, and their own keypair. The server only
+            ever sees ciphertext &mdash; even with full database access, an admin cannot read anyone&rsquo;s
             passwords.
           </p>
           <p>
-            <strong>Sharing is what most password managers get wrong.</strong> When I share a Wi-Fi password with
-            my wife, the server doesn&rsquo;t copy it &mdash; it seals a small key that only her account can unlock.
-            Revoking access later is just deleting that one key &mdash; no rotation, no leakage. There&rsquo;s also a
-            forward-looking mode that uses cryptography designed to resist future quantum computers.
+            <strong>Per-recipient cryptographic sharing.</strong> Sharing is the part most password managers get
+            wrong. KeySecrets does it cryptographically: every secret has its own data key, and that key is
+            sealed individually to each recipient&rsquo;s public key
+            (<code>X25519</code> + libsodium <code>SealedBox</code>). Revoking access is just deleting one
+            wrapped key &mdash; no re-encryption, no key churn, no leakage. There&rsquo;s also a hybrid
+            <strong>post-quantum</strong> mode (<code>X25519 + ML-KEM-768</code>) ready for when classical
+            elliptic-curve crypto stops being safe.
           </p>
           <p>
-            HTTPS-only, modern crypto (Argon2id for password hashing, ChaCha20-Poly1305 for everything else),
-            optional two-factor login from any standard authenticator app, rate-limiting on failed logins, and a
-            full audit log of every login / share / registration. Three interfaces: a web UI, a command-line tool,
-            and a documented HTTP API.
+            <strong>Conservative modern crypto stack.</strong> <code>Argon2id</code> for password hashing
+            (memory-hard, the current OWASP pick &mdash; GPU-resistant). <code>ChaCha20-Poly1305</code> for
+            authenticated encryption everywhere else. Master passwords are never stored; they only ever exist as
+            the input that derives a session key, in memory, for the duration of a session.
+          </p>
+          <p>
+            <strong>Login + 2FA.</strong> Master password plus optional <strong>TOTP two-factor</strong> from any
+            standard authenticator app. The 2FA secret itself is encrypted with a key derived from the
+            user&rsquo;s identity key, so even a stolen database doesn&rsquo;t leak working codes. Failed logins
+            are rate-limited; every register / login / 2FA / share event lands in an audit log.
+          </p>
+          <p>
+            <strong>Production hygiene most homelab projects skip.</strong> Python/Flask app fronted by
+            <code>cheroot</code> (production WSGI server with native TLS). <strong>HTTPS only</strong> &mdash; no
+            plaintext port. Locked-down <code>systemd</code> service with database credentials in a root-owned
+            env file (never in the unit, never in <code>ps</code>). MongoDB sits behind it, holding only
+            ciphertext. Browser side: HSTS, strict Content-Security-Policy, clickjacking protection,
+            Secure/HttpOnly/SameSite cookies. Three interfaces &mdash; web UI, Click-based CLI, documented
+            Bearer-token REST API. Seven secret types (logins, API keys, SSH keys, notes, certificates, cards,
+            free-form), each with its own encrypted fields.
           </p>
           <p style="font-size:0.9em;color:#b5e48c;margin-top:0.6em;">
-            <strong>Why it&rsquo;s a good project:</strong> the design started from a threat model. Right modern
-            crypto, real per-recipient sharing instead of dumping shared passwords in a folder, a future-quantum
-            on-ramp, and the boring-but-essential deployment hygiene most homelab projects skip.
+            <strong>Why it&rsquo;s a good project:</strong> the design started from a threat model, not from
+            &ldquo;let&rsquo;s encrypt some stuff.&rdquo; Right primitives, real cryptographic sharing,
+            post-quantum on-ramp, and the boring-but-essential deployment hygiene &mdash; production WSGI,
+            TLS-only, 2FA, rate limiting, audit logs, and zero credentials in the unit file.
           </p>
         </article>
       </div>
