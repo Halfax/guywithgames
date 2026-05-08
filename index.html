@@ -1214,6 +1214,42 @@
         </article>
 
         <article class="card deep fade-in d2">
+          <h3>AI Collaboration Memory <span class="tag">cross-session continuity &mdash; Markdown + git</span></h3>
+          <p>
+            A two-layer memory system that makes any AI coding assistant &mdash; my own VSCode extension,
+            Cascade, Claude Code, Continue.dev &mdash; remember things across conversations <em>and</em>
+            across harness changes. Most operators rely on whatever per-conversation context window the tool
+            ships with and accept that every new session starts cold. I refused to.
+          </p>
+          <p>
+            <strong><code>DECISIONS.md</code> &mdash; load-bearing rules, durable.</strong> A flat markdown
+            file at the project root with one entry per non-obvious technical rule (~12 entries today). Each
+            entry follows the same shape: <em>rule</em>, <em>why</em> (the empirical incident or evidence
+            that drove it), <em>how to verify or apply</em>. The file is symlinked into a
+            <code>betelgeuse-docs</code> git repo, off-boxed nightly via the Tier-A archive, and survives any
+            harness change &mdash; nothing in it depends on a vendor&rsquo;s persistence layer. Anyone who
+            opens the project root finds it; I read it first every session, and so does every assistant I
+            point at this codebase.
+          </p>
+          <p>
+            <strong>Per-conversation working memory at <code>~/.claude/projects/.../memory/</code>.</strong>
+            Topical markdown files (one per fact / preference / project context) indexed by a single
+            <code>MEMORY.md</code> the harness loads into every conversation. Ephemeral state, user-context,
+            breadcrumbs to load-bearing rules in <code>DECISIONS.md</code>. When an assistant learns
+            something durable mid-session &mdash; a corrected approach, a new invariant &mdash; I expect it
+            to <em>promote</em> that fact to <code>DECISIONS.md</code>, not leave it stranded in a working-
+            memory file that won&rsquo;t survive the next harness.
+          </p>
+          <p>
+            <strong>Two-tier semantic memory in the AI server itself.</strong> A 60-bullet always-loaded
+            CORE file for rules, identity, preferences, active context, plus an unbounded archive
+            auto-retrieved per turn by cosine similarity above a configurable threshold. The archive uses
+            ChromaDB; embeddings come from the same Vulkan-backed <code>llama-server</code> on port 5001
+            that the rest of the stack uses. <code>/api/memory/search</code> exposes it to any client.
+          </p>
+        </article>
+
+        <article class="card deep fade-in d2">
           <h3>Self-Hosted DevOps Stack <span class="tag">GitLab + Prometheus + Grafana &mdash; Docker</span></h3>
           <p>
             I didn&rsquo;t build GitLab, Prometheus, or Grafana &mdash; but I run them on my own hardware as the
@@ -1246,6 +1282,53 @@
             <em>recoverability</em>. The <code>recoveryplan</code> tree at the root of this homelab can rebuild
             this whole stack from compose files and secrets bundles in a single afternoon, with no vendor in the
             loop. That&rsquo;s the property no hosted alternative gives you.
+          </p>
+        </article>
+
+        <article class="card deep fade-in d2">
+          <h3>Recovery Plan + Drift Detector <span class="tag">DR + invariant guard &mdash; Bash + Python</span></h3>
+          <p>
+            A bare-metal rebuild tree under <code>recoveryplan/</code> that can put Betelgeuse back into its
+            current state in an afternoon: every docker-compose file, every systemd unit, every backup
+            script, the BIND zone, the netplan, the sudoers stanza, a current package inventory. If the box
+            dies tomorrow and I&rsquo;m starting from a Ubuntu live USB, this tree is the only thing I need.
+          </p>
+          <p>
+            <strong>The backup chain.</strong> Mongo dump nightly at 02:15. GitLab backup + paired
+            config/secrets bundle (the file GitLab&rsquo;s own backup tool deliberately doesn&rsquo;t
+            include) at 02:30. The Tier-A encrypted archive (AES-256-CBC + PBKDF2, 30-day retention) twice
+            daily at 02:45 and 14:45 &mdash; three local mirrors on three different paths, off-box rsync to
+            hera-pi (separate hardware, separate disk, separate room) at 03:15. The recoveryplan tree
+            itself off-boxes too, so post-disaster the runbook isn&rsquo;t dying with the host. The Tier-A
+            passphrase lives in a file that&rsquo;s also documented inside the off-boxed runbook &mdash;
+            recoverable from hera-pi alone, with no Betelgeuse-only knowledge needed.
+          </p>
+          <p>
+            <strong>Drift-detect runs paired with the chain.</strong> 03:30 (45 min after the morning A1)
+            and 15:30 (45 min after the afternoon A1). Eight checks: failed units, flapping units
+            (<code>NRestarts</code> above threshold), halfax crontab vs captured baseline, enabled-on-host
+            systemd units vs captured (alias-aware via <code>Names=</code>, skips files with leading
+            <code># DISABLED</code>), untracked source files in the recoveryplan tree, disk + memory
+            pressure, and backup-log freshness &mdash; each of mongo / gitlab / secrets / offbox logs must
+            show its OK marker with mtime within 26 hours, scanned by content rather than timestamp parsing.
+            State is deduped to a JSON file so the second daily run stays silent if nothing changed. Email
+            via <code>mail.guywithgames.com</code> with proper SPF + DKIM + DMARC alignment to all my
+            recipient inboxes.
+          </p>
+          <p>
+            <strong>Sudoers, tightly scoped.</strong> NOPASSWD only for systemctl read-only +
+            <code>journalctl -u/-n/--since/--no-pager</code> + <code>docker ps/logs/inspect/stats</code> +
+            <code>apt list --installed/--upgradable</code> + <code>iptables/nft list</code>. Anything
+            destructive (start, stop, disable, copy) needs the password. The drift detector and the homelab
+            MCP can self-elevate for read-only checks without prompting; nothing destructive runs without
+            me.
+          </p>
+          <p style="font-size:0.9em;color:#b5e48c;margin-top:0.6em;">
+            <strong>What I&rsquo;m proud of here:</strong> most homelabs treat backups <em>as</em> the
+            recovery story. Mine is a recovery <em>tree</em>: the backups plus the runbook to use them, both
+            off-boxed, both reproducible, with a drift detector that pairs to the chain so a failed archive
+            surfaces in the matching email. Earlier this week the detector caught a service that had been
+            silently dead for six months. That&rsquo;s the system working.
           </p>
         </article>
 
