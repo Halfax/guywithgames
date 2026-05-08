@@ -1214,38 +1214,52 @@
         </article>
 
         <article class="card deep fade-in d2">
-          <h3>AI Collaboration Memory <span class="tag">cross-session continuity &mdash; Markdown + git</span></h3>
+          <h3>AI Collaboration Memory <span class="tag">ADR pattern + off-box DR &mdash; Markdown + git</span></h3>
           <p>
-            A two-layer memory system that makes any AI coding assistant &mdash; my own VSCode extension,
-            Cascade, Claude Code, Continue.dev &mdash; remember things across conversations <em>and</em>
-            across harness changes. Most operators rely on whatever per-conversation context window the tool
-            ships with and accept that every new session starts cold. I refused to.
+            I don&rsquo;t want my AI assistants to start cold every session, and I don&rsquo;t want their
+            memory locked into one vendor&rsquo;s storage layer. So I treat assistant rules the way teams
+            treat Architecture Decision Records (the Nygard-2011 pattern) &mdash; flat markdown at the
+            project root, off-boxed like production data, used as common ground across whatever tool
+            I&rsquo;m running today.
           </p>
           <p>
-            <strong><code>DECISIONS.md</code> &mdash; load-bearing rules, durable.</strong> A flat markdown
-            file at the project root with one entry per non-obvious technical rule (~12 entries today). Each
-            entry follows the same shape: <em>rule</em>, <em>why</em> (the empirical incident or evidence
-            that drove it), <em>how to verify or apply</em>. The file is symlinked into a
-            <code>betelgeuse-docs</code> git repo, off-boxed nightly via the Tier-A archive, and survives any
-            harness change &mdash; nothing in it depends on a vendor&rsquo;s persistence layer. Anyone who
-            opens the project root finds it; I read it first every session, and so does every assistant I
-            point at this codebase.
+            <strong><code>DECISIONS.md</code> &mdash; load-bearing rules.</strong> 11 entries today, each in
+            the ADR shape: <em>rule</em>, <em>why</em> (the empirical incident or evidence that drove it),
+            <em>how to verify or apply</em>. The file is symlinked into a <code>betelgeuse-docs</code> git
+            repo, off-boxed nightly via the Tier-A encrypted archive (the same one the rest of my stack
+            rides), and recoverable from a separate physical location. Nothing in it depends on a
+            vendor&rsquo;s persistence layer.
           </p>
           <p>
-            <strong>Per-conversation working memory at <code>~/.claude/projects/.../memory/</code>.</strong>
-            Topical markdown files (one per fact / preference / project context) indexed by a single
-            <code>MEMORY.md</code> the harness loads into every conversation. Ephemeral state, user-context,
-            breadcrumbs to load-bearing rules in <code>DECISIONS.md</code>. When an assistant learns
-            something durable mid-session &mdash; a corrected approach, a new invariant &mdash; I expect it
-            to <em>promote</em> that fact to <code>DECISIONS.md</code>, not leave it stranded in a working-
-            memory file that won&rsquo;t survive the next harness.
+            <strong>One substrate, multiple tools.</strong> I actively use Claude Code, Cascade,
+            Continue.dev, and my own VSCode extension on the same codebase. Each has its own
+            per-conversation working memory &mdash; Claude Code&rsquo;s auto-memory in
+            <code>~/.claude/projects/</code>, my extension&rsquo;s session JSON in
+            <code>~/.halfax-sessions/</code>, Cascade&rsquo;s project memory. <code>DECISIONS.md</code> is
+            the common ground that any of them can read because it&rsquo;s just plaintext at the root.
           </p>
           <p>
-            <strong>Two-tier semantic memory in the AI server itself.</strong> A 60-bullet always-loaded
-            CORE file for rules, identity, preferences, active context, plus an unbounded archive
-            auto-retrieved per turn by cosine similarity above a configurable threshold. The archive uses
-            ChromaDB; embeddings come from the same Vulkan-backed <code>llama-server</code> on port 5001
-            that the rest of the stack uses. <code>/api/memory/search</code> exposes it to any client.
+            <strong>The promote-to-durable rule.</strong> When an assistant learns something load-bearing
+            mid-session &mdash; a corrected approach, a new invariant &mdash; the convention is to promote
+            that fact from per-tool working memory into <code>DECISIONS.md</code>. Working memory is for
+            ephemeral state; <code>DECISIONS.md</code> is for things that should outlive the tool that
+            learned them. The promotion workflow itself is written down as a feedback memory the harness
+            loads into every session, so the rule applies recursively to itself.
+          </p>
+          <p>
+            <strong>Two-tier semantic memory in my AI server.</strong> A 60-bullet always-loaded CORE file
+            for rules, identity, preferences, active context, plus an unbounded archive auto-retrieved per
+            turn by cosine similarity above a configurable threshold. The archive uses ChromaDB; embeddings
+            come from the same Vulkan-backed <code>llama-server</code> on port 5001 that the rest of the
+            stack uses. <code>/api/memory/search</code> exposes it to any client.
+          </p>
+          <p>
+            <strong>What&rsquo;s not mine, and what is.</strong> I didn&rsquo;t invent ADRs, semantic
+            memory, or project-root rule files &mdash; <code>mem0</code>, <code>MemGPT</code>,
+            <code>.cursorrules</code>, <code>CLAUDE.md</code>, Cascade&rsquo;s project memory all exist
+            and all work. What&rsquo;s mine is the synthesis: ADRs applied to AI assistant rules with the
+            same DR rigor I apply to production data, plus an explicit promote-to-durable workflow that
+            bridges per-tool ephemeral memory to a shared portable substrate.
           </p>
         </article>
 
