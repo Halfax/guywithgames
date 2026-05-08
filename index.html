@@ -11,12 +11,12 @@
   <meta property="og:title" content="GuyWithGames | Story Universe, Halfax AI, VSCode Extension and Homelab">
   <meta property="og:description" content="Welcome to GuyWithGames, home of the Story Universe, Halfax AI, and a native VSCode extension that drives the local LLM stack end-to-end. Gaming, homelab infrastructure, and AI dev tooling built by Halfax.">
   <meta property="og:url" content="https://www.guywithgames.com">
-  <meta property="og:image" content="https://www.guywithgames.com/halfax-ai-banner.png">
+  <meta property="og:image" content="https://www.guywithgames.com/halfax-ai-banner.webp">
   <meta property="og:site_name" content="GuyWithGames">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="GuyWithGames | Story Universe, Halfax AI, VSCode Extension and Homelab">
   <meta name="twitter:description" content="Welcome to GuyWithGames, home of the Story Universe, Halfax AI, and a native VSCode extension that drives the local LLM stack end-to-end. Gaming, homelab infrastructure, and AI dev tooling built by Halfax.">
-  <meta name="twitter:image" content="https://www.guywithgames.com/halfax-ai-banner.png">
+  <meta name="twitter:image" content="https://www.guywithgames.com/halfax-ai-banner.webp">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -697,7 +697,7 @@
   </section>
 
   <div class="site-banner" aria-hidden="true">
-    <img src="halfax-ai-banner.png" alt="Halfax AI — multi-model intelligence engine">
+    <img src="halfax-ai-banner.webp" alt="Halfax AI — multi-model intelligence engine" loading="eager" fetchpriority="high" width="1536" height="1024">
     <div class="site-banner-overlay"></div>
   </div>
 
@@ -727,16 +727,16 @@
         </div>
 
         <aside class="card fade-in d2" aria-label="lab snapshot">
-          <img src="avatar.jpg" alt="Halfax" class="profile-photo">
+          <img src="avatar.webp" alt="Halfax" class="profile-photo" loading="lazy" width="320" height="436">
           <h2 style="margin-top:0; font-size:1.1rem;">Lab Snapshot</h2>
           <p style="margin:0; color:var(--muted); line-height:1.6;">
             A five-host environment built for development, services, and continuous tinkering.
           </p>
           <div class="stat-grid">
-            <div class="stat"><div class="n">5</div><div class="k">Hosts</div></div>
-            <div class="stat"><div class="n">24/7</div><div class="k">Ops mindset</div></div>
-            <div class="stat"><div class="n">AI</div><div class="k">Inference + tooling</div></div>
-            <div class="stat"><div class="n">55+</div><div class="k">Personal projects</div></div>
+            <div class="stat"><div class="n">5</div><div class="k">Hosts I run</div></div>
+            <div class="stat"><div class="n">2</div><div class="k">LLMs on my iGPU</div></div>
+            <div class="stat"><div class="n">413k</div><div class="k">Lines of HalfaxOS</div></div>
+            <div class="stat"><div class="n">0</div><div class="k">Cloud LLMs in the loop</div></div>
           </div>
           <div style="display:flex; gap:1rem; margin-top:1.2rem; justify-content:center;">
             <a href="https://discord.gg/HrnWnTJsyz" target="_blank" rel="noopener noreferrer" title="Discord" style="color:var(--muted); transition:color 0.2s;">
@@ -795,9 +795,9 @@
           <h3>Betelgeuse <span class="spec-badge">Primary server</span></h3>
           <ul class="spec-list">
               <li>CPU: AMD Ryzen AI MAX+ 395 (16C/32T)</li>
-              <li>GPU: Radeon 8060S with 96 GB UMA VRAM</li>
-              <li>RAM: 30 GiB with 186 GiB swap</li>
-              <li>Storage: 2 TB SN7100 + 2 TB Lexar NVMe + 8 TB HDD</li>
+              <li>GPU: Radeon 8060S, 64&nbsp;GiB UMA VRAM (paired 64/64 split with system RAM, set in BIOS)</li>
+              <li>RAM: 62&nbsp;GiB with 186&nbsp;GiB swap</li>
+              <li>Storage: 2&nbsp;TB SN7100 + 2&nbsp;TB Lexar NVMe + 8&nbsp;TB HDD</li>
               <li>Platform: GMKtec NucBox EVO-X2</li>
               <li>OS: Ubuntu 24.04.4 LTS, kernel 6.17.0-20 HWE, GPU via Vulkan (Mesa RADV)</li>
           </ul>
@@ -868,12 +868,12 @@
         </article>
 
         <article class="card catalog fade-in d2">
-          <h3>Kubernetes (k3d) <span class="count">orchestration layer</span></h3>
+          <h3>Kubernetes (k3d) <span class="count">scratch cluster, currently idle</span></h3>
           <ul>
-            <li>Supports multi-service systems with scaling, restart logic, and service routing.</li>
-            <li>How: Declarative manifests define desired state; controller loops keep workloads healthy.</li>
-            <li>Why: Better reliability and lifecycle control for complex project stacks.</li>
-            <li>Best fit: Story systems, API groups, and services needing rolling updates and ingress.</li>
+            <li>I keep a k3d cluster on Betelgeuse for orchestration experiments &mdash; multi-service stacks with rolling updates, ingress routing, and scaled workers.</li>
+            <li>How: declarative manifests define desired state; controller loops keep workloads healthy.</li>
+            <li>Why: when a project genuinely needs the lifecycle features Kubernetes gives you, it&rsquo;s already wired up and ready.</li>
+            <li>Honest current state: dormant. I don&rsquo;t have an active workload that justifies the runtime overhead today, so the cluster sits unused and I&rsquo;d delete it before bringing it back.</li>
           </ul>
         </article>
 
@@ -972,153 +972,155 @@
         <article class="card deep fade-in">
           <h3>Story Universe Ecosystem <span class="tag">distributed narrative system</span></h3>
           <p>
-            A distributed, AI-driven narrative world that runs continuously across three hosts. The
-            <strong>Chronicle Keeper</strong> (hera-pi, Raspberry Pi 5) holds canonical world state &mdash;
-            characters, factions, locations, events &mdash; in SQLite, and broadcasts a world clock via ZeroMQ
-            pub/sub. The <strong>Narrative Engine</strong> (Betelgeuse) subscribes to those ticks and generates
-            arcs and events through the Halfax AI API, targeting Dark Champion. The <strong>World Browser</strong>
-            (Guy VPS) presents the live chronicle as a public dashboard reading from both the Chronicle Keeper
-            REST API and the arcs API.
+            An AI-driven story world that keeps running on its own across three computers &mdash; characters,
+            factions, and events that evolve in the background while I&rsquo;m doing other things. Like an
+            always-on TV show whose next episode the AI writes by reacting to what happened yesterday.
           </p>
           <p>
-            Connecting them is <strong>MemPalace</strong> &mdash; a ChromaDB-backed semantic memory framework
-            co-created by actress <strong>Milla Jovovich</strong> and engineer Ben Sigman, designed to give AI
-            models long-term memory that mimics human spatial recall (organized into wings and rooms). Every
-            accepted story event and arc update is written to MemPalace in real time. Before each generation
-            call, the engine searches MemPalace for relevant past events and injects them as narrative context,
-            so the LLM builds on what happened before rather than generating in isolation. When a story is
-            archived, MemPalace is purged so the next story starts with a clean slate.
+            <strong>Three machines split the work.</strong> A Raspberry Pi 5 (the <em>Chronicle Keeper</em>)
+            holds the world&rsquo;s canonical state &mdash; every character, faction, location, and accepted
+            event &mdash; in SQLite, and broadcasts a world clock over ZeroMQ pub/sub. My main server (the
+            <em>Narrative Engine</em>) subscribes to those ticks and asks the Dark Champion LLM to generate the
+            next arc or event. A public VPS (the <em>World Browser</em>) renders the live chronicle as a
+            website that reads straight from the canonical store. Each host does what its hardware is good at,
+            and a single machine going down doesn&rsquo;t take the others with it.
           </p>
           <p>
-            <strong>Prose-quality pipeline.</strong> Every generated event passes through a post-generation regex
-            filter that rejects atmospheric-formula openings (&ldquo;Dawn sunlight filters through the windows&hellip;&rdquo;),
-            tension-family clichés, and time-of-day contradictions. Rejected attempts feed back into the next
-            retry as real-time negative examples, letting the LLM escape its trained reflexes. Up to six retries
-            with rising temperature before force-accept. JSON envelopes are guaranteed-valid via grammar-constrained
-            decoding at the API boundary &mdash; every retry is now a productive prose-quality retry, not a wasted
-            call on malformed output (parse failures dropped from ~51% to 0%).
+            <strong>The story actually remembers itself.</strong> Every accepted event and arc update is written
+            into <em>MemPalace</em> &mdash; a ChromaDB-backed semantic memory framework co-created by actress
+            <strong>Milla Jovovich</strong> and engineer Ben Sigman, organized into wings and rooms to mimic
+            human spatial recall. Before each generation call, the engine searches MemPalace for events relevant
+            to the current scene and injects them as context, so the LLM builds on what already happened instead
+            of restarting cold every tick. When I archive a story, MemPalace gets purged and the next one starts
+            with a clean slate.
           </p>
           <p>
-            <strong>Health-gated tolerance &mdash; the world pauses, it never lies.</strong> All services auto-start
-            under systemd with infinite retry. A HealthMonitor probes the Chronicle Keeper and LLM endpoints every
-            tick &mdash; if either is unhealthy, the engine pauses instead of fabricating events, and resumes
-            silently when dependencies recover. There is <em>no template fallback</em>: when the LLM is down, the
-            universe simply waits.
+            <strong>The prose-quality feedback loop.</strong> Generated events run through a regex filter that
+            rejects atmospheric-formula openings (&ldquo;Dawn sunlight filters through the windows&hellip;&rdquo;),
+            tension-family clichés, and time-of-day contradictions. Each rejected attempt is fed back to the LLM
+            as a real negative example before the next retry, with rising temperature, up to six tries before
+            force-accept. Combined with grammar-constrained JSON decoding (output is physically prevented from
+            being malformed), parse failures dropped from <strong>~51% of LLM calls to 0%</strong> &mdash; every
+            retry now does prose-quality work instead of being wasted on broken JSON.
+          </p>
+          <p>
+            <strong>It pauses, it never lies.</strong> A HealthMonitor probes the Chronicle Keeper and the LLM
+            endpoint every tick. If either is down, the engine <em>pauses generation entirely</em> instead of
+            faking events from a template. When the dependencies recover, it resumes silently. There is no
+            fallback path that would let a fabricated event into the canonical world &mdash; the universe simply
+            waits.
           </p>
           <p style="font-size:0.9em;color:#b5e48c;margin-top:0.6em;">
-            <strong>Why it&rsquo;s different:</strong> most AI story generators are single-shot &mdash; prompt in,
-            text out. This is a persistent, distributed world that evolves autonomously across three machines
-            with canonical state, ZeroMQ-synchronized continuity, semantic memory the LLM actually consults,
-            health-gated tolerance with no fabrication path, and a measurable prose-quality feedback loop. The
-            architecture is closer to an MMO backend than a chatbot.
+            <strong>What I&rsquo;m proud of here:</strong> most &ldquo;AI story generators&rdquo; are one prompt
+            and one reply. I built a persistent world that runs across three machines with synchronized state, a
+            semantic memory the LLM <em>actually reads from</em>, a measurable prose-quality feedback loop, and a
+            hard rule that the world pauses rather than fabricates. The architecture I ended up with is closer to
+            an MMO backend than a chatbot.
           </p>
         </article>
 
         <article class="card deep fade-in d2">
           <h3>Halfax AI Stack <span class="tag">multi-model serving + ops</span></h3>
           <p>
-            A multi-model GPU-accelerated inference server built on llama.cpp with Vulkan (Mesa RADV) on AMD
-            gfx1151 (Strix Halo), 96 GB unified VRAM. Three LLMs serve concurrently &mdash; Qwen3-Coder (code),
-            Dark Champion (narrative + reasoning), Mistral (utility) &mdash; loaded VRAM-largest-first to minimize
-            fragmentation, each under a Python supervisor that auto-restarts on crash. The API exposes
-            OpenAI-compatible endpoints (<code>/v1/chat/completions</code>, <code>/v1/completions</code> with
-            fill-in-the-middle, <code>/v1/models</code>) plus per-request model targeting and automatic failover,
-            so any Copilot/Cursor/Continue-class client plugs in unchanged.
+            A private AI server I run on my own hardware. Two large language models live in GPU memory at once
+            and answer questions through the same API shape (OpenAI-compatible) that ChatGPT, Copilot, and Cursor
+            use &mdash; so any tool that knows how to talk to OpenAI talks to mine instead, with nothing leaving
+            the house.
           </p>
           <p>
-            <strong>Three independent memory layers, opt-in per request.</strong> A
-            <strong>99,000-chunk RAG knowledge store</strong> over my PDFs, offline encyclopedia archives, and
-            notes &mdash; searched via an <code>hnswlib</code> approximate-nearest-neighbor index for
-            <strong>~4 ms median latency</strong> (down from ~50 ms linear scan), with embeddings cached per chunk
-            by SHA-256 of chunk text rather than file mtime &mdash; so adding or removing one document only
-            re-embeds that document, never the whole library. <strong>MemPalace</strong>, a ChromaDB-backed
-            long-term memory store organized into wings and rooms, shared with the Story Universe so any
-            connected system can search the full narrative timeline. And a <strong>two-tier personal memory</strong>:
-            a 60-bullet always-loaded CORE file for rules, identity, preferences, and active context, plus an
-            unbounded archive auto-retrieved per turn by cosine similarity above a configurable threshold.
+            <strong>Two models concurrent on one GPU.</strong> Qwen3-Coder-30B handles code (lm1, ~22&nbsp;GiB
+            resident), Dark Champion V2 21B handles narrative and reasoning (lm2, ~16&nbsp;GiB); a Mistral-7B
+            slot is configured for fast utility prompts and loads on demand. The active pair lives in the
+            AMD Strix Halo&rsquo;s <strong>64&nbsp;GiB UMA VRAM</strong> via Vulkan, with ~12&nbsp;GiB headroom
+            on top &mdash; the ROCm/HIP path is broken on this GPU until 7.10+ ships, so I built around that.
+            Models load largest-first to minimize fragmentation. Each runs as a supervised
+            <code>llama-server</code> child process &mdash; if one crashes, a watchdog thread restarts it within
+            30 seconds; per request I can target a specific model or let the API auto-failover to the next
+            available.
           </p>
           <p>
-            <strong>Grammar-constrained structured output.</strong> The API forwards <code>json_schema</code> and
-            <code>grammar</code> fields through to llama.cpp, which compiles them to GBNF and masks illegal tokens
-            at sampling time &mdash; the model is <em>physically blocked</em>, token by token, from emitting output
-            that would fail to parse or violate the schema. In the Story Universe narrative engine, wiring this
-            into event and character generation dropped the parse-failure retry rate from <strong>~51% of LLM
-            calls to 0%</strong>, roughly doubling effective throughput.
+            <strong>Three independent memory layers, opt-in per request.</strong>
+            <em>RAG knowledge store:</em> 99,000 chunks indexed from my PDFs, an offline encyclopedia ZIM, and
+            notes; queried through an <code>hnswlib</code> approximate-nearest-neighbor index at
+            <strong>~4 ms median latency</strong> (down from ~50 ms linear scan), with embeddings cached
+            <em>by SHA-256 of each chunk&rsquo;s text</em> &mdash; so adding or removing a single document only
+            re-embeds that document, never the whole library.
+            <em>MemPalace:</em> the same ChromaDB-backed semantic memory the Story Universe uses, exposed so any
+            client can search the full narrative timeline.
+            <em>Two-tier personal memory:</em> a 60-bullet always-loaded CORE file for rules / identity /
+            preferences / active context, plus an unbounded archive auto-retrieved per turn by cosine similarity
+            above a configurable threshold.
           </p>
           <p>
-            <strong>Vulkan-accelerated embeddings via dedicated supervised process.</strong> A second
-            <code>llama-server</code> on port 5001 runs <code>all-MiniLM-L6-v2</code> (converted to GGUF, F16,
-            mean-pooled) on the same Mesa RADV backend &mdash; necessary because Python sentence-transformers
-            hangs indefinitely on HIP device init on gfx1151. Same watchdog and auto-restart pipeline as the chat
-            models. Routing embeddings through llama.cpp&rsquo;s Vulkan path bypasses the broken ROCm path
-            entirely.
+            <strong>Structured output that physically can&rsquo;t fail.</strong> The API forwards
+            <code>json_schema</code> and <code>grammar</code> fields straight through to llama.cpp, which compiles
+            them to GBNF and masks any token that would break the schema before it can be sampled &mdash; the
+            model is <em>blocked, token by token</em>, from emitting malformed output. Wiring this into the Story
+            Universe event generator dropped the parse-failure retry rate from <strong>~51% of LLM calls to
+            0%</strong>, roughly doubling effective throughput.
           </p>
-          <p style="font-size:0.9em;color:#b5e48c;margin-top:0.6em;">
-            <strong>Why it&rsquo;s different:</strong> Not a wrapper. Three concurrent LLMs under one supervisor
-            with VRAM-ordered loading and automatic failover, three independent memory layers clients can opt into
-            per request, grammar-constrained decoding for guaranteed-valid structured output, HNSW-indexed RAG
-            with content-keyed caching, and the embedding path engineered around a real driver bug. Engineered
-            end-to-end &mdash; the locality is incidental; the architecture is the point.
+          <p>
+            <strong>Vulkan-accelerated embeddings via a separate supervised process.</strong> A second
+            <code>llama-server</code> on port 5001 runs <code>all-MiniLM-L6-v2</code> (converted to GGUF F16,
+            mean-pooled) on the same Vulkan backend &mdash; necessary because Python sentence-transformers hangs
+            forever on HIP device init on this GPU. Same watchdog, same auto-restart, same Vulkan path the chat
+            models use; just engineered around the broken driver instead of giving up on GPU embeddings.
           </p>
         </article>
 
         <article class="card deep fade-in d2">
           <h3>Halfax AI VSCode Extension <span class="tag">native IDE client &mdash; TypeScript</span></h3>
           <p>
-            A native VSCode extension for AI-assisted coding &mdash; chat, autonomous agent, fill-in-the-middle
-            autocomplete, one-click apply on suggested edits, Cmd+K inline rewrites &mdash; running end-to-end
-            against my own AI server. Not a Continue.dev fork or wrapper around someone else&rsquo;s protocol:
-            written from scratch in TypeScript with custom React UI, Zustand state, an in-process MCP stdio client
-            (<code>@modelcontextprotocol/sdk</code>), and direct OpenAI-compatible streaming.
+            A from-scratch VSCode extension that does what GitHub Copilot, Cursor, and Windsurf Cascade do
+            &mdash; chat with an AI in the sidebar, ask it to autonomously edit code, get autocomplete as I type,
+            apply suggested edits with one click &mdash; but it talks to <em>my</em> AI server on <em>my</em> GPU,
+            with everything logged to plain JSON files I own. No account, no telemetry, no cloud, dead-internet
+            still works.
           </p>
           <p>
-            <strong>Agent loop runs in-extension as a six-state finite state machine</strong> (<em>pending &rarr;
-            in_progress &rarr; completed | awaiting_user | error | cancelled</em>) driving multi-step work via a
-            strict JSON tool-call protocol. The extractor tolerates common model formatting mistakes (stray
-            trailing braces, fence variations, missing args), the validator normalizes no-arg tool calls before
-            rejecting, and consecutive-error thresholds pause cleanly into <em>awaiting_user</em> instead of
-            spinning. <strong>Mid-turn checkpointing:</strong> every successful turn flushes the agent&rsquo;s
-            history to disk before the next, so quit-mid-task or crash-mid-task is recoverable &mdash; reopening
-            VSCode auto-resumes the agent from where it stopped.
+            <strong>Not a Continue.dev fork.</strong> Written from nothing in TypeScript: custom React webview
+            UI, Zustand state, an in-process MCP stdio client over
+            <code>@modelcontextprotocol/sdk</code>, OpenAI-compatible streaming straight to the local llama.cpp
+            server. Distributed only as a sideloaded VSIX from my homelab &mdash; never the marketplace.
           </p>
           <p>
-            <strong>Single-slot priority request queue</strong> across the entire extension. The local llama.cpp
-            backend has one GPU inference slot at a time; the queue prioritizes <code>FIM=0 &lt; chat=1 &lt;
-            agent=2</code>, so a long-running agent task never starves typing-time autocomplete and a chat reply
-            doesn&rsquo;t wait behind a background completion. Apply on suggested edits routes through
-            <code>vscode.diff</code> for preview and writes via the MCP <code>file_write</code> tool with
-            <code>expected_mtime</code> conflict detection (in seconds, not milliseconds &mdash; <code>FileStat.mtime/1000</code>);
-            falls back to <code>native:write</code> if the MCP path is unavailable. The write fails if the file
-            changed on disk between read and save.
+            <strong>The agent loop is a real state machine.</strong> Six states &mdash;
+            <em>pending &rarr; in_progress &rarr; completed | awaiting_user | error | cancelled</em> &mdash;
+            driving multi-step work through a strict JSON tool-call protocol. The extractor is forgiving about
+            how the LLM formats its output (stray braces, fence variations, missing args), the validator
+            normalizes no-arg calls before rejecting, and consecutive-error thresholds pause the agent into
+            <em>awaiting_user</em> instead of spinning. Crucially: <strong>every successful turn flushes the
+            agent&rsquo;s history to disk before the next.</strong> If VSCode quits or crashes mid-task,
+            reopening it auto-resumes the agent from where it stopped. None of the three commercial agents do
+            this.
           </p>
           <p>
-            <strong>Persistent memory + skills + hooks &mdash; all file-resident.</strong>
+            <strong>Single-slot priority queue across the whole extension.</strong> The local GPU has one
+            inference slot at a time, so the queue prioritizes <code>FIM=0 &lt; chat=1 &lt; agent=2</code>:
+            a long-running agent task can never starve typing-time autocomplete, and a chat reply doesn&rsquo;t
+            wait behind a background completion. Apply on suggested edits previews via <code>vscode.diff</code>
+            and writes through the MCP <code>file_write</code> tool with <em>mtime conflict detection</em>
+            &mdash; if I edit the file myself between the model proposing the change and the apply click, the
+            write fails instead of clobbering my work.
+          </p>
+          <p>
+            <strong>Skills, hooks, and memory &mdash; all file-resident.</strong>
             <code>/remember</code> writes to a CORE file always loaded into chat plus an embedding-searched
             archive auto-injected per turn. Skills are markdown files in <code>~/.halfax/skills/</code> with a
-            tiny frontmatter (<code>name</code> / <code>description</code> / <code>mode</code>) parsed in-process;
-            they appear instantly as slash commands with a popover palette in the composer. Lifecycle hooks
-            (<code>on-session-start</code>, <code>on-tool-call</code>, <code>on-stop</code>) run shell commands of
-            my choice with structured event variables (<code>HALFAX_EVENT</code>, <code>HALFAX_TOOL</code>,
-            <code>HALFAX_REASON</code>, etc.). Self-update pulls a new VSIX from my homelab, streams it to disk,
-            and installs through <code>workbench.extensions.installExtension</code>.
+            tiny frontmatter (<code>name</code> / <code>description</code> / <code>mode</code>) &mdash; they
+            appear instantly as slash commands with a popover palette in the composer. Lifecycle hooks
+            (<code>on-session-start</code>, <code>on-tool-call</code>, <code>on-stop</code>) run shell commands
+            of my choice with structured event variables. Self-update pulls a new VSIX from my homelab and
+            installs it through <code>workbench.extensions.installExtension</code> &mdash; no marketplace, no
+            update server, no vendor in the loop.
           </p>
           <p>
-            <strong>How the agent differs from Claude Code, Windsurf Cascade, and GitHub Copilot.</strong> Those
-            three send every keystroke and chat to a corporate cloud &mdash; account-required, telemetry-by-default,
-            per-token or per-seat billing, hard rate and context limits, dead without internet. Mine: every
-            inference on my own GPU, every chat saved as a plain JSON file under <code>~/.halfax-sessions/</code>,
-            every memory bullet a line in a CORE.md I can edit. The agent FSM is <em>visible</em> in the UI and
-            <em>pauseable</em> mid-loop; every destructive tool call hits a per-call permission prompt by default
-            (vs Copilot&rsquo;s autonomous-by-default agent). <strong>Mid-turn checkpointing for crash recovery
-            is something none of the three commercial agents offer.</strong> Skills, hooks, memory, and the
-            update channel are all configured by editing files in <code>~/.halfax/</code>, not by clicking through
-            a vendor settings UI.
-          </p>
-          <p style="font-size:0.9em;color:#b5e48c;margin-top:0.6em;">
-            <strong>Why it&rsquo;s a good project:</strong> the full IDE assistant surface &mdash; chat,
-            autonomous agent, autocomplete, inline edits, sessions, skills, hooks, persistent memory, self-update
-            &mdash; built end-to-end in TypeScript with a real state machine, real conflict-aware writes, real
-            crash recovery, and real priority scheduling. Not a thin client over someone else&rsquo;s API.
+            <strong>How it differs from Copilot, Cursor, and Cascade.</strong> Those three send every keystroke
+            and chat to a corporate cloud &mdash; account-required, telemetry-by-default, per-token or per-seat
+            billing, hard rate and context limits, dead without internet. Mine: every inference on my own GPU,
+            every chat saved as a plain JSON under <code>~/.halfax-sessions/</code>, every memory bullet a line
+            in a CORE.md I can edit. The agent FSM is <em>visible</em> in the UI and <em>pauseable</em> mid-loop;
+            every destructive tool call hits a per-call permission prompt by default.
           </p>
         </article>
       </div>
@@ -1128,197 +1130,147 @@
         <article class="card deep fade-in">
           <h3>Homelab MCP Server <span class="tag">infrastructure monitoring &mdash; Python + Paramiko</span></h3>
           <p>
-            An MCP server that gives my AI assistants structured, real-time access to the entire homelab.
-            Monitors <strong>35+ services across 5 machines</strong> (Betelgeuse, hera-pi, Guy, Shop, UYScuti)
-            <strong>in under 2 seconds</strong>. Built on the FastMCP framework with Paramiko SSH, connection
-            pooling with 30-second keepalive that reuses sessions across tool calls, and a ThreadPoolExecutor
-            (8 workers) checking every host and service concurrently.
+            A piece of glue software that lets an AI assistant (mine, Cascade, Copilot &mdash; anything that
+            speaks Model Context Protocol) inspect and operate my entire homelab in plain English.
+            &ldquo;Is hera-pi healthy?&rdquo; &ldquo;Which containers restarted in the last hour?&rdquo;
+            &ldquo;Deploy this site.&rdquo; &mdash; all answered as structured tool calls instead of shell
+            commands.
           </p>
           <p>
-            <strong>Local tools (Betelgeuse dashboard).</strong> systemd services, Docker containers, my AI model
-            endpoints with response timing, GPU telemetry (temperature, power, VRAM via <code>rocm-smi</code>),
-            disk/memory/load, BIND9 DNS, Netbird mesh status, k3d Kubernetes cluster health, and the Narrative
-            Engine API.
+            <strong>Five hosts, 35+ services, under two seconds.</strong> Betelgeuse, hera-pi, Guy VPS, Shop VPS,
+            UYScuti &mdash; checked concurrently through Paramiko SSH with connection pooling (30-second
+            keepalive reuses the same SSH session across tool calls) and a ThreadPoolExecutor with 8 workers.
+            The first call cold-starts the pool; every call after is one round-trip per host.
           </p>
           <p>
-            <strong>Fleet tools.</strong> SSH-based remote monitoring with YAML-driven host/service configuration
-            that hot-reloads on file change &mdash; no server restart needed to add hosts or services. systemd
-            units, Docker containers, and processes on Linux; PowerShell <code>Get-Service</code> on Windows.
-            Remote log retrieval, disk/memory inspection, arbitrary-command execution with a destructive-pattern
-            denylist (filesystem wipes, disk formats, reboots, fork bombs). SFTP upload/download between
-            workstation and any fleet host via pooled SSH. Service restarts gated behind an explicit environment
-            variable.
+            <strong>Local Betelgeuse dashboard.</strong> systemd services, Docker containers, my AI model
+            endpoints with per-model response timing, GPU telemetry (temperature, power, VRAM via
+            <code>rocm-smi</code>), disk / memory / load, BIND9 DNS, Netbird mesh status, k3d Kubernetes cluster
+            health, and the Narrative Engine API.
+          </p>
+          <p>
+            <strong>Fleet tools.</strong> systemd units, Docker containers, and processes on Linux; PowerShell
+            <code>Get-Service</code> on Windows. Remote log retrieval, disk and memory inspection,
+            arbitrary-command execution behind a destructive-pattern denylist (filesystem wipes, disk formats,
+            reboots, fork bombs). SFTP upload and download between any two fleet hosts via the same pooled SSH.
+            The host/service map lives in YAML and hot-reloads on file change &mdash; adding a host doesn&rsquo;t
+            restart the server. Service restarts are gated behind an explicit environment variable.
           </p>
           <p>
             <strong>Story Universe orchestration.</strong> Dedicated tools that drive the multi-host narrative
-            stack end-to-end: <code>storyverse_status</code> checks every component across hosts in parallel,
-            <code>storyverse_check</code> parses the engine log from the last restart marker to report ticks,
-            accept/reject counts, top filter patterns, and active arcs in one call,
-            <code>storyverse_sync_engine</code> rsyncs the running engine to the canonical mirror, and
+            stack end-to-end: <code>storyverse_status</code> snapshots every component across hosts in parallel;
+            <code>storyverse_check</code> parses the engine log from the last restart marker and reports ticks,
+            accept/reject counts, top filter patterns, and active arcs in one call;
+            <code>storyverse_sync_engine</code> rsyncs the running engine to the canonical mirror; and
             <code>storyverse_new_story</code> archives the current story (HTML + JSON + DB), purges MemPalace,
-            resets the world, and restarts services &mdash; a full universe reset in one command.
+            resets the world, and restarts services &mdash; a complete universe reset from one natural-language
+            request.
           </p>
           <p>
-            <strong>Site deploy.</strong> Local mirrors of web properties (like this site). I edit files locally,
-            then the server uploads via SFTP as root and automatically fixes ownership
+            <strong>Site deploy.</strong> Local mirrors of my web properties (this page is one). I edit files
+            locally, then the server uploads via SFTP as root and automatically fixes ownership
             (<code>chown apache:apache</code>) and permissions (<code>chmod 644</code>). Pull, deploy, and
-            status-compare tools keep local and remote in sync.
+            status-compare keep local and remote in sync.
           </p>
-          <p style="font-size:0.9em;color:#b5e48c;margin-top:0.6em;">
-            <strong>Why it&rsquo;s a good project:</strong> MCP is the emerging standard for connecting AI systems
-            to external tools, and most examples online are toy demos. This one turns natural language into
-            structured infrastructure queries across a real heterogeneous fleet &mdash; Linux and Windows, local
-            and remote, containers and bare metal &mdash; with real security controls (denylist + gate flag),
-            connection pooling, parallel execution, and hot-reload config. This page was itself edited locally
-            and pushed live through these tools.
+          <p>
+            <strong>Worth saying:</strong> this page was edited on my workstation and pushed live through these tools. The same MCP
+            handles deploys, log retrieval, restarts, and the Story Universe orchestration — one natural-language interface for
+            five hosts and 35+ services.
           </p>
         </article>
 
         <article class="card deep fade-in d2">
           <h3>Halfax AI MCP Server <span class="tag">AI bridge &mdash; Python + MCP</span></h3>
           <p>
-            The second MCP server: bridges any MCP-capable client (my own VSCode extension, Windsurf&rsquo;s
-            Cascade, Continue.dev) directly to the Halfax AI stack &mdash; local LLM inference, MemPalace,
-            RAG knowledge store, training, file operations, code analysis, session memory, project awareness,
-            autonomous agent loop. <strong>30+ tools</strong>, all running against local hardware.
+            The other half of the bridge: a Model Context Protocol server that gives any MCP-capable client
+            (my own VSCode extension, Windsurf Cascade, Continue.dev) direct access to the Halfax AI stack
+            &mdash; inference, memory, file operations, code analysis, autonomous task execution.
+            <strong>30+ tools</strong>, all running against my hardware.
           </p>
           <p>
-            <strong>Inference + code.</strong> Per-model targeting (<code>lm1</code>, <code>lm2</code>,
+            <strong>Inference and code.</strong> Per-model targeting (<code>lm1</code>, <code>lm2</code>,
             <code>lm3</code>) with multi-turn OpenAI-style messages, side-by-side comparison across all loaded
-            models on the same prompt, automatic RAG context injection from the knowledge store. The underlying
-            API exposes <code>/v1/chat/completions</code>, <code>/v1/completions</code> with FIM autocomplete
-            for Qwen-Coder/DeepSeek-Coder/StarCoder, and <code>/v1/models</code> &mdash; any OpenAI-compatible
-            client plugs in with zero changes. <code>code_analyze</code> wraps a file in a language-fenced prompt
-            for review. <code>project_analyze</code> walks a tree, classifies by language, finds entry points,
-            and builds an import graph (Python via <code>ast</code>, JS/TS via regex). <code>code_validate</code>
-            syntax-checks Python, JSON, and YAML.
+            models on the same prompt, automatic RAG context injection from the knowledge store.
+            <code>code_analyze</code> wraps a file in a language-fenced prompt for review.
+            <code>project_analyze</code> walks a directory tree, classifies files by language, finds entry
+            points, and builds an import graph (Python via <code>ast</code>, JS/TS via regex).
+            <code>code_validate</code> syntax-checks Python, JSON, and YAML.
           </p>
           <p>
-            <strong>File ops with safety nets.</strong> Path-validated <code>file_read</code>,
-            <code>file_write</code> (atomic temp+rename, timestamped <code>.bak</code> backups,
-            <code>dry_run</code> preview, mtime conflict detection that refuses if the file changed between read
-            and write), <code>file_list</code> with glob filtering. A configurable allowlist
-            (<code>HALFAX_FILE_OPS_ROOTS</code>) and symlink resolution keep the agent contained.
+            <strong>File operations with safety nets.</strong> Path-validated <code>file_read</code>;
+            <code>file_write</code> with atomic temp+rename, timestamped <code>.bak</code> backups, a
+            <code>dry_run</code> preview, and mtime conflict detection that refuses the write if the file
+            changed between read and save; <code>file_list</code> with glob filtering. A configurable allowlist
+            (<code>HALFAX_FILE_OPS_ROOTS</code>) plus symlink resolution keeps the agent inside the directories
+            I tell it about.
           </p>
           <p>
-            <strong>Session memory + autonomous task runner.</strong> File-backed JSON sessions with reserved-key
-            namespace, automatic trimming above 80% capacity, tool-execution logging (last 200 entries), and
-            archive-after-N-days &mdash; the API server auto-injects a session context block when a
-            <code>session_id</code> is passed. <code>task_create</code> / <code>task_execute</code> (sync or
-            <code>async_run=true</code> in a background thread) / <code>task_status</code> /
-            <code>task_cancel</code> / <code>task_resume</code>. Same six-state FSM as the VSCode agent, but
-            persisted server-side so any client gets the same state. Tool whitelist blocks recursive task
-            creation; consecutive-error thresholds pause cleanly into <em>awaiting_user</em>.
-          </p>
-          <p style="font-size:0.9em;color:#b5e48c;margin-top:0.6em;">
-            <strong>Why it&rsquo;s a good project:</strong> a complete self-hosted coding-agent backend. Cascade,
-            Continue.dev, or my own extension all talk to it the same way they&rsquo;d talk to a hosted service
-            &mdash; reading code, writing with conflict-aware backups, remembering context across conversations,
-            analyzing whole projects, executing autonomous multi-step tasks &mdash; against my own three LLMs,
-            with a proper FSM, error recovery, allowlist-scoped file ops, and feedback-driven Phi-2 training
-            triggered from natural language.
+            <strong>Sessions and an autonomous task runner.</strong> File-backed JSON sessions with a
+            reserved-key namespace, automatic trimming above 80% capacity, tool-execution logging (last 200
+            entries), and archive-after-N-days &mdash; the API server auto-injects a session context block
+            whenever a <code>session_id</code> is passed. <code>task_create</code> / <code>task_execute</code>
+            (synchronously or with <code>async_run=true</code> in a background thread) / <code>task_status</code>
+            / <code>task_cancel</code> / <code>task_resume</code>. Same six-state FSM as the VSCode agent, but
+            persisted server-side so any client picks up the same state. A tool whitelist blocks recursive task
+            creation, and consecutive-error thresholds pause cleanly into <em>awaiting_user</em>.
           </p>
         </article>
 
         <article class="card deep fade-in d2">
-          <h3>GitLab Self-Hosted <span class="tag">Git hosting &mdash; Docker</span></h3>
+          <h3>Self-Hosted DevOps Stack <span class="tag">GitLab + Prometheus + Grafana &mdash; Docker</span></h3>
           <p>
-            I run a self-hosted GitLab instance in Docker on my primary server (Betelgeuse). This gives me full control over my code repositories,
-            CI/CD pipelines, and project management without relying on external services. GitLab CE runs in a container with persistent
-            volumes for data, configuration, and logs.
+            I didn&rsquo;t build GitLab, Prometheus, or Grafana &mdash; but I run them on my own hardware as the
+            backbone of how I ship code and watch the lab. They&rsquo;re here for honesty: every other project on
+            this page is hosted, monitored, and visualized through this stack.
           </p>
           <p>
-            <strong>Deployment:</strong> Docker Compose manages the GitLab container alongside my other services (Homepage, Portainer, Dozzle).
-            The instance is accessible on my LAN at port 99, integrated with my private DNS zone for easy internal access.
-            Container uses <code>restart: unless-stopped</code> for automatic recovery.
+            <strong>GitLab CE</strong> in Docker on Betelgeuse is the authoritative remote for every project on
+            this page &mdash; <code>halfax-ai</code>, <code>halfax-ai-vscode</code>, both MCP servers, the
+            Story Universe components, the recovery plan tree. LAN-only on port 99, integrated into my private
+            DNS zone. A self-hosted GitLab Runner (Docker executor, default <code>python:3.12</code>) is
+            registered against the same instance so CI runs on the same host. Nightly at 02:30 it produces a
+            paired data dump <em>plus</em> a config/secrets bundle &mdash; the file GitLab&rsquo;s own backup
+            tool deliberately doesn&rsquo;t include &mdash; both off-boxed to hera-pi at 03:15.
           </p>
           <p>
-            <strong>Benefits:</strong> Complete data sovereignty &mdash; all repositories, issues, merge requests, and CI/CD pipelines
-            stay on my infrastructure. No storage limits, no API rate limits, and the ability to customize runners and integrations.
-            Perfect for sensitive projects, private homelab tooling, and infrastructure-as-code repositories.
+            <strong>Prometheus</strong> on port 9095 scrapes node-level metrics, MongoDB (via exporter),
+            GitLab&rsquo;s embedded endpoints, and containerized apps. Persistent volume for the time-series
+            store, restart unless-stopped.
           </p>
           <p>
-            <strong>Integration:</strong> Git repositories from my various projects (homelab-mcp, Halfax AI MCP servers, Story Universe components,
-            and system utilities) are pushed to this instance for centralized version control and backup. The web UI provides issue tracking,
-            wikis, and built-in CI/CD with GitLab Runner integration for automated testing and deployment workflows.
+            <strong>Grafana</strong> on port 3020 points at Prometheus as its primary data source. Dashboards
+            cover host vitals (CPU / memory / disk / network across five machines), service status, and
+            application metrics (AI model response times, Story Universe activity). Dashboard JSON lives in the
+            recovery-plan tree so a clean rebuild reproduces them automatically.
           </p>
           <p style="font-size:0.9em;color:#b5e48c;margin-top:0.6em;">
-            <strong>Why self-hosted GitLab:</strong> Running GitLab locally gives me enterprise-grade Git hosting and DevOps tooling
-            without monthly fees or external dependencies. I get unlimited private repositories, integrated CI/CD, container registry,
-            and project management &mdash; all running on hardware I control. It's the backbone of my development workflow and
-            ensures my code never leaves my network.
-          </p>
-        </article>
-
-        <article class="card deep fade-in d2">
-          <h3>Prometheus <span class="tag">Metrics collection &mdash; Docker</span></h3>
-          <p>
-            I run Prometheus in Docker on Betelgeuse for time-series metrics collection across my homelab infrastructure.
-            Prometheus scrapes metrics from services like MongoDB, GitLab, and containerized applications, storing them
-            locally for querying and alerting. It provides the foundation for observability and performance monitoring.
-          </p>
-          <p>
-            <strong>Deployment:</strong> Docker container accessible on port 9095 (mapped from container port 9090).
-            The instance is integrated with my private DNS zone and runs with <code>restart: unless-stopped</code> for reliability.
-            Prometheus uses a local volume for persistent time-series data storage.
-          </p>
-          <p>
-            <strong>Metrics sources:</strong> Prometheus scrapes endpoints from services including MongoDB (exporter),
-            GitLab (embedded metrics), containerized applications, and system-level metrics via node_exporter.
-            The data is retained locally for historical analysis and trend detection.
-          </p>
-          <p>
-            <strong>Grafana integration:</strong> Prometheus serves as the primary data source for Grafana dashboards,
-            enabling rich visualization of metrics across the entire homelab stack. The combination provides
-            enterprise-grade observability without external dependencies or cloud costs.
-          </p>
-          <p style="font-size:0.9em;color:#b5e48c;margin-top:0.6em;">
-            <strong>Why self-hosted Prometheus:</strong> Local metrics collection gives me complete visibility into
-            infrastructure performance without sending telemetry to external services. I get unlimited retention,
-            custom alerting rules, and the ability to correlate metrics across all services &mdash; all running
-            on hardware I control. It's essential for proactive monitoring and capacity planning.
-          </p>
-        </article>
-
-        <article class="card deep fade-in d2">
-          <h3>Grafana <span class="tag">Visualization &mdash; Docker</span></h3>
-          <p>
-            I run Grafana in Docker on Betelgeuse for metrics visualization and dashboarding. Grafana connects to Prometheus
-            as its primary data source, providing rich, interactive dashboards for monitoring the entire homelab infrastructure.
-            The UI enables real-time monitoring, historical analysis, and alerting from a single pane of glass.
-          </p>
-          <p>
-            <strong>Deployment:</strong> Docker container accessible on port 3020 (mapped from container port 3000).
-            The instance is integrated with my private DNS zone and runs with <code>restart: unless-stopped</code> for reliability.
-            Grafana uses a local volume for dashboard configurations and SQLite for user/session storage.
-          </p>
-          <p>
-            <strong>Dashboards:</strong> I maintain dashboards for infrastructure health (CPU, memory, disk, network),
-            service status (MongoDB, GitLab, containerized apps), and application metrics (AI model performance, Story Universe activity).
-            Dashboards are version-controlled and can be exported/imported for backup.
-          </p>
-          <p>
-            <strong>Alerting:</strong> Grafana supports alert rules based on Prometheus queries, with notifications
-            routed to appropriate channels. This enables proactive monitoring of resource exhaustion, service degradation,
-            and anomalous behavior across the homelab stack.
-          </p>
-          <p style="font-size:0.9em;color:#b5e48c;margin-top:0.6em;">
-            <strong>Why self-hosted Grafana:</strong> Local dashboarding gives me complete control over observability
-            without relying on external SaaS platforms. I get unlimited dashboards, custom plugins, and the ability
-            to visualize any metric from Prometheus &mdash; all running on hardware I control. It transforms
-            raw metrics into actionable insights for infrastructure management.
+            <strong>Why it&rsquo;s wired in this way:</strong> the point of self-hosting isn&rsquo;t the
+            existence of these services &mdash; SaaS versions exist and are fine. The point is
+            <em>recoverability</em>. The <code>recoveryplan</code> tree at the root of this homelab can rebuild
+            this whole stack from compose files and secrets bundles in a single afternoon, with no vendor in the
+            loop. That&rsquo;s the property no hosted alternative gives you.
           </p>
         </article>
 
         <article class="card deep fade-in d2">
           <h3>Network Intelligence <span class="tag">discovery + enrichment + security</span></h3>
           <p>
-            This project unifies host discovery, metadata enrichment, and security scoring into one workflow. It correlates data from
-            scanning, DNS and device context to build a real network picture rather than isolated tool outputs. Why it matters: it turns
-            raw network data into decision-ready visibility for operations and hardening.
+            A discovery-and-correlation pipeline that turns raw network scans into a coherent picture of what&rsquo;s
+            actually on my network and how it&rsquo;s behaving. Most homelab setups end up with five separate tools
+            (nmap output here, DHCP leases there, an audit log somewhere else); this one joins them so a single
+            device shows up <em>once</em>, with everything any tool knows about it.
           </p>
-          <p style="font-size:0.9em;color:#b5e48c;margin-top:0.6em;">
-            <strong>Why it's a good project:</strong> It ties together host scanning, DNS, DHCP scraping, security auditing, and mesh peer status into one unified pipeline with a live dashboard. Most people use separate tools for each &mdash; this correlates them automatically.
+          <p>
+            <strong>What it joins.</strong> Active host scanning (open ports, services, banners), DNS records
+            pulled from BIND9, DHCP leases scraped from the router, security audit hits, and Netbird mesh peer
+            state &mdash; all keyed against the same device identity. Re-running a scan flags drift since the
+            last run: new hosts, disappeared services, unexpected ports, mesh peers that went dark.
+          </p>
+          <p>
+            <strong>Live dashboard.</strong> A web UI that shows the current correlated view, lets me drill from
+            one device into every record the pipeline has on it, and surfaces the difference between &ldquo;a new
+            device&rdquo; and &ldquo;an old device with new behavior&rdquo; &mdash; the distinction security
+            tooling exists to make.
           </p>
         </article>
 
@@ -1355,10 +1307,11 @@
             sysinfo script.
           </p>
           <p style="font-size:0.9em;color:#b5e48c;margin-top:0.6em;">
-            <strong>Why it&rsquo;s different:</strong> most system monitors use WMI or <code>/proc</code> and call
-            it done. This one has a custom WDM driver reading MSR registers and PCI config space directly &mdash;
-            the same approach commercial tools use, but written from scratch. Writing a kernel driver that loads
-            into Ring 0 is a fundamentally different level of work than calling an API.
+            <strong>What I&rsquo;m proud of here:</strong> most system monitors stop at WMI or
+            <code>/proc</code> and call it done. I wrote a custom WDM driver that reads MSR registers and PCI
+            config space directly &mdash; the same approach commercial tools use, but built from nothing. A
+            kernel driver that loads into Ring 0 is a fundamentally different level of work than calling an
+            API, and it&rsquo;s the part of this project that took me the longest to get right.
           </p>
         </article>
       </div>
@@ -1396,20 +1349,24 @@
             and exFAT driver.
           </p>
           <p style="font-size:0.9em;color:#b5e48c;margin-top:0.6em;">
-            <strong>Why it&rsquo;s different:</strong> not a bootloader someone called an OS. A real security
-            thesis &mdash; capability handles that can only attenuate &mdash; in the same direction as Fuchsia
-            and CHERI. Combined with a working TCP/IP stack, a window manager, ELF64 user programs in Ring 3
-            isolation, and IOAPIC-routed multicore. A working operating system built from nothing.
+            <strong>What I&rsquo;m proud of here:</strong> this isn&rsquo;t a bootloader I called an OS.
+            I started from a real security thesis &mdash; capability handles that can only attenuate, never
+            escalate &mdash; in the same direction Fuchsia and CHERI are going. On top of that I built a working
+            TCP/IP stack, a window manager, ELF64 user programs running in Ring 3 isolation, and IOAPIC-routed
+            multicore scheduling. It&rsquo;s the largest single thing I&rsquo;ve written, and every line of it
+            is mine.
           </p>
         </article>
 
         <article class="card deep fade-in d2">
           <h3>ComboServer <span class="tag">BGP + Steam forensic analytics</span></h3>
           <p>
-            A forensic-style analytics platform that correlates <strong>BGP internet routing events</strong> with
-            <strong>Steam gaming platform</strong> behavioral data &mdash; detecting patterns nobody else has
-            built tooling for. BGP outages causing player count drops, route leaks triggering latency spikes,
-            country-level shutdowns shifting review volumes.
+            An analytics platform that asks an unusual question: when the internet itself misbehaves &mdash; a
+            routing leak, an undersea cable cut, a country going offline &mdash; what happens to the people
+            playing video games on top of it? It correlates real-time BGP routing data with Steam behavioral data
+            (player counts, review volume, patch impact) to surface patterns nobody else has built tooling for:
+            BGP outages causing player-count drops, route leaks triggering latency spikes, country-level
+            shutdowns shifting review volumes.
           </p>
           <p>
             <strong>BGP side (10 features):</strong> real-time anomaly detection, hijack-vs-misconfiguration
@@ -1431,10 +1388,12 @@
             up intelligently after any downtime.
           </p>
           <p style="font-size:0.9em;color:#b5e48c;margin-top:0.6em;">
-            <strong>Why it&rsquo;s different:</strong> nobody builds this. BGP routing analysis and Steam
-            behavioral analytics exist separately &mdash; correlating them to detect how internet infrastructure
-            events affect gaming populations is original. The forensic framing (AS personality profiles, prefix
-            ghosting, review DNA fingerprinting) goes beyond dashboards into actual pattern analysis.
+            <strong>What I&rsquo;m proud of here:</strong> as far as I can tell, nobody else builds this. BGP
+            routing analysis and Steam behavioral analytics exist as separate disciplines &mdash; correlating
+            them to detect how internet infrastructure events ripple through gaming populations is the original
+            framing I went looking for and didn&rsquo;t find. The forensic side (AS personality profiles,
+            prefix ghosting, review DNA fingerprinting) is where it stops being a dashboard and starts being
+            actual pattern analysis.
           </p>
         </article>
 
@@ -1477,12 +1436,6 @@
             Bearer-token REST API. Seven secret types (logins, API keys, SSH keys, notes, certificates, cards,
             free-form), each with its own encrypted fields.
           </p>
-          <p style="font-size:0.9em;color:#b5e48c;margin-top:0.6em;">
-            <strong>Why it&rsquo;s a good project:</strong> the design started from a threat model, not from
-            &ldquo;let&rsquo;s encrypt some stuff.&rdquo; Right primitives, real cryptographic sharing,
-            post-quantum on-ramp, and the boring-but-essential deployment hygiene &mdash; production WSGI,
-            TLS-only, 2FA, rate limiting, audit logs, and zero credentials in the unit file.
-          </p>
         </article>
       </div>
 
@@ -1491,11 +1444,11 @@
         <article class="card deep fade-in">
           <h3>Halcity <span class="tag">city builder &mdash; Python + Pygame</span></h3>
           <p>
-            A full-featured city builder with a 150&times;100 procedural terrain world (grass, forest, water).
-            16 building types, each with subtypes: 5 power plants (Coal, Gas, Nuclear, Solar, Wind),
-            3 residential (House, Apartment, Villa), 3 commercial (Shop, Office, Mall),
-            3 industrial (Factory, Warehouse, Tech Lab), and 3 farm variants (Crop, Orchard, Ranch).
-            Buildings must connect to roads to function &mdash; roads auto-tile with smart joins (straight, corner, T-junction, crossroad).
+            A SimCity-style city builder I wrote from scratch in Python and Pygame. 150&times;100 procedural map
+            (grass, forest, water), 16 building types with subtypes &mdash; 5 power plants (Coal, Gas, Nuclear,
+            Solar, Wind), 3 residential, 3 commercial, 3 industrial, 3 farms &mdash; and roads that auto-tile at
+            intersections with smart joins (straight, corner, T-junction, crossroad). Buildings have to connect
+            to a road to function.
           </p>
           <p>
             The underground layer (Tab toggle) lets you lay water pipes and sewer pipes with a 4-tile Manhattan coverage radius.
@@ -1512,9 +1465,6 @@
             <code>game.py</code> (main loop + world gen), <code>renderer.py</code> (map + UI),
             <code>game_logic.py</code> (economy + events), <code>sprites.py</code> (pixel art),
             <code>constants.py</code> (data), <code>ui.py</code> (widgets).
-          </p>
-          <p style="font-size:0.9em;color:#b5e48c;margin-top:0.6em;">
-            <strong>Why it's a good project:</strong> City builders look simple but the economy simulation underneath is a real systems problem &mdash; interconnected resources with feedback loops, threshold events, and cascading failures. This one models population, jobs, food, energy, money, pollution, happiness, water, and sewage as a coupled system, not independent counters.
           </p>
         </article>
 
@@ -1571,9 +1521,6 @@
             Every step is recorded by <code>borg_instrument.py</code> as JSONL telemetry for post-mortem analysis.
             A partial Godot 4 port exists in <code>godot_version/</code>.
           </p>
-          <p style="font-size:0.9em;color:#b5e48c;margin-top:0.6em;">
-            <strong>Why it's different:</strong> Four iterations of the same game is the interesting part &mdash; each one rebuilt to fix what the last got wrong. The final version has a fully autonomous AI player (Borg) with goal-stack planning, oscillation detection, and JSONL telemetry for post-mortem analysis. That's not gameplay modding; it's building an AI agent from scratch.
-          </p>
         </article>
 
         <article class="card deep fade-in d3">
@@ -1592,9 +1539,6 @@
           <p>
             A parallel <strong>Godot 4 port</strong> is in progress with GDScript reimplementations of the game data,
             state management, and core scenes (main menu, character creation, game world).
-          </p>
-          <p style="font-size:0.9em;color:#b5e48c;margin-top:0.6em;">
-            <strong>Why it's a good project:</strong> Building an RPG with 10 races, 5 classes, and interlocking systems (combat, skills, quests, dialogue, inventory, progression) in vanilla HTML/CSS/JS &mdash; no React, no engine &mdash; forces you to manage all the state and rendering yourself. The Godot port proves the design transfers to a real game engine.
           </p>
         </article>
       </div>
@@ -1668,7 +1612,7 @@
         <a href="https://www.guywithbeer.net/" target="_blank" rel="noopener noreferrer">GuyWithBeer</a>
         <a href="https://www.shopmom.net/" target="_blank" rel="noopener noreferrer">ShopMom</a>
       </div>
-      <div class="footer-meta">Updated May 2026</div>
+      <div class="footer-meta">Updated 2026-05-07 23:30 EDT</div>
     </footer>
   </main>
 </body>
