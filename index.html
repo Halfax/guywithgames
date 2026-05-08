@@ -1235,8 +1235,13 @@
             Continue.dev, and my own VSCode extension on the same codebase. Each has its own
             per-conversation working memory &mdash; Claude Code&rsquo;s auto-memory in
             <code>~/.claude/projects/</code>, my extension&rsquo;s session JSON in
-            <code>~/.halfax-sessions/</code>, Cascade&rsquo;s project memory. <code>DECISIONS.md</code> is
-            the common ground that any of them can read because it&rsquo;s just plaintext at the root.
+            <code>~/.halfax-sessions/</code>, Cascade&rsquo;s project memory. There&rsquo;s no universal
+            convention for project-root rule files in 2026, so I cover the major ones with symlinks: the
+            same file is reachable as <code>DECISIONS.md</code>, <code>.cursorrules</code> (Cursor),
+            <code>AGENTS.md</code> (Windsurf and a growing community standard), and <code>CLAUDE.md</code>
+            (Anthropic). Each tool finds its own convention; I write to one source of truth in git.
+            <em>Plaintext at the root</em> only matters if each tool actually picks it up, and the symlinks
+            are what make that real.
           </p>
           <p>
             <strong>The promote-to-durable rule.</strong> When an assistant learns something load-bearing
