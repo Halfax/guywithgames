@@ -680,7 +680,7 @@
         <a href="#hardware">Hardware</a>
         <a href="#network">Network</a>
         <a href="#projects">Projects</a>
-        <a href="https://www.guywithgames.com/universe" target="_blank" rel="noopener noreferrer">Universe</a>
+        <a href="#projects">Story Universe</a>
         <a href="#links">Links</a>
       </nav>
     </div>
@@ -690,7 +690,7 @@
     <div class="top-link-strip-inner hero-links" aria-label="Top project links">
       <a class="quick-btn ai" href="http://gamer.guywithgames.com:8080/" target="_blank" rel="noopener noreferrer">Launch Halfax AI Chat</a>
       <a class="quick-btn photo" href="https://gamer.guywithgames.com:5000/" target="_blank" rel="noopener noreferrer">Photo Upload Server</a>
-      <a class="quick-btn story" href="https://www.guywithgames.com/universe" target="_blank" rel="noopener noreferrer">Story Universe</a>
+      <a class="quick-btn story" href="#projects">Story Universe</a>
       <a class="quick-btn main" href="https://www.guywithbeer.net/" target="_blank" rel="noopener noreferrer">GuyWithBeer</a>
       <a class="quick-btn shop" href="https://www.shopmom.net/" target="_blank" rel="noopener noreferrer">ShopMom</a>
     </div>
@@ -735,7 +735,7 @@
           <div class="stat-grid">
             <div class="stat"><div class="n">5</div><div class="k">Hosts I run</div></div>
             <div class="stat"><div class="n">2</div><div class="k">LLMs on my iGPU</div></div>
-            <div class="stat"><div class="n">413k</div><div class="k">Lines of HalfaxOS</div></div>
+            <div class="stat"><div class="n">1</div><div class="k">OS I&rsquo;m writing from scratch</div></div>
             <div class="stat"><div class="n">0</div><div class="k">Cloud LLMs in the loop</div></div>
           </div>
           <div style="display:flex; gap:1rem; margin-top:1.2rem; justify-content:center;">
@@ -1034,8 +1034,9 @@
             AMD Strix Halo&rsquo;s <strong>64&nbsp;GiB UMA VRAM</strong> via Vulkan, with ~12&nbsp;GiB headroom
             on top &mdash; the ROCm/HIP path is broken on this GPU until 7.10+ ships, so I built around that.
             Models load largest-first to minimize fragmentation. Each runs as a supervised
-            <code>llama-server</code> child process &mdash; if one crashes, a watchdog thread restarts it within
-            30 seconds; per request I can target a specific model or let the API auto-failover to the next
+            <code>llama-server</code> child process &mdash; if one crashes, a watchdog thread polls every
+            10 seconds and restarts the dead child as soon as it&rsquo;s detected; per request I can target
+            a specific model or let the API auto-failover to the next
             available.
           </p>
           <p>
@@ -1104,15 +1105,14 @@
             write fails instead of clobbering my work.
           </p>
           <p>
-            <strong>Skills, hooks, and memory &mdash; all file-resident.</strong>
-            <code>/remember</code> writes to a CORE file always loaded into chat plus an embedding-searched
-            archive auto-injected per turn. Skills are markdown files in <code>~/.halfax/skills/</code> with a
-            tiny frontmatter (<code>name</code> / <code>description</code> / <code>mode</code>) &mdash; they
-            appear instantly as slash commands with a popover palette in the composer. Lifecycle hooks
-            (<code>on-session-start</code>, <code>on-tool-call</code>, <code>on-stop</code>) run shell commands
-            of my choice with structured event variables. Self-update pulls a new VSIX from my homelab and
-            installs it through <code>workbench.extensions.installExtension</code> &mdash; no marketplace, no
-            update server, no vendor in the loop.
+            <strong>Skills, hooks, and self-update &mdash; all file-resident.</strong>
+            Skills are markdown files in <code>~/.halfax/skills/</code> with a tiny frontmatter
+            (<code>name</code> / <code>description</code> / <code>mode</code>) &mdash; they appear instantly
+            as slash commands with a popover palette in the composer. Lifecycle hooks
+            (<code>on-session-start</code>, <code>on-tool-call</code>, <code>on-stop</code>) run shell
+            commands of my choice with structured event variables. Self-update pulls a new VSIX from my
+            homelab and installs it through <code>workbench.extensions.installExtension</code> &mdash; no
+            marketplace, no update server, no vendor in the loop.
           </p>
           <p>
             <strong>How it differs from Copilot, Cursor, and Cascade.</strong> Those three send every keystroke
@@ -1184,8 +1184,8 @@
           <p>
             The other half of the bridge: a Model Context Protocol server that gives any MCP-capable client
             (my own VSCode extension, Windsurf Cascade, Continue.dev) direct access to the Halfax AI stack
-            &mdash; inference, memory, file operations, code analysis, autonomous task execution.
-            <strong>30+ tools</strong>, all running against my hardware.
+            &mdash; inference, memory, file operations, code analysis. <strong>49 tools</strong> registered
+            against my hardware.
           </p>
           <p>
             <strong>Inference and code.</strong> Per-model targeting (<code>lm1</code>, <code>lm2</code>,
@@ -1205,14 +1205,11 @@
             I tell it about.
           </p>
           <p>
-            <strong>Sessions and an autonomous task runner.</strong> File-backed JSON sessions with a
-            reserved-key namespace, automatic trimming above 80% capacity, tool-execution logging (last 200
-            entries), and archive-after-N-days &mdash; the API server auto-injects a session context block
-            whenever a <code>session_id</code> is passed. <code>task_create</code> / <code>task_execute</code>
-            (synchronously or with <code>async_run=true</code> in a background thread) / <code>task_status</code>
-            / <code>task_cancel</code> / <code>task_resume</code>. Same six-state FSM as the VSCode agent, but
-            persisted server-side so any client picks up the same state. A tool whitelist blocks recursive task
-            creation, and consecutive-error thresholds pause cleanly into <em>awaiting_user</em>.
+            <strong>File-backed sessions.</strong> JSON sessions with a reserved-key namespace, automatic
+            trimming above 80% capacity, tool-execution logging (last 200 entries), and archive-after-N-days
+            &mdash; the API server auto-injects a session context block whenever a <code>session_id</code>
+            is passed. The autonomous task FSM has been hoisted out of this server and into my VSCode
+            extension; this MCP now focuses on the inference, file-ops, and analysis surface.
           </p>
         </article>
 
@@ -1301,7 +1298,7 @@
             are still available.
           </p>
           <p>
-            5,500-line Tkinter GUI with tabbed display across CPU, memory, storage, network, GPU, battery, and
+            Tkinter GUI with tabbed display across CPU, memory, storage, network, GPU, battery, and
             system. Cross-platform with full feature parity: Windows (kernel driver + WMI), Linux (sysfs +
             <code>dmidecode</code>), Raspberry Pi (device tree). Closer to HWiNFO than to a typical Python
             sysinfo script.
@@ -1321,10 +1318,9 @@
         <article class="card deep fade-in">
           <h3>HalfaxOS <span class="tag">bare-metal x86_64 OS &mdash; from scratch</span></h3>
           <p>
-            A 64-bit capability-based operating system written entirely from scratch in C and x86_64 Assembly.
-            No Linux, no BSD, no borrowed kernel code &mdash; every line is original. About
-            <strong>413k lines</strong> of hand-written source. Boots via GRUB2 Multiboot2 on both VMware
-            Workstation and physical hardware.
+            A 64-bit capability-based operating system I&rsquo;m writing entirely from scratch in C and
+            x86_64 Assembly. No Linux, no BSD, no borrowed kernel code &mdash; every line is original.
+            Boots via GRUB2 Multiboot2 on both VMware Workstation and physical hardware.
           </p>
           <p>
             <strong>Capability security model.</strong> Replaces UNIX file descriptors with typed, permission-
@@ -1382,10 +1378,12 @@
             classification, review DNA fingerprinting that matches similar reviewers across games.
           </p>
           <p>
-            <strong>Hybrid storage and ingest.</strong> TimescaleDB for time-series, MongoDB for documents.
-            RIPE/RouteViews BGP feeds in real time. WebSocket dashboard, REST API, NLP analysis, geographic
-            mapping. Auto-bootstrap pulls 4 weeks of BGP and 60 days of Steam history on first run, then catches
-            up intelligently after any downtime.
+            <strong>Storage and ingest.</strong> TimescaleDB for the time-series side, with a state manager
+            that auto-saves every 5 minutes. RIPE RIS Live WebSocket for real-time BGP, RouteViews MRT dumps
+            for historical replay. WebSocket dashboard, REST API, TextBlob sentiment analysis, geographic
+            mapping. Auto-bootstrap pulls 4 weeks of BGP (~2,800 files at 15-min intervals) and 60 days of
+            Steam history on first run, then catches up intelligently after any downtime &mdash; BGP if the
+            gap is over an hour, Steam if over six.
           </p>
           <p style="font-size:0.9em;color:#b5e48c;margin-top:0.6em;">
             <strong>What I&rsquo;m proud of here:</strong> as far as I can tell, nobody else builds this. BGP
@@ -1461,7 +1459,7 @@
             Cursor-anchored zoom, right-click pan, hover tooltips, and full save/load.
           </p>
           <p>
-            Evolved from a 45,000-line Tkinter prototype into a clean 6-module Pygame architecture:
+            Pygame rewrite of an earlier Tkinter prototype, organized into six modules:
             <code>game.py</code> (main loop + world gen), <code>renderer.py</code> (map + UI),
             <code>game_logic.py</code> (economy + events), <code>sprites.py</code> (pixel art),
             <code>constants.py</code> (data), <code>ui.py</code> (widgets).
@@ -1478,7 +1476,6 @@
               <tr style="border-bottom:2px solid rgba(255,255,255,0.15);text-align:left;">
                 <th style="padding:6px 8px;">Version</th>
                 <th style="padding:6px 8px;">UI</th>
-                <th style="padding:6px 8px;">Size</th>
                 <th style="padding:6px 8px;">Key Addition</th>
               </tr>
             </thead>
@@ -1486,39 +1483,36 @@
               <tr style="border-bottom:1px solid rgba(255,255,255,0.08);">
                 <td style="padding:6px 8px;"><strong>mybad</strong></td>
                 <td style="padding:6px 8px;">PyQt6 GUI</td>
-                <td style="padding:6px 8px;">~107k</td>
                 <td style="padding:6px 8px;">First playable: dungeon gen, combat, inventory, town, save/load</td>
               </tr>
               <tr style="border-bottom:1px solid rgba(255,255,255,0.08);">
                 <td style="padding:6px 8px;"><strong>cmdmybad</strong></td>
                 <td style="padding:6px 8px;">Terminal / curses</td>
-                <td style="padding:6px 8px;">~97k</td>
                 <td style="padding:6px 8px;">Stripped to pure CLI; same engine, keyboard-only input</td>
               </tr>
               <tr style="border-bottom:1px solid rgba(255,255,255,0.08);">
                 <td style="padding:6px 8px;"><strong>myband</strong></td>
                 <td style="padding:6px 8px;">Terminal</td>
-                <td style="padding:6px 8px;">~3k</td>
                 <td style="padding:6px 8px;">CSV-driven item/monster data experiment (Angband-inspired)</td>
               </tr>
               <tr>
                 <td style="padding:6px 8px;"><strong>newmybad</strong></td>
                 <td style="padding:6px 8px;">Tkinter GUI</td>
-                <td style="padding:6px 8px;">~370k</td>
                 <td style="padding:6px 8px;">Full rewrite: magic system, Borg AI agent, telemetry, Godot port</td>
               </tr>
             </tbody>
           </table>
           <p>
-            <strong>newmybad</strong> is the current version. It adds a magic system, expanded combat (13k fight.py),
-            a resource loader with JSON data files for weapons, armor, potions, scrolls, wands, jewelry, and monsters,
-            and a full autonomous AI agent:
+            <strong>newmybad</strong> is the current version. It adds a magic system, expanded combat in
+            <code>fight.py</code>, a resource loader with JSON data files for weapons, armor, potions,
+            scrolls, wands, jewelry, and monsters, and a full autonomous AI agent:
           </p>
           <p>
-            The <strong>Borg AI</strong> (<code>borglib.py</code> 61k + <code>borg_policy.py</code> 80k) plays the game autonomously
-            using a goal-stack architecture (LIFO priorities + FIFO deferred goals), BFS pathfinding, stuck/oscillation detection and recovery,
-            and priority-weighted targeting (monsters 40, stairs 30, healing 25, items 20, equip 15, explore 5).
-            Every step is recorded by <code>borg_instrument.py</code> as JSONL telemetry for post-mortem analysis.
+            The <strong>Borg AI</strong> (<code>borglib.py</code> + <code>borg_policy.py</code>) plays
+            the game autonomously using a goal-stack architecture (LIFO priorities + FIFO deferred
+            goals), BFS pathfinding, stuck/oscillation detection and recovery, and priority-weighted
+            targeting (monsters 40, stairs 30, healing 25, items 20, equip 15, explore 5). Every step is
+            recorded by <code>borg_instrument.py</code> as JSONL telemetry for post-mortem analysis.
             A partial Godot 4 port exists in <code>godot_version/</code>.
           </p>
         </article>
@@ -1607,7 +1601,7 @@
         <p>Story Universe, Halfax AI, homelab engineering, and game-focused builds collected in one place.</p>
       </div>
       <div class="footer-links" aria-label="Footer links">
-        <a href="https://www.guywithgames.com/universe" target="_blank" rel="noopener noreferrer">Story Universe</a>
+        <a href="#projects">Story Universe</a>
         <a href="http://gamer.guywithgames.com:8080/" target="_blank" rel="noopener noreferrer">Halfax AI</a>
         <a href="https://www.guywithbeer.net/" target="_blank" rel="noopener noreferrer">GuyWithBeer</a>
         <a href="https://www.shopmom.net/" target="_blank" rel="noopener noreferrer">ShopMom</a>
