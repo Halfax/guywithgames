@@ -753,33 +753,33 @@
     <section class="section" id="lab">
       <h2 class="fade-in">Home Lab Overview</h2>
       <p class="section-copy fade-in d2">
-        The lab combines one primary Linux server, a high-end gaming/development laptop, a Raspberry Pi utility node,
-        and cloud VPS infrastructure for public services and publishing. The stack supports web apps, email, media,
-        AI-assisted apps, and long-running project workflows.
+        Five hosts split by what each one&rsquo;s good at &mdash; one big Linux box for compute and AI, a
+        gaming/dev laptop for daily-driver work, a Raspberry Pi for the always-on stuff, and two Linode
+        VPSes for the public faces. They all talk to each other over the same private mesh.
       </p>
       <div class="lab-grid">
         <article class="card node fade-in">
           <h3>Betelgeuse <span class="role">Primary Linux host</span></h3>
           <ul>
-            <li>Core compute and orchestration host</li>
-            <li>Docker and lightweight Kubernetes workflows</li>
-            <li>Main backend for AI and platform services</li>
+            <li>Where the heavy work happens &mdash; LLM inference, container orchestration, GitLab, the canonical data</li>
+            <li>Strix Halo iGPU pulls double duty for the AI stack and the desktop, no discrete card</li>
+            <li>Most other things hang off this one, which is exactly why the recovery plan is so detailed</li>
           </ul>
         </article>
         <article class="card node fade-in d2">
           <h3>UYScuti <span class="role">Gaming + dev laptop</span></h3>
           <ul>
-            <li>Primary coding workstation</li>
-            <li>High-end GPU for gaming and creative experiments</li>
-            <li>Multi-tool development environment for daily builds</li>
+            <li>My daily driver &mdash; code, games, anything that wants a real keyboard and an RTX 5080</li>
+            <li>Some projects only run here (the kernel-driver telemetry, Hyper-V VMs, Windows-native experiments)</li>
+            <li>Doubles as the manual third-copy disaster-recovery surface for when both Linux machines are gone</li>
           </ul>
         </article>
         <article class="card node fade-in d3">
           <h3>hera-pi + Cloud <span class="role">Utility + public services</span></h3>
           <ul>
-            <li>Background services, automations, and helper apps</li>
-            <li>Public web hosting and proxy routes</li>
-            <li>Support for media and story-universe components</li>
+            <li>The Pi runs the always-on stuff &mdash; Chronicle Keeper for the Story Universe, the DDNS updater, the off-box backup target</li>
+            <li>Guy (Linode) hosts the public sites, mail, and the live World Browser; Shop is a secondary web host</li>
+            <li>All five hosts share the same Netbird mesh, so internal traffic stays internal even when machines are continents apart</li>
           </ul>
         </article>
       </div>
@@ -788,7 +788,8 @@
     <section class="section" id="hardware">
       <h2 class="fade-in">Hardware Highlights</h2>
       <p class="section-copy fade-in d2">
-        Hardware is central to a strong lab and development workflow. This is the current inventory I run across my environment.
+        What&rsquo;s actually on the rack (well, shelf and Linode dashboard). Specs not stories &mdash; the
+        why is in the project cards.
       </p>
       <div class="spec-grid">
         <article class="card spec-card fade-in">
@@ -853,17 +854,18 @@
     <section class="section" id="platforms">
       <h2 class="fade-in">Virtualization & Orchestration Stack</h2>
       <p class="section-copy fade-in d2">
-        This environment uses a mixed platform strategy so each workload runs on the right abstraction level: containers for portability,
-        orchestration for multi-service systems, and VMs for full OS isolation.
+        Different workloads want different abstractions &mdash; containers for the everyday stuff, full VMs
+        when something needs its own kernel, and a Kubernetes cluster on standby for when a project actually
+        earns the complexity.
       </p>
       <div class="catalog-grid">
         <article class="card catalog fade-in">
           <h3>Docker <span class="count">container runtime</span></h3>
           <ul>
-            <li>Supports fast deployment of web apps, APIs, tools, and utility services.</li>
-            <li>How: Images package dependencies once, then run consistently across hosts.</li>
-            <li>Why: Speeds iteration, simplifies updates, and reduces environment drift.</li>
-            <li>Best fit: Stateless apps, service wrappers, scheduled workers, and edge utilities.</li>
+            <li>Where almost everything on Betelgeuse lives &mdash; GitLab, the homepage dashboard, Portainer, SearXNG, the GitLab Runner.</li>
+            <li>Every image is pinned to a specific version. No <code>:latest</code> rolls; if a container restarts in the middle of the night, it comes back exactly the same.</li>
+            <li>Every <code>docker-compose.yml</code> is captured in the recoveryplan tree, so a clean rebuild reproduces the fleet by checking out a directory and running <code>docker compose up -d</code> in each subdir.</li>
+            <li>If a box dies tomorrow, every container can be back up by tomorrow morning.</li>
           </ul>
         </article>
 
@@ -880,20 +882,18 @@
         <article class="card catalog fade-in d2">
           <h3>Hyper-V <span class="count">windows virtualization</span></h3>
           <ul>
-            <li>Supports full guest operating systems on the Windows workstation.</li>
-            <li>How: Native hypervisor integration provides virtual switching, isolation, and snapshots/checkpoints.</li>
-            <li>Why: Safe testing for OS-level changes without risking the primary host setup.</li>
-            <li>Best fit: Windows-native lab scenarios, network simulation, and system behavior testing.</li>
+            <li>Comes with Windows Pro, so it&rsquo;s already there &mdash; mostly used for spinning up clean Windows VMs to test installer behavior on a fresh OS without polluting my actual workstation.</li>
+            <li>Native virtual switching and snapshot support, so trial-and-error is cheap.</li>
+            <li>Most of my VM time is spent in VMware Workstation instead, but Hyper-V is the right tool for Windows-native scenarios where I don&rsquo;t want a third hypervisor in the mix.</li>
           </ul>
         </article>
 
         <article class="card catalog fade-in d3">
           <h3>VMware Workstation <span class="count">cross-os VM lab</span></h3>
           <ul>
-            <li>Supports parallel Linux VM environments for toolchains and integration tests.</li>
-            <li>How: Snapshot-driven workflows enable quick rollback and repeatable test states.</li>
-            <li>Why: Great for controlled experiments, compatibility validation, and sandboxing.</li>
-            <li>Best fit: Multi-node simulations, distro comparisons, and pre-deployment verification.</li>
+            <li>Where I run Linux VMs that need their own kernel &mdash; cross-distro toolchain testing, kernel-module experiments, distro comparisons.</li>
+            <li>Snapshots are the killer feature. I can break a VM badly and roll it back in seconds; that&rsquo;s the right cost for &ldquo;let me try this thing&rdquo; experiments.</li>
+            <li>For multi-node integration tests where I need real network behavior between nodes, this is what I reach for instead of containers.</li>
           </ul>
         </article>
       </div>
@@ -902,47 +902,44 @@
     <section class="section" id="network">
       <h2 class="fade-in">Network Stack</h2>
       <p class="section-copy fade-in d2">
-        The network layer is built around private service discovery, encrypted cross-host transport, and clear role boundaries between
-        local hardware and cloud nodes.
+        Two layers that do most of the work: a private DNS zone that gives every service a stable name, and
+        a mesh VPN that lets the hosts talk to each other without anything being on the public internet.
       </p>
       <div class="catalog-grid">
         <article class="card catalog fade-in">
           <h3>BIND9 Implementation <span class="count">private DNS authority</span></h3>
           <ul>
-            <li>BIND9 serves as the authoritative resolver for my private lab zone.</li>
-            <li>How: Internal records map service names to private endpoints for predictable routing.</li>
-            <li>Why: Stable hostnames let projects move between nodes without rewriting app configs.</li>
-            <li>Result: Cleaner operations, easier service migrations, and less hardcoded addressing.</li>
+            <li>I run an authoritative private zone (<code>lab.guywithbeer.com</code>) on Betelgeuse so every internal service has a real name.</li>
+            <li>Things like <code>keysecrets.lab.guywithbeer.com</code>, <code>chronicle-keeper.lab.guywithbeer.com</code>, <code>betelgeuse.lab.guywithbeer.com</code> resolve from any host on the mesh.</li>
+            <li>If I move a service to a different host, I update one DNS record and the rest of the lab figures it out &mdash; nothing is hardcoded against an IP.</li>
           </ul>
         </article>
 
         <article class="card catalog fade-in d2">
           <h3>NetBird VPN Usage <span class="count">wireguard mesh overlay</span></h3>
           <ul>
-            <li>NetBird provides encrypted peer-to-peer connectivity between home lab nodes and VPS hosts.</li>
-            <li>How: A mesh overlay makes each machine reachable as if on one secure private fabric.</li>
-            <li>Why: Services can communicate directly without exposing internal APIs to the public internet.</li>
-            <li>Result: Safe cross-site traffic for orchestration, data sync, and service-to-service requests.</li>
+            <li>NetBird is a managed WireGuard mesh. Every host gets a <code>100.87.x.x</code> address, and they all reach each other directly &mdash; no central VPN gateway, no NAT-busting, no dynamic-DNS gymnastics.</li>
+            <li>SSH, MongoDB, the KeySecrets API, the Story Universe pub/sub channel &mdash; all reachable across hosts as if they were on the same LAN, but none of them touch the public internet.</li>
+            <li>The home machines (Betelgeuse + UYScuti + hera-pi), the two Linode VPSes, and the laptop wherever it is &mdash; one flat private fabric.</li>
           </ul>
         </article>
 
         <article class="card catalog fade-in d2">
           <h3>Hardware Interaction Model <span class="count">right workload, right node</span></h3>
           <ul>
-            <li>Betelgeuse handles heavy compute, model inference, and orchestration.</li>
-            <li>UYScuti focuses on development, game builds, and workstation-class experiments.</li>
-            <li>hera-pi runs lightweight utility services and always-on support tasks.</li>
-            <li>Cloud hosts provide public entry points while private internals stay on the mesh.</li>
+            <li>Each host does what its hardware is good at, not what&rsquo;s convenient at the moment.</li>
+            <li>Heavy compute on Betelgeuse, daily-driver work on UYScuti, always-on lightweight stuff on the Pi (where idle power draw matters), public entry points on the Linode VPSes (where uptime matters more than throughput).</li>
+            <li>The Story Universe is the canonical example: Pi holds the canonical state because it never goes down, the big box generates events because it has the GPU, the VPS renders the public dashboard because it&rsquo;s reachable from the internet.</li>
           </ul>
         </article>
 
         <article class="card catalog fade-in d3">
           <h3>How It Supports Projects <span class="count">design rationale</span></h3>
           <ul>
-            <li>Named DNS services + mesh routing make multi-node projects composable and maintainable.</li>
-            <li>Container and VM platforms can consume the same internal network conventions.</li>
-            <li>Public and private planes stay separated: internet-facing UX, private backend control paths.</li>
-            <li>This architecture supports AI apps, story systems, monitoring tools, and game services together.</li>
+            <li>Stable DNS + mesh routing means a project doesn&rsquo;t care which host it runs on &mdash; it just needs the name and the port.</li>
+            <li>The same conventions work whether the workload is in a container, a VM, or running directly on the host.</li>
+            <li>Public-facing entrypoints stay on the Linode VPSes; private backend traffic stays on the mesh and never touches the internet.</li>
+            <li>Adding a new project is mostly &ldquo;edit one zone file, write one compose file&rdquo; &mdash; the networking layer stays out of the way.</li>
           </ul>
         </article>
 
@@ -1223,7 +1220,7 @@
             I&rsquo;m running today.
           </p>
           <p>
-            <strong><code>DECISIONS.md</code> &mdash; load-bearing rules.</strong> 11 entries today, each in
+            <strong><code>DECISIONS.md</code> &mdash; load-bearing rules.</strong> 16 entries today, each in
             the ADR shape: <em>rule</em>, <em>why</em> (the empirical incident or evidence that drove it),
             <em>how to verify or apply</em>. The file is symlinked into a <code>betelgeuse-docs</code> git
             repo, off-boxed nightly via the Tier-A encrypted archive (the same one the rest of my stack
@@ -1318,9 +1315,20 @@
             include) at 02:30. The Tier-A encrypted archive (AES-256-CBC + PBKDF2, 30-day retention) twice
             daily at 02:45 and 14:45 &mdash; three local mirrors on three different paths, off-box rsync to
             hera-pi (separate hardware, separate disk, separate room) at 03:15. The recoveryplan tree
-            itself off-boxes too, so post-disaster the runbook isn&rsquo;t dying with the host. The Tier-A
-            passphrase lives in a file that&rsquo;s also documented inside the off-boxed runbook &mdash;
-            recoverable from hera-pi alone, with no Betelgeuse-only knowledge needed.
+            itself off-boxes too, so post-disaster the runbook isn&rsquo;t dying with the host. A manual
+            third-copy snapshot lives on my Windows workstation at <code>C:\Users\&hellip;\RECOVERY\</code>
+            for the &ldquo;both Linux machines gone&rdquo; scenario &mdash; refreshed by hand when the laptop&rsquo;s up,
+            since I can&rsquo;t put it on the cron.
+          </p>
+          <p>
+            <strong>The bootstrap chain.</strong> The Tier-A archive doesn&rsquo;t just carry SSH keys and TLS;
+            it also captures the KeySecrets server&rsquo;s own bootstrap (<code>/etc/keysecrets.env</code>) and
+            the <code>kss_</code> auth tokens that <code>halfax-secrets</code> uses to call the API. So
+            recovery from cold metal goes: decrypt archive &rarr; restore those files &rarr; <code>mongorestore</code>
+            using the URI from <code>keysecrets.env</code> &rarr; start the KeySecrets server &rarr;
+            <code>ks-get</code> works &rarr; clone projects from GitLab using the PAT pulled from the freshly-up
+            vault. Each step uses what the previous step just made available, no Betelgeuse-only knowledge needed.
+            The Tier-A passphrase (the keystone) lives on three machines and in the off-boxed runbook itself.
           </p>
           <p>
             <strong>Drift-detect runs paired with the chain.</strong> 03:30 (45 min after the morning A1)
@@ -1506,13 +1514,13 @@
             passwords.
           </p>
           <p>
-            <strong>Per-recipient cryptographic sharing.</strong> Sharing is the part most password managers get
-            wrong. KeySecrets does it cryptographically: every secret has its own data key, and that key is
-            sealed individually to each recipient&rsquo;s public key
-            (<code>X25519</code> + libsodium <code>SealedBox</code>). Revoking access is just deleting one
-            wrapped key &mdash; no re-encryption, no key churn, no leakage. There&rsquo;s also a hybrid
-            <strong>post-quantum</strong> mode (<code>X25519 + ML-KEM-768</code>) ready for when classical
-            elliptic-curve crypto stops being safe.
+            <strong>Per-recipient cryptographic sharing.</strong> Sharing is the part most password managers
+            get wrong. I do it cryptographically: every secret has its own data key, and that key is sealed
+            individually to each recipient. Revoking access is one wrapped-key delete &mdash; no re-encryption,
+            no key churn, no leakage. As of this year the wrap is <strong>hybrid post-quantum by default</strong>
+            (<code>X25519 + ML-KEM-768</code> AND-construction, KSH1 wire format) &mdash; the server won&rsquo;t even
+            start without ML-KEM available. The older <code>SealedBox</code> path is read-only now, kept just so
+            legacy entries are still openable.
           </p>
           <p>
             <strong>Conservative modern crypto stack.</strong> <code>Argon2id</code> for password hashing
@@ -1521,10 +1529,12 @@
             the input that derives a session key, in memory, for the duration of a session.
           </p>
           <p>
-            <strong>Login + 2FA.</strong> Master password plus optional <strong>TOTP two-factor</strong> from any
-            standard authenticator app. The 2FA secret itself is encrypted with a key derived from the
-            user&rsquo;s identity key, so even a stolen database doesn&rsquo;t leak working codes. Failed logins
-            are rate-limited; every register / login / 2FA / share event lands in an audit log.
+            <strong>Login + 2FA.</strong> Master password plus <strong>mandatory TOTP</strong> from any standard
+            authenticator app &mdash; new accounts start in a <code>pending_2fa</code> state and can&rsquo;t do
+            anything except finish enrollment until they confirm a valid code. The 2FA secret itself is
+            encrypted with a key derived from the user&rsquo;s identity key, so even a stolen database
+            doesn&rsquo;t leak working codes. Failed logins are rate-limited; every register / login / 2FA /
+            share event lands in an audit log.
           </p>
           <p>
             <strong>Production hygiene most homelab projects skip.</strong> Python/Flask app fronted by
@@ -1535,6 +1545,19 @@
             Secure/HttpOnly/SameSite cookies. Three interfaces &mdash; web UI, Click-based CLI, documented
             Bearer-token REST API. Seven secret types (logins, API keys, SSH keys, notes, certificates, cards,
             free-form), each with its own encrypted fields.
+          </p>
+          <p>
+            <strong>The consumption story &mdash; <code>halfax-secrets</code>.</strong> A vault is just a website
+            if my programs still carry <code>.env</code> files. So I wrote a tiny Python lib + <code>ks-get</code>
+            CLI that fetches credentials over the API at runtime: <code>get_password("MongoDB &mdash; myHalfax&hellip;")</code>
+            and the password lives only in process memory, never on disk. Per-host service tokens
+            (long-lived <code>kss_</code> bearers, role-separated <code>read</code> vs <code>change</code>) authenticate
+            unattended scripts &mdash; the human master password is never in a script&rsquo;s environment. Migrating
+            the fleet (HF tokens on the AI host, the Mongo backup credential, the Namecheap dynamic-DNS hash on
+            hera-pi, SMTP passwords on two hosts) means there are now exactly five named files on disk that still
+            hold plaintext credentials &mdash; the bootstrap files the vault needs before it can serve anything else,
+            and the trust-anchor tokens themselves. Everything else fetches at runtime. That&rsquo;s the line I wanted
+            to draw, and now it&rsquo;s actually drawn.
           </p>
         </article>
       </div>
