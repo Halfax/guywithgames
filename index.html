@@ -1592,53 +1592,40 @@
         </article>
 
         <article class="card deep fade-in d2">
-          <h3>Roguelike Dungeon Crawlers <span class="tag">4 iterations &mdash; mybad &rarr; newmybad</span></h3>
+          <h3>Halfax Dungeons <span class="tag">Godot 4 roguelike (working title; repo: <code>newmybad</code>)</span></h3>
           <p>
-            A roguelike dungeon crawler that evolved through four major iterations, each building on the last:
-          </p>
-          <table style="width:100%;border-collapse:collapse;margin:0.8em 0;font-size:0.92em;">
-            <thead>
-              <tr style="border-bottom:2px solid rgba(255,255,255,0.15);text-align:left;">
-                <th style="padding:6px 8px;">Version</th>
-                <th style="padding:6px 8px;">UI</th>
-                <th style="padding:6px 8px;">Key Addition</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr style="border-bottom:1px solid rgba(255,255,255,0.08);">
-                <td style="padding:6px 8px;"><strong>mybad</strong></td>
-                <td style="padding:6px 8px;">PyQt6 GUI</td>
-                <td style="padding:6px 8px;">First playable: dungeon gen, combat, inventory, town, save/load</td>
-              </tr>
-              <tr style="border-bottom:1px solid rgba(255,255,255,0.08);">
-                <td style="padding:6px 8px;"><strong>cmdmybad</strong></td>
-                <td style="padding:6px 8px;">Terminal / curses</td>
-                <td style="padding:6px 8px;">Stripped to pure CLI; same engine, keyboard-only input</td>
-              </tr>
-              <tr style="border-bottom:1px solid rgba(255,255,255,0.08);">
-                <td style="padding:6px 8px;"><strong>myband</strong></td>
-                <td style="padding:6px 8px;">Terminal</td>
-                <td style="padding:6px 8px;">CSV-driven item/monster data experiment (Angband-inspired)</td>
-              </tr>
-              <tr>
-                <td style="padding:6px 8px;"><strong>newmybad</strong></td>
-                <td style="padding:6px 8px;">Tkinter GUI</td>
-                <td style="padding:6px 8px;">Full rewrite: magic system, Borg AI agent, telemetry, Godot port</td>
-              </tr>
-            </tbody>
-          </table>
-          <p>
-            <strong>newmybad</strong> is the current version. It adds a magic system, expanded combat in
-            <code>fight.py</code>, a resource loader with JSON data files for weapons, armor, potions,
-            scrolls, wands, jewelry, and monsters, and a full autonomous AI agent:
+            Self-rolled roguelike. Originally Python + Tkinter; the Godot 4 port is now the primary game.
+            Tile-based, ASCII-rendered, 100-level depth.
           </p>
           <p>
-            The <strong>Borg AI</strong> (<code>borglib.py</code> + <code>borg_policy.py</code>) plays
-            the game autonomously using a goal-stack architecture (LIFO priorities + FIFO deferred
-            goals), BFS pathfinding, stuck/oscillation detection and recovery, and priority-weighted
-            targeting (monsters 40, stairs 30, healing 25, items 20, equip 15, explore 5). Every step is
-            recorded by <code>borg_instrument.py</code> as JSONL telemetry for post-mortem analysis.
-            A partial Godot 4 port exists in <code>godot_version/</code>.
+            <strong>Mechanics built out:</strong> targeting cursor with keyboard + right-click for ranged
+            actions (zap wand / fire bow / throw item &mdash; shared framework); tunneling with
+            wall-health and mining weapons (port of an older Python branch); economy with starting gold,
+            monster gold drops, floor piles, and gem veins; 12-building town with 9 functional shops
+            (Weapons, Armor, Magic, Goods, Black Market, Inn, Temple, Bank, Home); buy/sell via the rich
+            inventory window; full scroll catalog (13 distinct effects) including pick-an-item prompts
+            for identify and enchant; ring two-slot equipping with three-ring swap prompt; save/load.
+          </p>
+          <p>
+            <strong>BORG autoplayer</strong> &mdash; autonomous agent used for smoke-testing.
+            Priority-chain architecture across 12 ordered slots: attack adjacent &rarr; pickup &rarr;
+            mine adjacent vein &rarr; equip-better &rarr; heal &rarr; hunt &rarr; route-to-treasure
+            &rarr; route-to-vein &rarr; town-pit-stop &rarr; descend &rarr; explore &rarr;
+            ascend-if-underleveled. BFS pathfinding with a <code>blocked_tiles</code> LRU cache,
+            BFS-to-adjacent for monster hunting, BFS-to-undiscovered for exploration. Economy-aware:
+            visits Goods to sell extras, Bank to deposit gold, Inn to heal &mdash; with per-arrival
+            flags so it doesn't ping a shop forever. Smoke run: 9000 turns, dies around depth 21,
+            level 27.
+          </p>
+          <p>
+            <strong>Influences:</strong> NetHack-style command keys (q/e/r/z/w/d), Angband-style depth
+            bands and rarity-weighted item placement, NetHack/Crawl-style food pacing.
+          </p>
+          <p>
+            <strong>Code shape:</strong> GDScript (Godot 4.6); 11 JSON resource files (weapons, armor,
+            potions, scrolls, wands, jewelry, food, holdable, ammo, gems, artifacts) plus monsters;
+            autoloaded <code>Config</code> and <code>GameData</code> singletons; headless test runner
+            with 11 cases plus the 9000-turn BORG smoke.
           </p>
         </article>
 
