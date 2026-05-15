@@ -1120,6 +1120,32 @@
             every destructive tool call hits a per-call permission prompt by default.
           </p>
         </article>
+
+        <article class="card deep fade-in d2">
+          <h3>PictureAI Image Generator <span class="tag">local image generation &mdash; FastAPI + Vulkan</span></h3>
+          <p>
+            A web-based image generator that runs entirely on the Linux server&rsquo;s integrated GPU.
+            It began as a Windows Tkinter app on the gaming laptop &mdash; CUDA, diffusers, SDXL only &mdash;
+            and this is a ground-up rebuild for the homelab&rsquo;s primary box: a FastAPI web UI on the LAN,
+            generation through <code>stable-diffusion.cpp</code> on the Vulkan backend, the same toolchain my
+            LLM stack already runs. No CUDA, no cloud, no account.
+          </p>
+          <p>
+            <strong>The model stays resident.</strong> A long-lived <code>sd-server</code> process keeps the
+            model in GPU memory across generations instead of reloading several gigabytes from disk every run;
+            switching models is the only thing that triggers a reload. It supports many open image-model
+            families &mdash; SDXL and its finetunes, the Flux line, SD3.5, Chroma, AuraFlow, HiDream &mdash;
+            with weights fetched on demand from a registry and a browsable model catalog built in.
+          </p>
+          <p>
+            <strong>Tuned for the integrated GPU.</strong> The APU shares system memory and is
+            memory-bandwidth-bound, so downloaded models are converted to a q8_0 quantization &mdash; roughly
+            halving per-step bandwidth for a sizable speedup at negligible quality cost &mdash; with flash
+            attention on by default. Picking a model auto-fills the sampling settings that suit its family,
+            generation progress streams live to the browser, and the whole thing runs as a systemd service
+            that hands the GPU back to the LLM stack on request.
+          </p>
+        </article>
       </div>
 
       <h3 class="project-category fade-in">Infrastructure &amp; Operations</h3>
@@ -1660,6 +1686,7 @@
             <li>Halfax Learning System</li>
             <li>ComboServer</li>
             <li>Halfax System Reporter</li>
+            <li>PictureAI Image Generator</li>
           </ul>
         </article>
         <article class="card catalog fade-in d2">
@@ -1669,7 +1696,6 @@
             <li>Chronicle Keeper</li>
             <li>Namescan / Network Scanner</li>
             <li>Photo Upload Server</li>
-            <li>Halfax Image Generator (PictureAI)</li>
             <li>Minecraft Server</li>
           </ul>
         </article>
