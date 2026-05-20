@@ -1466,11 +1466,18 @@
             whitelisted.
           </p>
           <p style="font-size:0.9em;color:#b5e48c;margin-top:0.6em;">
-            <strong>What I&rsquo;m proud of here:</strong> the checklist grew from what the tool taught
-            me, not from a security-checklist template. The HTTP&rarr;HTTPS redirect check and the
-            dev-server header check are in v2 because those <em>exact</em> problems happened in v1.
-            Each run is allowed to expand the next one &mdash; the audit improves itself instead of
-            staying the audit I wrote on day one.
+            <strong>What I&rsquo;m proud of here:</strong> I just wanted to have Tor in my network
+            &mdash; to see what I could do with it. Pointing it back at my own public surface from a
+            Tor exit ended up finding things I didn&rsquo;t know to look for: my own internal docs
+            said an nginx fronted the public AI endpoint, and there wasn&rsquo;t one; what was
+            actually facing the internet was a Flask dev server I&rsquo;d forgotten was a dev server,
+            running as root over plaintext. A Let&rsquo;s Encrypt cert had silently expired &mdash;
+            mail clients tolerate things browsers reject, so my own usage never caught it. On the
+            flip side, every service that was <em>supposed</em> to be private &mdash; the agent API,
+            Mongo, the vault, GitLab &mdash; refused from outside, on every face. The firewall design
+            isn&rsquo;t just aspiration in a doc; it works under live observation. A tool I built to
+            play with became the only vantage from which I could see my own stack the way the public
+            sees it.
           </p>
         </article>
 
