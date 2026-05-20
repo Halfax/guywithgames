@@ -1386,6 +1386,95 @@
         </article>
 
         <article class="card deep fade-in d2">
+          <h3>Homelab Tor Stack <span class="tag">SOCKS5 proxy + remote Tor Browser &mdash; Docker</span></h3>
+          <p>
+            Two Docker services in one Compose project: <code>tor-proxy</code> (a headless Tor daemon
+            exposing SOCKS5 on <code>:9050</code>) and <code>tor-browser</code> (Tor Browser running on
+            Xvnc, reachable from any LAN browser via noVNC on <code>:6080</code>). Both images are
+            built from source-of-truth &mdash; Tor installed from <code>deb.torproject.org</code>&rsquo;s
+            signed apt repo, the Tor Browser tarball downloaded from <code>dist.torproject.org</code>
+            and its detached GPG signature verified against the Tor Browser Developers key at build
+            time. No third-party Docker Hub image sits in the trust path.
+          </p>
+          <p>
+            <strong>Two different jobs, not redundant.</strong> <code>tor-proxy</code> is for everything
+            that isn&rsquo;t a browser &mdash; <code>curl</code>, scripts, API clients, anything you want
+            to send through Tor on an opt-in per-app basis (<code>socks5h://&hellip;</code>).
+            <code>tor-browser</code> ships and manages its own bundled <code>tor</code> and is the
+            hardened anonymous browser; it does <em>not</em> route through <code>tor-proxy</code>, on
+            purpose. Both ports bind to Betelgeuse&rsquo;s LAN IP and its Netbird mesh IP &mdash; never
+            <code>0.0.0.0</code>, never a public interface. <code>tor-proxy</code> adds a second gate
+            in its <code>torrc</code> <code>SocksPolicy</code>, accepting only the LAN + Netbird
+            subnets and rejecting everything else.
+          </p>
+          <p>
+            <strong>What&rsquo;s mine here, what isn&rsquo;t.</strong> Tor and Tor Browser aren&rsquo;t
+            my work &mdash; they&rsquo;re the Tor Project&rsquo;s. What this repo is: the Compose
+            orchestration + reproducible builds, the LAN / Netbird / never-public binding gates, and a
+            health check that <em>builds and uses a real circuit</em> on each interval rather than just
+            confirming the port is open &mdash; an open port doesn&rsquo;t prove the proxy can actually
+            reach the Tor network.
+          </p>
+        </article>
+
+        <article class="card deep fade-in d2">
+          <h3>tor-recon <span class="tag">external surface probe &mdash; Python + SOCKS5</span></h3>
+          <p>
+            <strong>The gap it fills.</strong> From the LAN or my Netbird mesh, my own homelab looks
+            reachable &mdash; everything responds, the firewall rules behave as designed. None of that
+            tells me what the <em>public</em> sees, because every audit host I own is already on an
+            allowlist of some kind. <code>tor-recon</code> sidesteps that by routing every probe through
+            my own <code>tor-proxy</code>: the Tor exit isn&rsquo;t for anonymity, it&rsquo;s a free,
+            rotating IP that lives on no allowlist of mine. What it sees is what an outside scanner
+            sees.
+          </p>
+          <p>
+            <strong>The principled bit.</strong> When a connection through a SOCKS5 proxy fails, the
+            proxy tells you <em>why</em> with a one-byte reply code. <code>0x05</code> means the target
+            refused; <code>0x02</code> means the Tor exit&rsquo;s own policy forbids that port (its
+            problem, not the target&rsquo;s). Most port-probes-through-Tor conflate the two and report
+            false findings. <code>tor-recon</code> parses the SOCKS5 reply directly and classifies them
+            separately, retrying ambiguous results until a definitive answer comes back. Closed-looking
+            ports are real.
+          </p>
+          <p>
+            <strong>What it checks.</strong> Three external faces &mdash; the guy VPS, the shop VPS,
+            and the home router&rsquo;s port-forward to hera-pi. Per face: port probes against a curated
+            list; <strong>negative assertions</strong> that services which should never be public
+            (the agent API, MongoDB, the secrets vault, GitLab over HTTP and SSH, the dashboard, both
+            Portainer endpoints) actually refuse from outside; HTTPS reachability + TLS issuer / expiry
+            / hostname match; an <strong>HTTP&rarr;HTTPS redirect check</strong> &mdash; a public
+            <code>:80</code> that serves content in cleartext is a finding; and a <strong>dev-server
+            header check</strong> &mdash; a public <code>Server:</code> header naming Werkzeug or
+            WSGIServer is a finding, because that header is exactly what tells you a development
+            process is facing the internet.
+          </p>
+          <p>
+            <strong>What the first runs caught.</strong> A Let&rsquo;s Encrypt cert that had silently
+            expired the previous day on <code>mail.guywithgames.com</code> &mdash; root cause was a
+            <code>certbot</code> authenticator that couldn&rsquo;t bind <code>:80</code> because Apache
+            already had it. A public Halfax-AI endpoint that turned out to be the Flask development
+            server bound <code>0.0.0.0:8080</code>, running as <strong>root</strong>, serving over
+            plaintext HTTP, with no reverse proxy in front despite the documentation claiming there
+            was one. An orphan UPnP router forward to a port nothing had ever listened on. Each one
+            fixed, then re-verified by re-running the probe.
+          </p>
+          <p>
+            <strong>The trust-boundary checks pass.</strong> Every service in that negative-assertion
+            list refuses or filters from a Tor exit, across every external face. That&rsquo;s the
+            firewall doing exactly what it&rsquo;s designed to &mdash; verified from an IP nobody
+            whitelisted.
+          </p>
+          <p style="font-size:0.9em;color:#b5e48c;margin-top:0.6em;">
+            <strong>What I&rsquo;m proud of here:</strong> the checklist grew from what the tool taught
+            me, not from a security-checklist template. The HTTP&rarr;HTTPS redirect check and the
+            dev-server header check are in v2 because those <em>exact</em> problems happened in v1.
+            Each run is allowed to expand the next one &mdash; the audit improves itself instead of
+            staying the audit I wrote on day one.
+          </p>
+        </article>
+
+        <article class="card deep fade-in d2">
           <h3>Network Intelligence <span class="tag">discovery + enrichment + security</span></h3>
           <p>
             A discovery-and-correlation pipeline that turns raw network scans into a coherent picture of what&rsquo;s
