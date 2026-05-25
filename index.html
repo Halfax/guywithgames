@@ -1025,11 +1025,14 @@
             the house.
           </p>
           <p>
-            <strong>Two models concurrent on one GPU.</strong> Qwen3-Coder-30B handles code (lm1, ~22&nbsp;GiB
-            resident), Dark Champion V2 21B handles narrative and reasoning (lm2, ~16&nbsp;GiB); a Mistral-7B
-            slot is configured for fast utility prompts and loads on demand. The active pair lives in the
-            AMD Strix Halo&rsquo;s <strong>64&nbsp;GiB UMA VRAM</strong> via Vulkan, with ~12&nbsp;GiB headroom
-            on top &mdash; the ROCm/HIP path is broken on this GPU until 7.10+ ships, so I built around that.
+            <strong>Two models concurrent on one GPU.</strong> Qwen3-30B-A3B-Thinking DeepSeek-R1-distill
+            handles reasoning + AI-judge verdicts (lm1, ~25&nbsp;GiB at Q6_K &mdash; powering the
+            <em>Halfax Heimdall Augur</em>), Qwen3-Coder-30B-A3B-Instruct handles code (lm2, ~22&nbsp;GiB
+            at Q5_K_M). Slot identity follows VRAM descending, so swapping a larger reasoning model in
+            automatically promotes it. The active pair lives in the AMD Strix Halo&rsquo;s
+            <strong>64&nbsp;GiB UMA VRAM</strong> via Vulkan, sitting at ~60&nbsp;GiB resident with
+            KV caches accounted for &mdash; the ROCm/HIP path is broken on this GPU until 7.10+ ships,
+            so I built around that.
             Models load largest-first to minimize fragmentation. Each runs as a supervised
             <code>llama-server</code> child process &mdash; if one crashes, a watchdog thread polls every
             10 seconds and restarts the dead child as soon as it&rsquo;s detected; per request I can target
@@ -1144,6 +1147,59 @@
             attention on by default. Picking a model auto-fills the sampling settings that suit its family,
             generation progress streams live to the browser, and the whole thing runs as a systemd service
             that hands the GPU back to the LLM stack on request.
+          </p>
+        </article>
+
+        <article class="card deep fade-in d3">
+          <h3>Halfax Heimdall Augur <span class="tag">cross-source signal aggregation + AI-judge verdicts</span></h3>
+          <p>
+            A system that ingests 17 structured public feeds in parallel, clusters cross-feed evidence about the
+            same unfolding situation, and renders Mercy-style AI-judge verdicts &mdash; a pronouncement, a
+            confidence level, and an explicit dissent that names what a contrary read would emphasize. The
+            verdict voice owes something to the AI judges of <em>Mercy</em> (2014) and the omniscient watcher
+            of <em>Person of Interest</em>: not a news aggregator, an interpreter.
+          </p>
+          <p>
+            <strong>17 sources, one common event shape.</strong> Six structured datasets &mdash; GDELT (global
+            event metadata), USGS (earthquakes), SEC EDGAR (8-K / S-1 / SC 13D material filings), OpenSky
+            (aircraft emergency squawks), AISStream (vessels through chokepoints &mdash; Hormuz, Malacca, Suez,
+            Panama, Bosphorus, English Channel), and Bluesky&rsquo;s Jetstream firehose. Plus eleven editorial
+            and official-warning feeds: NOAA NWS severe alerts, FAA TFRs, BBC, NPR, Al Jazeera, the Guardian,
+            ABC Australia, Deutsche Welle, AllAfrica, France 24, and the Hindu. Each ingest worker is a
+            self-contained module mapping its native shape onto a single Event schema with source provenance
+            per fact; idempotency is a unique compound index on <code>(source, source_id)</code> so re-polling
+            produces zero duplicates across restarts.
+          </p>
+          <p>
+            <strong>Cluster on meaning, not on text matching.</strong> A dedicated <code>llama-server</code>
+            sidecar hosts <code>nomic-embed-text-v1.5</code> (768-dim) on port 5002; the cluster worker embeds
+            each event, upserts it into a Qdrant container, and runs an HNSW kNN query against existing cluster
+            centroids. Match above the cosine threshold &rarr; join the cluster and update its centroid via a
+            running-mean update; no match &rarr; create a new cluster. Cross-source clusters emerge when, say,
+            a BBC article and an NPR article cover the same chemical-plant evacuation in California &mdash; the
+            embedder sees the semantic overlap even though the headline text is different.
+          </p>
+          <p>
+            <strong>Verdicts via constrained-JSON decoding on a thinking model.</strong> The verdict worker
+            picks clusters with at least two distinct sources and calls a Qwen3-30B-A3B-Thinking DeepSeek-R1
+            distill with llama.cpp&rsquo;s <code>json_schema</code> parameter set to a strict envelope &mdash;
+            verdict pronouncement, reasoning array with cited event IDs, confidence enum, dissent, watch-for
+            bullets. The model is <em>physically prevented</em> from emitting malformed JSON. The system prompt
+            is tuned with explicit good/bad examples that distinguish interpretation
+            (<em>&ldquo;Russia signals sustained tolerance for civilian casualties as escalation
+            currency&rdquo;</em>) from summary (<em>&ldquo;Russia conducted a large-scale drone and missile
+            attack on Kyiv&rdquo;</em>) &mdash; the second is what the model produces by default; the first is
+            what the prompt extracts.
+          </p>
+          <p>
+            <strong>The web shows the chain of evidence, not just the verdict.</strong> Each cluster page leads
+            with the source articles (full excerpts, source-attributed), then the Augur&rsquo;s verdict and
+            dissent, then a Reasoning section with citations back to specific event IDs, then a Watch-for list,
+            then two kNN-driven sections: events from <em>other</em> sources sitting near this cluster&rsquo;s
+            centroid in embedding space but below the join threshold (the &ldquo;signal next door&rdquo;), and
+            the nearest related clusters by centroid distance. A dashboard tracks per-feed freshness and a Top
+            Stories view separates cross-source stories from single-source noise. FastAPI + Jinja2 server-rendered
+            web on the LAN / Netbird side &mdash; no SPA, no cloud, no third party in the loop.
           </p>
         </article>
       </div>
