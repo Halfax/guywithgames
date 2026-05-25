@@ -221,6 +221,7 @@
     .quick-btn.ai { background: linear-gradient(135deg, #62a0ff, #8f7cff); }
     .quick-btn.photo { background: linear-gradient(135deg, #40d9b1, #3dd7c6); }
     .quick-btn.story { background: linear-gradient(135deg, #ffb44d, #ff6e5b); }
+    .quick-btn.augur { background: linear-gradient(135deg, #b07ce4, #5b8def); }
     .quick-btn.main { background: linear-gradient(135deg, #4fd1ff, #62a0ff); }
     .quick-btn.shop { background: linear-gradient(135deg, #ff8fb8, #ff6e8d); }
 
@@ -395,6 +396,22 @@
       font-family: "IBM Plex Mono", monospace;
       font-weight: 500;
     }
+
+    .card-live {
+      display: inline-block;
+      padding: 2px 10px;
+      margin-left: 6px;
+      font-size: 0.78rem;
+      font-family: "IBM Plex Mono", monospace;
+      font-weight: 600;
+      color: #0c1322;
+      background: linear-gradient(135deg, #b07ce4, #5b8def);
+      border-radius: 999px;
+      text-decoration: none;
+      vertical-align: middle;
+      transition: filter 0.15s ease;
+    }
+    .card-live:hover { filter: brightness(1.15); text-decoration: none; }
 
     .deep p {
       margin: 0;
@@ -689,6 +706,7 @@
   <section class="top-link-strip" id="links">
     <div class="top-link-strip-inner hero-links" aria-label="Top project links">
       <a class="quick-btn ai" href="http://gamer.guywithgames.com:8080/" target="_blank" rel="noopener noreferrer">Launch Halfax AI Chat</a>
+      <a class="quick-btn augur" href="https://heimdall.guywithgames.com/" target="_blank" rel="noopener noreferrer">Heimdall Augur</a>
       <a class="quick-btn photo" href="https://gamer.guywithgames.com:5000/" target="_blank" rel="noopener noreferrer">Photo Upload Server</a>
       <a class="quick-btn story" href="https://www.guywithgames.com/universe/" target="_blank" rel="noopener noreferrer">Story Universe</a>
       <a class="quick-btn main" href="https://www.guywithbeer.net/" target="_blank" rel="noopener noreferrer">GuyWithBeer</a>
@@ -1151,55 +1169,104 @@
         </article>
 
         <article class="card deep fade-in d3">
-          <h3>Halfax Heimdall Augur <span class="tag">cross-source signal aggregation + AI-judge verdicts</span></h3>
+          <h3>Halfax Heimdall Augur <span class="tag">cross-source signal aggregation + AI-judge verdicts with a calibration record</span> <a class="card-live" href="https://heimdall.guywithgames.com/" target="_blank" rel="noopener noreferrer">live &rarr;</a></h3>
           <p>
-            A system that ingests 17 structured public feeds in parallel, clusters cross-feed evidence about the
-            same unfolding situation, and renders Mercy-style AI-judge verdicts &mdash; a pronouncement, a
-            confidence level, and an explicit dissent that names what a contrary read would emphasize. The
-            verdict voice owes something to the AI judges of <em>Mercy</em> (2014) and the omniscient watcher
-            of <em>Person of Interest</em>: not a news aggregator, an interpreter.
+            A system that ingests nineteen editorial news feeds in parallel, clusters cross-source coverage of
+            the same unfolding situation, renders Mercy-style AI-judge verdicts &mdash; a pronouncement, a
+            confidence tier, an explicit dissent that names what a contrary read would emphasize, and concrete
+            <em>watch-for</em> predictions &mdash; and then quietly checks those predictions against later
+            evidence and publishes its own track record. The verdict voice owes something to the AI judges of
+            <em>Mercy</em> (2014) and the omniscient watcher of <em>Person of Interest</em>: not a news
+            aggregator, an interpreter that grades itself.
           </p>
           <p>
-            <strong>17 sources, one common event shape.</strong> Six structured datasets &mdash; GDELT (global
-            event metadata), USGS (earthquakes), SEC EDGAR (8-K / S-1 / SC 13D material filings), OpenSky
-            (aircraft emergency squawks), AISStream (vessels through chokepoints &mdash; Hormuz, Malacca, Suez,
-            Panama, Bosphorus, English Channel), and Bluesky&rsquo;s Jetstream firehose. Plus eleven editorial
-            and official-warning feeds: NOAA NWS severe alerts, FAA TFRs, BBC, NPR, Al Jazeera, the Guardian,
-            ABC Australia, Deutsche Welle, AllAfrica, France 24, and the Hindu. Each ingest worker is a
-            self-contained module mapping its native shape onto a single Event schema with source provenance
-            per fact; idempotency is a unique compound index on <code>(source, source_id)</code> so re-polling
-            produces zero duplicates across restarts.
+            <strong>Nineteen editorial sources, one common event shape, eighteen viewpoints.</strong> The
+            English-language Western core &mdash; BBC, NPR, the Guardian, Al Jazeera, ABC Australia, Deutsche
+            Welle, AllAfrica, France 24, the Hindu &mdash; sits alongside a deliberate non-Western expansion:
+            China Daily, the South China Morning Post, TASS, Press TV, Arab News, the Times of Israel, Daily
+            Sabah, the Bangkok Post, Channel News Asia, and Yonhap. Plus EDGAR (SEC 8-K / S-1 / 13D filings)
+            and Bluesky&rsquo;s Jetstream firehose. The first build included six structured/operational
+            datasets &mdash; GDELT, NOAA, USGS, FAA, OpenSky, AISStream &mdash; on the theory they would
+            corroborate news as &ldquo;operational ground truth&rdquo;; an empirical audit at ~120k events
+            showed those six produced two verdict participations between them, and embedding similarity cannot
+            bridge templated alert text to journalist prose. Cut. Idempotency on every remaining ingest is a
+            unique compound index on <code>(source, source_id)</code> so re-polling produces zero duplicates
+            across restarts.
           </p>
           <p>
-            <strong>Cluster on meaning, not on text matching.</strong> A dedicated <code>llama-server</code>
+            <strong>Cluster on meaning, then anchor against drift.</strong> A dedicated <code>llama-server</code>
             sidecar hosts <code>nomic-embed-text-v1.5</code> (768-dim) on port 5002; the cluster worker embeds
-            each event, upserts it into a Qdrant container, and runs an HNSW kNN query against existing cluster
-            centroids. Match above the cosine threshold &rarr; join the cluster and update its centroid via a
-            running-mean update; no match &rarr; create a new cluster. Cross-source clusters emerge when, say,
-            a BBC article and an NPR article cover the same chemical-plant evacuation in California &mdash; the
-            embedder sees the semantic overlap even though the headline text is different.
+            each event, upserts it into a Qdrant container, and runs an HNSW kNN against existing cluster
+            centroids. Above the cosine threshold &rarr; join the cluster and update its centroid via a
+            running-mean update; below &rarr; create a new cluster. Two gates protect cluster identity. The
+            first: a <strong>wire-syndication dedup</strong> &mdash; new events at cos &ge; 0.96 against a
+            cluster member from a <em>different</em> source are marked as duplicates and do not bump the
+            effective source count, so AP &rarr; BBC and AP &rarr; NPR can&rsquo;t masquerade as two
+            independent corroborators. The second: a <strong>seed-anchor gate</strong> &mdash; joins must
+            match both the (drifting) centroid and the cluster&rsquo;s first-event vector, so an aging cluster
+            cannot accrete topically-adjacent material that has wandered semantically away from the original
+            story. Drifted candidates form a new cluster, linked by kNN proximity rather than dissolved into the
+            old one.
           </p>
           <p>
-            <strong>Verdicts via constrained-JSON decoding on a thinking model.</strong> The verdict worker
-            picks clusters with at least two distinct sources and calls a Qwen3-30B-A3B-Thinking DeepSeek-R1
-            distill with llama.cpp&rsquo;s <code>json_schema</code> parameter set to a strict envelope &mdash;
-            verdict pronouncement, reasoning array with cited event IDs, confidence enum, dissent, watch-for
-            bullets. The model is <em>physically prevented</em> from emitting malformed JSON. The system prompt
-            is tuned with explicit good/bad examples that distinguish interpretation
-            (<em>&ldquo;Russia signals sustained tolerance for civilian casualties as escalation
-            currency&rdquo;</em>) from summary (<em>&ldquo;Russia conducted a large-scale drone and missile
-            attack on Kyiv&rdquo;</em>) &mdash; the second is what the model produces by default; the first is
-            what the prompt extracts.
+            <strong>Verdicts via constrained-JSON decoding on a thinking model &mdash; with memory.</strong> The
+            verdict worker picks clusters with at least two distinct effective sources and calls
+            Qwen3-30B-A3B-Thinking-DeepSeek-Distill with llama.cpp&rsquo;s <code>json_schema</code> parameter
+            set to a strict envelope &mdash; verdict pronouncement, reasoning array with cited event IDs,
+            confidence enum, dissent, watch-for bullets. The model is <em>physically prevented</em> from
+            emitting malformed JSON. An entity-extraction worker (on the coder slot) names canonical people /
+            organisations / places / tickers per cluster, canonicalises them via name match plus embedding
+            kNN, and back-stamps every verdict onto its entities. That powers <strong>cross-cluster
+            memory</strong>: the verdict prompt&rsquo;s <em>Prior Context</em> preamble carries the judge&rsquo;s
+            own recent verdicts on the same entities, so the model can be consistent across days or honestly
+            contradict itself when the evidence shifts. The prompt also varies by category &mdash; financial,
+            disaster, diplomatic, or general &mdash; chosen from the cluster&rsquo;s source mix and entity
+            types, so a Federal Reserve announcement and a hypersonic-missile strike get different framings of
+            what &ldquo;interpretation&rdquo; means.
           </p>
           <p>
-            <strong>The web shows the chain of evidence, not just the verdict.</strong> Each cluster page leads
-            with the source articles (full excerpts, source-attributed), then the Augur&rsquo;s verdict and
-            dissent, then a Reasoning section with citations back to specific event IDs, then a Watch-for list,
-            then two kNN-driven sections: events from <em>other</em> sources sitting near this cluster&rsquo;s
-            centroid in embedding space but below the join threshold (the &ldquo;signal next door&rdquo;), and
-            the nearest related clusters by centroid distance. A dashboard tracks per-feed freshness and a Top
-            Stories view separates cross-source stories from single-source noise. FastAPI + Jinja2 server-rendered
-            web on the LAN / Netbird side &mdash; no SPA, no cloud, no third party in the loop.
+            <strong>It grades itself.</strong> Every verdict ships two-to-five concrete <em>watch-for</em>
+            predictions &mdash; signals that would strengthen or invalidate the verdict if they materialised.
+            A separate evolution worker periodically searches new evidence against each prediction
+            (embedding-kNN over events ingested after the verdict was rendered), and when a strong-enough
+            match exists it asks the thinking slot for a binary judgment: <em>verified</em>,
+            <em>refuted</em>, <em>partial</em>, or <em>pending</em>. After fourteen days unresolved
+            predictions auto-expire. The <code>/calibration</code> page rolls those up into a public
+            verify-rate per confidence tier &mdash; the system&rsquo;s own published track record, the
+            calibration substrate that turns verdict pronouncements into something an honest reader can
+            trust or distrust quantitatively. The pattern is older than this project: forecasting literature
+            from Tetlock onward, the <em>watch-for</em> shape itself echoes intelligence-community
+            indications-and-warnings tradecraft. What&rsquo;s unusual is that the verdict pipeline does it
+            unsupervised on itself.
+          </p>
+          <p>
+            <strong>Vantage matters; pages render differently from different IPs.</strong> The URL-enrichment
+            worker that fetches full article bodies for events that ship only a link goes through a small
+            farm of country-pinned Tor circuits running locally as Docker siblings of the homelab&rsquo;s
+            default <code>tor-proxy</code> &mdash; one each for Germany, the Netherlands, and Japan
+            (<code>ExitNodes {de}</code> / <code>{nl}</code> / <code>{jp}</code> with <code>StrictNodes 1</code>),
+            plus the original any-country circuit. A per-domain pin map routes TASS and Press TV through
+            Germany, China Daily and the South China Morning Post through Japan, RT and Arab News through the
+            Netherlands &mdash; the editorial intent is to see state media as a non-Western reader sees it,
+            since Cloudflare WAF posture, GDPR splash pages, and editorial blurbs all vary by viewer
+            country. A <code>/vantage</code> page live-probes every circuit and reports exit IPs and recent
+            fetch counts so it&rsquo;s easy to tell whether the multi-vantage layer is actually working.
+          </p>
+          <p>
+            <strong>The web shows the chain of evidence, not just the verdict.</strong> Each cluster page
+            leads with the source articles (full excerpts, source-attributed), then the Augur&rsquo;s verdict,
+            dissent, and reasoning array with citations back to specific event IDs, then the watch-for list
+            with <em>live calibration badges</em> &mdash; <span class="tag">verified</span>,
+            <span class="tag">refuted</span>, <span class="tag">partial</span>, <span class="tag">pending</span>
+            &mdash; updated as the world catches up to the predictions. Below that, entity chips link out to
+            per-entity timelines, and two kNN-driven sections surface the &ldquo;signal next door&rdquo;
+            (events near this cluster&rsquo;s centroid that didn&rsquo;t quite cross the join threshold) and
+            the nearest related clusters by centroid distance. A dashboard tracks per-feed freshness; a Top
+            Stories view ranks multi-source clusters first and editorial single-source loud-clusters second.
+            FastAPI + Jinja2 server-rendered on the LAN / Netbird side &mdash; with a read-only public mount at
+            <a href="https://heimdall.guywithgames.com/" target="_blank" rel="noopener noreferrer">heimdall.guywithgames.com</a>
+            (TLS-terminating Caddy on hera-pi reverse-proxying to the Betelgeuse web over Netbird; the
+            operational dashboard and the Tor-circuit page stay LAN-only).
           </p>
         </article>
       </div>
