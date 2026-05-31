@@ -123,6 +123,15 @@
     .pillar h4 { margin: 0 0 5px; font-size: 0.96rem; }
     .pillar p { margin: 0; color: var(--muted); font-size: 0.87rem; }
 
+    /* ---- how it works ---- */
+    .how-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(330px, 1fr)); gap: 6px 48px; margin-top: 10px; }
+    .how-item { border-top: 1px solid var(--line); padding: 20px 0 6px; }
+    .how-item h3 { font-size: 1.1rem; margin: 0 0 8px; }
+    .how-item p { color: var(--muted); font-size: 0.93rem; margin: 0; }
+    .how-item p + p { margin-top: 10px; }
+    .how-item p b { color: var(--ink); font-weight: 600; }
+    .how-lede { color: #c7d2df; font-size: 1.04rem; max-width: 74ch; margin: 0 0 8px; }
+
     /* ---- projects ---- */
     .cat { font-family: "Space Grotesk"; font-size: 0.82rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--faint); margin: 40px 0 4px; }
     .cat:first-of-type { margin-top: 20px; }
@@ -175,6 +184,7 @@
       <nav class="nav" aria-label="Main navigation">
         <a href="#live">Live</a>
         <a href="#lab">The Lab</a>
+        <a href="#how">How it works</a>
         <a href="#projects">Projects</a>
         <a href="#links">Links</a>
       </nav>
@@ -307,6 +317,67 @@
         <div class="pillar fade"><h4>BIND9 private DNS</h4><p>An authoritative private zone gives every service a stable name; move a service and one DNS record changes — nothing is hardcoded to an IP.</p></div>
         <div class="pillar fade"><h4>Right workload, right node</h4><p>Heavy compute on the GPU box, data/infra on Cygnus, always-on light work on the Pi, public entry points on the VPSes where uptime beats throughput.</p></div>
         <div class="pillar fade"><h4>Let's Encrypt TLS</h4><p>Every public service uses free auto-renewing certs from <a href="https://letsencrypt.org/" target="_blank" rel="noopener">Let's Encrypt</a> (ISRG) — worth a <a href="https://letsencrypt.org/donate/" target="_blank" rel="noopener">donation</a> to keep it free for everyone.</p></div>
+      </div>
+    </section>
+
+    <!-- ===================== HOW IT WORKS ===================== -->
+    <section id="how">
+      <p class="kicker">What makes it all work</p>
+      <h2 class="sec-head">A brain I own, and a memory every agent shares</h2>
+      <p class="how-lede">
+        The projects below aren't islands. They're held together by two things I built on purpose:
+        <b>a private AI server I fully own</b>, and <b>a memory-sharing system that lets every AI coding agent I use
+        work from the same durable context</b> — instead of each one starting cold and learning my stack in its own
+        vendor silo. This is the part that makes a one-person lab punch far above its size.
+      </p>
+      <div class="how-grid">
+        <div class="how-item fade">
+          <h3>Hal-AI — the brain, on my own hardware</h3>
+          <p>
+            Hal-AI is a private multi-model LLM server running on my GPU, behind an <b>OpenAI-compatible API</b>.
+            Any tool that already knows how to talk to OpenAI — or to <b>MCP</b> — can point straight at it, so I'm
+            never renting someone else's model to work on my own code. Two MCP bridges expose its inference, memory,
+            file operations, and the whole homelab as plain tool calls, which is how an outside agent reaches my
+            hardware at all.
+          </p>
+        </div>
+        <div class="how-item fade">
+          <h3>One shared memory, not four vendor silos</h3>
+          <p>
+            I genuinely run <b>Claude Code, Windsurf Cascade, GitHub Copilot, and my own Hal-AI extension</b> on the
+            same codebase. Each ships its own per-conversation memory; left alone, they'd each learn my conventions
+            separately and forget them separately. So I gave them <b>common ground</b>: a single ADR-style rulebook
+            (<code>DECISIONS.md</code>) symlinked so every tool finds its own native convention —
+            <code>.cursorrules</code>, <code>AGENTS.md</code>, <code>CLAUDE.md</code> — plus a shared semantic memory
+            any client can search. One source of truth, written once, read by every agent.
+          </p>
+        </div>
+        <div class="how-item fade">
+          <h3>Promote-to-durable — memory that outlives the tool</h3>
+          <p>
+            The rule that ties it together: when <em>any</em> agent learns something load-bearing mid-session — a
+            corrected approach, a hard-won invariant — it gets <b>promoted from that tool's throwaway memory into the
+            shared rulebook in git</b>, and off-boxed like production data. So the knowledge survives a context reset,
+            a harness change, or swapping the assistant entirely. The lesson a model learns on Tuesday is still there,
+            for <em>every</em> agent, on Friday.
+          </p>
+        </div>
+        <div class="how-item fade">
+          <h3>Why it works so well for my projects</h3>
+          <p>
+            It <b>compounds</b>. Every session makes the shared context sharper about <em>my</em> specific stack, so
+            the agents behave consistently instead of relitigating the same decisions. There's <b>no lock-in</b> — I
+            can switch tools tomorrow and the memory stays, because it lives in git and on my hardware, not in a
+            vendor's account. And because the rules <b>travel with the code</b> and are recoverable, the same rigor I
+            put into backups protects how my assistants think.
+          </p>
+          <p style="font-size:0.86rem;color:var(--faint);">
+            Honest about the lineage: ADRs (Nygard, 2011), <code>mem0</code>, <code>MemGPT</code>, and
+            <code>.cursorrules</code> all exist. What's mine is the <b>synthesis</b> — owned compute, portable
+            cross-tool memory, and a promote-to-durable discipline tied into one workflow — run as if it were
+            production infrastructure.
+          </p>
+        </div>
       </div>
     </section>
 
