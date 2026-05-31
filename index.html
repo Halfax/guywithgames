@@ -114,6 +114,15 @@
     .stat { border: 1px solid var(--line); border-radius: 12px; padding: 14px; background: var(--surface); }
     .stat .n { font-family: "Space Grotesk"; font-size: 1.7rem; font-weight: 700; color: var(--amber); }
     .stat .k { color: var(--muted); font-size: 0.84rem; margin-top: 2px; }
+    .hero-grid { display: grid; grid-template-columns: 1.2fr 0.85fr; gap: 34px; align-items: center; margin-bottom: 26px; }
+    .hero-aside { display: flex; flex-direction: column; }
+    .hero-banner { margin: 0; border: 1px solid var(--line-2); border-radius: 16px; overflow: hidden; box-shadow: 0 18px 50px rgba(0,0,0,0.42); position: relative; }
+    .hero-banner img { display: block; width: 100%; height: auto; }
+    .hero-banner::after { content: ""; position: absolute; inset: 0; box-shadow: inset 0 0 60px rgba(8,11,17,0.55); pointer-events: none; }
+    .hero-profile { display: flex; align-items: center; gap: 13px; margin-top: 16px; padding: 10px 14px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
+    .avatar { width: 56px; height: 56px; border-radius: 50%; object-fit: cover; object-position: top; border: 2px solid var(--teal); flex-shrink: 0; }
+    .hero-profile .who { font-family: "Space Grotesk"; font-weight: 600; font-size: 1rem; }
+    .hero-profile .who-sub { color: var(--muted); font-size: 0.84rem; }
 
     /* ---- sections ---- */
     section { padding: 30px 0; }
@@ -192,6 +201,10 @@
     .fade { opacity: 0; transform: translateY(14px); transition: opacity .5s ease, transform .5s ease; }
     .fade.in { opacity: 1; transform: none; }
 
+    @media (max-width: 880px) {
+      .hero-grid { grid-template-columns: 1fr; gap: 24px; }
+      .hero-aside { max-width: 460px; }
+    }
     @media (max-width: 720px) {
       .hero-stats { grid-template-columns: repeat(2, 1fr); }
       .nav { display: none; }
@@ -215,19 +228,35 @@
 
     <!-- ===================== HERO ===================== -->
     <section class="hero" id="hero">
-      <span class="kicker">Systems architect · AI &amp; infrastructure builder</span>
-      <h1>I build a private <span class="g">AI stack</span> and the homelab that runs it.</h1>
-      <p class="lede">
-        I'm Halfax — a systems architect and developer. In my spare time I run a self-hosted lab where
-        <b>everything runs on hardware I own</b>: a multi-model LLM server, an always-on AI-driven story world,
-        a cross-source news corroboration engine, a from-scratch operating system, and the recovery tree that
-        keeps it all reproducible. <b>No cloud LLMs in the loop.</b> A few of these are live right now — go poke at them.
-      </p>
-      <div class="launch-row">
-        <a class="launch ai" href="https://gamer.guywithgames.com/" target="_blank" rel="noopener"><span class="live-dot"></span> Halfax AI Chat</a>
-        <a class="launch augur" href="https://heimdall.guywithgames.com/" target="_blank" rel="noopener"><span class="live-dot"></span> Heimdall Augur</a>
-        <a class="launch story" href="https://www.guywithgames.com/universe/" target="_blank" rel="noopener"><span class="live-dot"></span> Story Universe</a>
-        <a class="launch ghost" href="#projects">Browse projects ↓</a>
+      <div class="hero-grid">
+        <div class="hero-main fade in">
+          <span class="kicker">Systems architect · AI &amp; infrastructure builder</span>
+          <h1>I build a private <span class="g">AI stack</span> and the homelab that runs it.</h1>
+          <p class="lede">
+            I'm Halfax — a systems architect and developer. In my spare time I run a self-hosted lab where
+            <b>everything runs on hardware I own</b>: a multi-model LLM server, an always-on AI-driven story world,
+            a cross-source news corroboration engine, a from-scratch operating system, and the recovery tree that
+            keeps it all reproducible. <b>No cloud LLMs in the loop.</b> A few of these are live right now — go poke at them.
+          </p>
+          <div class="launch-row">
+            <a class="launch ai" href="https://gamer.guywithgames.com/" target="_blank" rel="noopener"><span class="live-dot"></span> Halfax AI Chat</a>
+            <a class="launch augur" href="https://heimdall.guywithgames.com/" target="_blank" rel="noopener"><span class="live-dot"></span> Heimdall Augur</a>
+            <a class="launch story" href="https://www.guywithgames.com/universe/" target="_blank" rel="noopener"><span class="live-dot"></span> Story Universe</a>
+            <a class="launch ghost" href="#projects">Browse projects ↓</a>
+          </div>
+        </div>
+        <aside class="hero-aside fade in">
+          <figure class="hero-banner">
+            <img src="halfax-ai-banner.webp" alt="Halfax AI — multi-model intelligence engine" width="1536" height="1024" fetchpriority="high">
+          </figure>
+          <div class="hero-profile">
+            <img src="avatar.webp" alt="Halfax" class="avatar" width="320" height="436" loading="lazy">
+            <div>
+              <div class="who">Halfax</div>
+              <div class="who-sub">Builds and runs all of this from a home lab.</div>
+            </div>
+          </div>
+        </aside>
       </div>
       <div class="hero-stats">
         <div class="stat"><div class="n">6</div><div class="k">hosts in the fleet</div></div>
