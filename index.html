@@ -452,7 +452,7 @@
 
         <article class="proj fade">
           <div class="proj-head"><h4>PictureAI</h4><span class="tag">FastAPI + Vulkan</span></div>
-          <p class="summary">A local image generator running entirely on the server's integrated GPU — no CUDA, no cloud, no account.</p>
+          <p class="summary">A local image generator running entirely on the server's integrated GPU — no CUDA, no cloud, no account. A ground-up rebuild <b>tuned for a bandwidth-bound integrated GPU</b>, where nearly every image tool assumes an NVIDIA card and would simply refuse to run.</p>
           <ul>
             <li><b>Resident model, FastAPI UI.</b> A long-lived <code>sd-server</code> keeps weights in GPU memory across generations; supports SDXL, Flux, SD3.5, Chroma, AuraFlow, HiDream with on-demand weights and a browsable catalog.</li>
             <li><b>Tuned for the iGPU.</b> Models are converted to q8_0 (≈half the per-step bandwidth on this bandwidth-bound APU) with flash attention on; runs as a systemd service that hands the GPU back to the LLM stack on request.</li>
@@ -485,7 +485,7 @@
 
         <article class="proj fade">
           <div class="proj-head"><h4>Self-Hosted DevOps Stack</h4><span class="tag">GitLab · Prometheus · Grafana</span></div>
-          <p class="summary">I don't run these in the cloud — I run them on my own hardware, because the point isn't the services, it's <em>recoverability</em>.</p>
+          <p class="summary">I didn't build GitLab, Prometheus, or Grafana — but the way I run them is the point: the <b>entire stack rebuilds from compose files and secrets bundles in a single afternoon</b>, no vendor in the loop. That's the property no hosted version gives you.</p>
           <ul>
             <li><b>GitLab CE on Cygnus</b> is the authoritative remote for every project here, LAN-only, with a self-hosted Runner for CI on the same host. Nightly it produces a data dump plus a config/secrets bundle that GitLab's own backup tool omits, off-boxed to the Pi.</li>
             <li><b>Prometheus + Grafana</b> scrape host vitals, MongoDB, and app metrics across the fleet; dashboard JSON lives in the recovery tree so a clean rebuild reproduces them.</li>
@@ -505,7 +505,7 @@
 
         <article class="proj fade">
           <div class="proj-head"><h4>Homelab Tor Stack</h4><span class="tag">Docker</span></div>
-          <p class="summary">A reproducible Tor toolkit on the data-tier host: a SOCKS5 proxy for scripts and a remote Tor Browser over noVNC, with country-pinned exit circuits.</p>
+          <p class="summary">Tor isn't my code — but I use it for things it wasn't built for. The <b>country-pinned exits aren't about anonymity</b>; they let the Augur read state media as a non-Western reader sees it (Cloudflare posture, GDPR splash, editorial blurbs all change by viewer country). Built reproducibly from GPG-verified source — no third-party image in the trust path — bound strictly off the public internet, with a health check that proves a real circuit rather than just checking the port.</p>
           <ul>
             <li><b>Built from source-of-truth:</b> Tor from the project's signed apt repo, the Browser tarball GPG-verified at build time — no third-party Docker Hub image in the trust path.</li>
             <li><b>Never public:</b> ports bind LAN + Netbird only, with a second <code>SocksPolicy</code> gate; a health check builds a real circuit each interval rather than just checking the port.</li>
@@ -515,7 +515,7 @@
 
         <article class="proj fade">
           <div class="proj-head"><h4>tor-recon</h4><span class="tag">Python + SOCKS5</span></div>
-          <p class="summary">Audits my own public surface from a Tor exit — an IP on none of my allowlists — so I see exactly what an outside scanner sees. On its first runs it caught a public dev server running as <b>root over plaintext</b> and a silently-expired TLS cert my own use never noticed.</p>
+          <p class="summary">Tor again, used the wrong way on purpose: not for anonymity, but as a <b>free, rotating IP on none of my own allowlists</b> — so a probe through it sees my public surface exactly as an outside scanner would. Its first runs caught a public dev server running as <b>root over plaintext</b> and a silently-expired TLS cert my own use never noticed.</p>
           <ul>
             <li><b>Parses the SOCKS5 reply byte</b> to tell a target's refusal from the Tor exit's own port policy, which most probes conflate into false findings.</li>
             <li><b>Negative assertions:</b> verifies that services which should never be public (the agent API, MongoDB, the vault, GitLab, dashboards) actually refuse from outside, across every external face.</li>
@@ -525,7 +525,7 @@
 
         <article class="proj fade">
           <div class="proj-head"><h4>Network Intelligence</h4><span class="tag">discovery + correlation</span></div>
-          <p class="summary">Joins active scans, BIND9 records, DHCP leases, audit hits, and Netbird peer state against one device identity — so a device shows up once, with everything any tool knows about it.</p>
+          <p class="summary">Most homelabs end up with five disconnected tools — nmap here, DHCP leases there, an audit log somewhere else. This <b>joins them against one device identity</b> — active scans, BIND9 records, DHCP leases, audit hits, mesh peer state — so a device shows up once, with everything any tool knows about it.</p>
           <ul>
             <li><b>Drift-aware:</b> re-running a scan flags new hosts, disappeared services, unexpected ports, and mesh peers gone dark.</li>
             <li><b>Live dashboard</b> drills from a device into every record and distinguishes "a new device" from "an old device with new behavior."</li>
