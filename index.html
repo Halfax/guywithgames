@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>GuyWithGames — Halfax AI, the Story Universe, and a self-hosted homelab</title>
   <meta name="description" content="Halfax builds a private multi-model AI stack, an always-on AI-driven Story Universe, a cross-source news corroboration engine, a from-scratch OS, and a fully recoverable self-hosted homelab — all on his own hardware, no cloud LLMs in the loop.">
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230a0e14'/%3E%3Ccircle cx='16' cy='16' r='9' fill='url(%23g)'/%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%234fd1c5'/%3E%3Cstop offset='1' stop-color='%23ffb454'/%3E%3C/linearGradient%3E%3C/defs%3E%3C/svg%3E">
-  <meta name="theme-color" content="#0a0e14">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230f141b'/%3E%3Ccircle cx='16' cy='16' r='8' fill='%235aaeff'/%3E%3C/svg%3E">
+  <meta name="theme-color" content="#0f141b">
   <meta property="og:type" content="website">
   <meta property="og:title" content="GuyWithGames — Halfax AI, the Story Universe, and a self-hosted homelab">
   <meta property="og:description" content="A private multi-model AI stack, an always-on AI-driven Story Universe, a cross-source news corroboration engine, a from-scratch OS, and a fully recoverable homelab — built on owned hardware.">
@@ -22,192 +22,149 @@
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #0a0e14;
-      --bg-2: #0d121b;
-      --surface: #111723;
-      --surface-2: #161d2b;
-      --ink: #eaf1f8;
-      --muted: #95a6bd;
-      --faint: #6b7c93;
-      --line: #1e2a3d;
-      --line-2: #283750;
-      --teal: #4fd1c5;
-      --amber: #ffb454;
-      --violet: #9a86ff;
-      --coral: #ff7a66;
-      --sky: #5aaeff;
-      --live: #43e08a;
-      --max: 1140px;
-      --r: 14px;
+      --bg: #0f141b;
+      --bg-2: #131a22;
+      --ink: #e9eef5;
+      --muted: #94a2b4;
+      --faint: #61707f;
+      --line: #1d2630;
+      --line-2: #27313d;
+      --accent: #5aaeff;
+      --accent-dim: #6f9fce;
+      --accent-soft: rgba(90,174,255,0.10);
+      --max: 1080px;
     }
     * { box-sizing: border-box; }
     html { scroll-behavior: smooth; }
     body {
       margin: 0;
-      background:
-        radial-gradient(1100px 520px at 12% -8%, rgba(79,209,197,0.10), transparent 60%),
-        radial-gradient(900px 480px at 92% 4%, rgba(154,134,255,0.10), transparent 55%),
-        linear-gradient(180deg, #080b11, var(--bg) 38%);
+      background: linear-gradient(180deg, #0c1118, var(--bg) 30%);
       color: var(--ink);
       font-family: "Inter", "Segoe UI", system-ui, sans-serif;
-      font-size: 16px;
-      line-height: 1.6;
+      font-size: 16px; line-height: 1.62;
       -webkit-font-smoothing: antialiased;
     }
-    a { color: var(--sky); text-decoration: none; }
+    a { color: var(--accent); text-decoration: none; }
     a:hover { text-decoration: underline; }
-    .wrap { width: min(var(--max), 92vw); margin: 0 auto; }
-    h1, h2, h3 { font-family: "Space Grotesk", sans-serif; line-height: 1.15; }
-    code, .mono { font-family: "IBM Plex Mono", monospace; font-size: 0.86em; }
-    code { background: rgba(255,255,255,0.05); padding: 1px 5px; border-radius: 4px; color: #cfe0f2; }
+    .wrap { width: min(var(--max), 90vw); margin: 0 auto; }
+    h1, h2, h3, h4 { font-family: "Space Grotesk", sans-serif; line-height: 1.18; font-weight: 600; }
+    code, .mono { font-family: "IBM Plex Mono", monospace; font-size: 0.85em; }
+    code { color: #c2d2e4; }
+    .accent { color: var(--accent); }
 
     /* ---- nav ---- */
-    .topbar {
-      position: sticky; top: 0; z-index: 50;
-      backdrop-filter: blur(10px);
-      background: rgba(10,14,20,0.78);
-      border-bottom: 1px solid var(--line);
-    }
-    .topbar-inner {
-      width: min(var(--max), 92vw); margin: 0 auto;
-      min-height: 62px; display: flex; align-items: center; justify-content: space-between; gap: 16px;
-    }
-    .brand { display: flex; align-items: center; gap: 10px; font-family: "Space Grotesk"; font-weight: 700; color: var(--ink); }
+    .topbar { position: sticky; top: 0; z-index: 50; background: rgba(15,20,27,0.85); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); }
+    .topbar-inner { width: min(var(--max), 90vw); margin: 0 auto; min-height: 60px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+    .brand { display: flex; align-items: center; gap: 9px; font-family: "Space Grotesk"; font-weight: 600; color: var(--ink); }
     .brand:hover { text-decoration: none; }
-    .dot { width: 11px; height: 11px; border-radius: 50%; background: linear-gradient(135deg, var(--teal), var(--amber)); box-shadow: 0 0 14px rgba(79,209,197,0.6); }
-    .nav { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
-    .nav a {
-      color: var(--muted); font-size: 0.88rem; font-weight: 500; padding: 6px 11px; border-radius: 8px;
-      transition: color .15s, background .15s;
-    }
-    .nav a:hover { color: var(--ink); background: rgba(255,255,255,0.04); text-decoration: none; }
+    .brand .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--accent); }
+    .nav { display: flex; gap: 20px; flex-wrap: wrap; }
+    .nav a { color: var(--muted); font-size: 0.9rem; font-weight: 500; }
+    .nav a:hover { color: var(--ink); text-decoration: none; }
+
+    /* ---- rhythm: sections separated by air + a single hairline ---- */
+    section { padding: 52px 0; }
+    section + section { border-top: 1px solid var(--line); }
+    .kicker { color: var(--accent); font-size: 0.78rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 10px; }
+    .sec-head { font-size: clamp(1.5rem, 3vw, 2.05rem); margin: 0 0 8px; }
+    .sec-sub { color: var(--muted); max-width: 70ch; margin: 0 0 6px; }
 
     /* ---- hero ---- */
-    .hero { padding: 70px 0 34px; }
-    .kicker {
-      display: inline-flex; align-items: center; gap: 8px; font-size: 0.8rem; font-weight: 600;
-      letter-spacing: 0.04em; color: var(--teal); text-transform: uppercase;
-      border: 1px solid rgba(79,209,197,0.25); background: rgba(79,209,197,0.07);
-      padding: 5px 12px; border-radius: 999px; margin-bottom: 18px;
-    }
-    .hero h1 { font-size: clamp(2.1rem, 5vw, 3.7rem); font-weight: 700; margin: 0 0 16px; letter-spacing: -0.01em; }
-    .hero h1 .g { background: linear-gradient(120deg, var(--teal), var(--sky)); -webkit-background-clip: text; background-clip: text; color: transparent; }
-    .lede { color: #c9d6e6; font-size: 1.12rem; max-width: 62ch; margin: 0 0 24px; }
+    .hero { padding-top: 64px; }
+    .hero-grid { display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 40px; align-items: center; }
+    .hero h1 { font-size: clamp(2.1rem, 5vw, 3.4rem); font-weight: 700; margin: 0 0 18px; letter-spacing: -0.015em; }
+    .hero h1 .g { color: var(--accent); }
+    .lede { color: #c2cdda; font-size: 1.1rem; max-width: 60ch; margin: 0 0 26px; }
     .lede b { color: var(--ink); font-weight: 600; }
+    .launch-row { display: flex; flex-wrap: wrap; gap: 12px; }
+    .launch { display: inline-flex; align-items: center; gap: 9px; padding: 11px 17px; border-radius: 9px; font-weight: 600; font-size: 0.94rem; transition: background .15s, transform .15s, border-color .15s; }
+    .launch:hover { transform: translateY(-1px); text-decoration: none; }
+    .launch.go { background: var(--accent); color: #07121f; }
+    .launch.go:hover { background: #74bcff; }
+    .launch.go .ld { width: 7px; height: 7px; border-radius: 50%; background: #07121f; opacity: 0.55; animation: pulse 2s infinite; }
+    .launch.ghost { color: var(--muted); }
+    .launch.ghost:hover { color: var(--ink); }
+    @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
 
-    .launch-row { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 26px; }
-    .launch {
-      display: inline-flex; align-items: center; gap: 10px; padding: 12px 16px; border-radius: 11px;
-      font-weight: 600; font-size: 0.95rem; color: #071018; border: 1px solid transparent;
-      transition: transform .16s, box-shadow .2s; box-shadow: 0 8px 22px rgba(0,0,0,0.28);
-    }
-    .launch:hover { transform: translateY(-2px); text-decoration: none; }
-    .launch .live-dot { width: 8px; height: 8px; border-radius: 50%; background: #0a2a18; box-shadow: 0 0 0 3px rgba(10,42,24,0.25); animation: pulse 2s infinite; }
-    .launch.ai { background: linear-gradient(135deg, #5aaeff, var(--violet)); }
-    .launch.augur { background: linear-gradient(135deg, var(--violet), #6f8cff); }
-    .launch.story { background: linear-gradient(135deg, var(--amber), var(--coral)); }
-    .launch.ghost { background: transparent; color: var(--ink); border-color: var(--line-2); box-shadow: none; }
-    .launch.ghost:hover { background: rgba(255,255,255,0.04); }
-    @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.35; } }
-
-    .hero-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 8px; }
-    .stat { border: 1px solid var(--line); border-radius: 12px; padding: 14px; background: var(--surface); }
-    .stat .n { font-family: "Space Grotesk"; font-size: 1.7rem; font-weight: 700; color: var(--amber); }
-    .stat .k { color: var(--muted); font-size: 0.84rem; margin-top: 2px; }
-    .hero-grid { display: grid; grid-template-columns: 1.2fr 0.85fr; gap: 34px; align-items: center; margin-bottom: 26px; }
-    .hero-aside { display: flex; flex-direction: column; }
-    .hero-banner { margin: 0; border: 1px solid var(--line-2); border-radius: 16px; overflow: hidden; box-shadow: 0 18px 50px rgba(0,0,0,0.42); position: relative; }
+    .hero-aside { display: flex; flex-direction: column; gap: 16px; }
+    .hero-banner { margin: 0; border-radius: 14px; overflow: hidden; box-shadow: 0 24px 60px rgba(0,0,0,0.45); }
     .hero-banner img { display: block; width: 100%; height: auto; }
-    .hero-banner::after { content: ""; position: absolute; inset: 0; box-shadow: inset 0 0 60px rgba(8,11,17,0.55); pointer-events: none; }
-    .hero-profile { display: flex; align-items: center; gap: 13px; margin-top: 16px; padding: 10px 14px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
-    .avatar { width: 56px; height: 56px; border-radius: 50%; object-fit: cover; object-position: top; border: 2px solid var(--teal); flex-shrink: 0; }
-    .hero-profile .who { font-family: "Space Grotesk"; font-weight: 600; font-size: 1rem; }
-    .hero-profile .who-sub { color: var(--muted); font-size: 0.84rem; }
+    .hero-profile { display: flex; align-items: center; gap: 13px; }
+    .avatar { width: 52px; height: 52px; border-radius: 50%; object-fit: cover; object-position: top; flex-shrink: 0; }
+    .hero-profile .who { font-family: "Space Grotesk"; font-weight: 600; }
+    .hero-profile .who-sub { color: var(--muted); font-size: 0.85rem; }
 
-    /* ---- sections ---- */
-    section { padding: 30px 0; }
-    .sec-kicker { color: var(--teal); font-size: 0.8rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; }
-    .sec-head { font-size: clamp(1.5rem, 3vw, 2.1rem); font-weight: 700; margin: 6px 0 6px; }
-    .sec-sub { color: var(--muted); max-width: 75ch; margin: 0 0 22px; }
+    .figs { display: flex; flex-wrap: wrap; margin-top: 34px; padding-top: 22px; border-top: 1px solid var(--line); }
+    .fig { padding: 0 26px; }
+    .fig + .fig { border-left: 1px solid var(--line); }
+    .fig:first-child { padding-left: 0; }
+    .fig .n { font-family: "Space Grotesk"; font-size: 1.75rem; font-weight: 700; color: var(--ink); }
+    .fig .k { color: var(--muted); font-size: 0.85rem; }
 
-    /* ---- live cards ---- */
-    .live-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
-    .live-card {
-      position: relative; border: 1px solid var(--line-2); border-radius: var(--r);
-      padding: 20px; background: linear-gradient(165deg, var(--surface), var(--surface-2));
-      display: flex; flex-direction: column; transition: transform .16s, border-color .2s;
-    }
-    .live-card:hover { transform: translateY(-3px); border-color: rgba(79,209,197,0.45); }
-    .live-badge { display: inline-flex; align-items: center; gap: 7px; font-size: 0.74rem; font-weight: 600; color: var(--live); letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 10px; }
-    .live-badge .d { width: 7px; height: 7px; border-radius: 50%; background: var(--live); box-shadow: 0 0 8px var(--live); animation: pulse 2s infinite; }
-    .live-card h3 { font-size: 1.15rem; margin: 0 0 7px; }
-    .live-card p { color: var(--muted); font-size: 0.92rem; margin: 0 0 16px; flex: 1; }
-    .live-card .open { align-self: flex-start; display: inline-flex; align-items: center; gap: 7px; font-weight: 600; font-size: 0.9rem; color: var(--teal); }
+    /* ---- live (lead) ---- */
+    .live-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; margin-top: 6px; }
+    .live-item { border-top: 1px solid var(--line-2); padding-top: 16px; }
+    .live-tag { display: inline-flex; align-items: center; gap: 7px; font-size: 0.74rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); margin-bottom: 8px; }
+    .live-tag .d { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 7px var(--accent); animation: pulse 2s infinite; }
+    .live-item h3 { font-size: 1.12rem; margin: 0 0 7px; }
+    .live-item p { color: var(--muted); font-size: 0.92rem; margin: 0 0 12px; }
+    .live-item .open { font-weight: 600; font-size: 0.9rem; }
 
-    /* ---- fleet ---- */
-    .fleet-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
-    .node {
-      border: 1px solid var(--line); border-radius: var(--r); padding: 18px; background: var(--surface);
-    }
-    .node h3 { font-size: 1.08rem; margin: 0 0 2px; display: flex; align-items: center; gap: 9px; flex-wrap: wrap; }
-    .node .role { font-family: "Inter"; font-weight: 500; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.05em; color: #071018; background: var(--teal); padding: 3px 8px; border-radius: 6px; }
-    .node .role.core { background: var(--amber); }
-    .node .role.edge { background: var(--violet); color: #0a0a12; }
-    .node .role.pub { background: var(--sky); }
-    .node .spec { color: var(--faint); font-size: 0.82rem; margin: 8px 0 10px; font-family: "IBM Plex Mono"; }
-    .node ul { margin: 0; padding-left: 18px; }
-    .node li { color: var(--muted); font-size: 0.9rem; margin-bottom: 4px; }
+    /* ---- fleet / hardware ---- */
+    .fleet { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 28px 36px; margin-top: 8px; }
+    .node { border-top: 1px solid var(--line); padding-top: 14px; }
+    .node h3 { font-size: 1.05rem; margin: 0; display: flex; align-items: baseline; gap: 9px; flex-wrap: wrap; }
+    .node .role { font-family: "IBM Plex Mono"; font-weight: 500; font-size: 0.72rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--accent); }
+    .node .spec { color: var(--faint); font-size: 0.8rem; font-family: "IBM Plex Mono"; margin: 7px 0 9px; line-height: 1.5; }
+    .node ul { margin: 0; padding-left: 17px; }
+    .node li { color: var(--muted); font-size: 0.89rem; margin-bottom: 4px; }
+    .pillars { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 22px 36px; margin-top: 40px; }
+    .pillar { border-top: 1px solid var(--line); padding-top: 13px; }
+    .pillar h4 { margin: 0 0 5px; font-size: 0.96rem; }
+    .pillar p { margin: 0; color: var(--muted); font-size: 0.87rem; }
 
-    /* ---- project cards ---- */
-    .cat { font-size: 0.82rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--faint); margin: 30px 0 14px; padding-bottom: 8px; border-bottom: 1px solid var(--line); }
-    .proj-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(330px, 1fr)); gap: 16px; align-items: start; }
-    .proj {
-      border: 1px solid var(--line); border-radius: var(--r); padding: 18px 20px; background: var(--surface);
-      transition: border-color .2s, transform .16s;
-    }
-    .proj:hover { border-color: var(--line-2); transform: translateY(-2px); }
-    .proj-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-bottom: 4px; }
-    .proj h4 { font-family: "Space Grotesk"; font-size: 1.12rem; font-weight: 600; margin: 0; }
-    .proj .tag { font-size: 0.72rem; color: var(--faint); font-family: "IBM Plex Mono"; white-space: nowrap; }
-    .proj .live-pill { font-size: 0.7rem; font-weight: 600; color: var(--live); border: 1px solid rgba(67,224,138,0.35); background: rgba(67,224,138,0.08); padding: 2px 8px; border-radius: 999px; }
-    .proj .summary { color: #cdd9e8; font-size: 0.95rem; margin: 6px 0 12px; }
-    .proj ul { margin: 0; padding-left: 18px; }
-    .proj li { color: var(--muted); font-size: 0.89rem; margin-bottom: 5px; }
+    /* ---- projects ---- */
+    .cat { font-family: "Space Grotesk"; font-size: 0.82rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--faint); margin: 40px 0 4px; }
+    .cat:first-of-type { margin-top: 20px; }
+    .proj-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 8px 44px; }
+    .proj { border-top: 1px solid var(--line); padding: 20px 0 4px; }
+    .proj-head { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; margin-bottom: 5px; }
+    .proj h4 { font-size: 1.1rem; margin: 0; }
+    .proj .tag { font-size: 0.72rem; color: var(--faint); font-family: "IBM Plex Mono"; }
+    .proj .lp { font-size: 0.7rem; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: var(--accent); }
+    .proj .summary { color: #c7d2df; font-size: 0.95rem; margin: 5px 0 11px; }
+    .proj ul { margin: 0; padding-left: 17px; }
+    .proj li { color: var(--muted); font-size: 0.88rem; margin-bottom: 5px; }
     .proj li b { color: var(--ink); font-weight: 600; }
-    details.more { margin-top: 10px; }
-    details.more summary { cursor: pointer; color: var(--teal); font-size: 0.86rem; font-weight: 600; list-style: none; }
+    details.more { margin-top: 9px; }
+    details.more summary { cursor: pointer; color: var(--accent); font-size: 0.85rem; font-weight: 600; list-style: none; }
     details.more summary::-webkit-details-marker { display: none; }
     details.more summary::before { content: "+ "; }
     details.more[open] summary::before { content: "– "; }
-    details.more p { color: var(--muted); font-size: 0.89rem; margin: 10px 0 0; }
-
-    /* ---- meshline ---- */
-    .pillars { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; margin-top: 18px; }
-    .pillar { border: 1px solid var(--line); border-radius: 12px; padding: 16px; background: var(--bg-2); }
-    .pillar h4 { margin: 0 0 6px; font-size: 0.98rem; }
-    .pillar p { margin: 0; color: var(--muted); font-size: 0.88rem; }
+    details.more p { color: var(--muted); font-size: 0.88rem; margin: 9px 0 0; }
 
     /* ---- footer ---- */
-    footer { border-top: 1px solid var(--line); margin-top: 36px; padding: 32px 0 48px; }
-    .foot-grid { display: flex; flex-wrap: wrap; gap: 24px; justify-content: space-between; align-items: flex-start; }
-    .foot-links { display: flex; flex-wrap: wrap; gap: 8px; }
-    .foot-links a { color: var(--muted); font-size: 0.88rem; padding: 6px 11px; border: 1px solid var(--line); border-radius: 8px; }
-    .foot-links a:hover { color: var(--ink); border-color: var(--line-2); text-decoration: none; }
-    .socials { display: flex; gap: 14px; }
+    footer { border-top: 1px solid var(--line); padding: 36px 0 52px; }
+    .foot-grid { display: flex; flex-wrap: wrap; gap: 22px 40px; justify-content: space-between; align-items: center; }
+    .foot-links { display: flex; flex-wrap: wrap; gap: 20px; }
+    .foot-links a { color: var(--muted); font-size: 0.9rem; }
+    .foot-links a:hover { color: var(--ink); text-decoration: none; }
+    .socials { display: flex; gap: 16px; }
     .socials a { color: var(--faint); }
-    .socials a:hover { color: var(--teal); }
-    .foot-note { color: var(--faint); font-size: 0.82rem; margin-top: 20px; }
+    .socials a:hover { color: var(--accent); }
+    .foot-note { color: var(--faint); font-size: 0.82rem; margin-top: 22px; max-width: 70ch; }
 
-    .fade { opacity: 0; transform: translateY(14px); transition: opacity .5s ease, transform .5s ease; }
+    .fade { opacity: 0; transform: translateY(10px); transition: opacity .5s ease, transform .5s ease; }
     .fade.in { opacity: 1; transform: none; }
 
-    @media (max-width: 880px) {
-      .hero-grid { grid-template-columns: 1fr; gap: 24px; }
-      .hero-aside { max-width: 460px; }
-    }
-    @media (max-width: 720px) {
-      .hero-stats { grid-template-columns: repeat(2, 1fr); }
+    @media (max-width: 860px) {
+      .hero-grid { grid-template-columns: 1fr; gap: 26px; }
+      .hero-aside { max-width: 440px; }
       .nav { display: none; }
+    }
+    @media (max-width: 560px) {
+      .fig { padding: 0 16px; }
+      .figs { gap: 14px 0; }
     }
   </style>
 </head>
@@ -217,8 +174,8 @@
       <a class="brand" href="#top"><span class="dot"></span> GuyWithGames</a>
       <nav class="nav" aria-label="Main navigation">
         <a href="#live">Live</a>
-        <a href="#projects">Projects</a>
         <a href="#lab">The Lab</a>
+        <a href="#projects">Projects</a>
         <a href="#links">Links</a>
       </nav>
     </div>
@@ -227,10 +184,10 @@
   <main class="wrap">
 
     <!-- ===================== HERO ===================== -->
-    <section class="hero" id="hero">
+    <section class="hero" id="hero" style="border-top:none;">
       <div class="hero-grid">
         <div class="hero-main fade in">
-          <span class="kicker">Systems architect · AI &amp; infrastructure builder</span>
+          <p class="kicker">Systems architect · AI &amp; infrastructure builder</p>
           <h1>I build a private <span class="g">AI stack</span> and the homelab that runs it.</h1>
           <p class="lede">
             I'm Halfax — a systems architect and developer. In my spare time I run a self-hosted lab where
@@ -239,9 +196,9 @@
             keeps it all reproducible. <b>No cloud LLMs in the loop.</b> A few of these are live right now — go poke at them.
           </p>
           <div class="launch-row">
-            <a class="launch ai" href="https://gamer.guywithgames.com/" target="_blank" rel="noopener"><span class="live-dot"></span> Halfax AI Chat</a>
-            <a class="launch augur" href="https://heimdall.guywithgames.com/" target="_blank" rel="noopener"><span class="live-dot"></span> Heimdall Augur</a>
-            <a class="launch story" href="https://www.guywithgames.com/universe/" target="_blank" rel="noopener"><span class="live-dot"></span> Story Universe</a>
+            <a class="launch go" href="https://gamer.guywithgames.com/" target="_blank" rel="noopener"><span class="ld"></span> Halfax AI Chat</a>
+            <a class="launch go" href="https://heimdall.guywithgames.com/" target="_blank" rel="noopener"><span class="ld"></span> Heimdall Augur</a>
+            <a class="launch go" href="https://www.guywithgames.com/universe/" target="_blank" rel="noopener"><span class="ld"></span> Story Universe</a>
             <a class="launch ghost" href="#projects">Browse projects ↓</a>
           </div>
         </div>
@@ -258,34 +215,34 @@
           </div>
         </aside>
       </div>
-      <div class="hero-stats">
-        <div class="stat"><div class="n">6</div><div class="k">hosts in the fleet</div></div>
-        <div class="stat"><div class="n">2</div><div class="k">LLMs resident on one iGPU</div></div>
-        <div class="stat"><div class="n">1</div><div class="k">OS written from scratch</div></div>
-        <div class="stat"><div class="n">0</div><div class="k">cloud LLMs in the loop</div></div>
+      <div class="figs fade in">
+        <div class="fig"><div class="n">6</div><div class="k">hosts in the fleet</div></div>
+        <div class="fig"><div class="n">2</div><div class="k">LLMs on one iGPU</div></div>
+        <div class="fig"><div class="n">1</div><div class="k">OS from scratch</div></div>
+        <div class="fig"><div class="n">0</div><div class="k">cloud LLMs in the loop</div></div>
       </div>
     </section>
 
     <!-- ===================== LIVE ===================== -->
     <section id="live">
-      <div class="sec-kicker">Live right now</div>
+      <p class="kicker">Live right now</p>
       <h2 class="sec-head">Things you can open and use</h2>
       <p class="sec-sub">Every one of these runs on my own hardware and serves to the public through a hardened reverse proxy. Click in.</p>
       <div class="live-grid">
-        <div class="live-card fade">
-          <span class="live-badge"><span class="d"></span> live</span>
+        <div class="live-item fade">
+          <span class="live-tag"><span class="d"></span> live</span>
           <h3>Halfax AI Chat</h3>
           <p>Chat with my private LLM server — the same model that drives my IDE extension and code tools, served over an OpenAI-compatible API on my own GPU. Nothing leaves the house.</p>
           <a class="open" href="https://gamer.guywithgames.com/" target="_blank" rel="noopener">Open the chat →</a>
         </div>
-        <div class="live-card fade">
-          <span class="live-badge"><span class="d"></span> live</span>
+        <div class="live-item fade">
+          <span class="live-tag"><span class="d"></span> live</span>
           <h3>Heimdall Augur</h3>
-          <p>Reads ~20 news outlets across opposing editorial blocs, then <b>computes</b> what's actually corroborated — a fact only counts when adversarial sources independently assert it. No pronouncements, every claim quote-checked. Read the consolidated story or drill into the evidence.</p>
+          <p>Reads ~20 news outlets across opposing editorial blocs, then <b>computes</b> what's actually corroborated — a fact only counts when adversarial sources independently assert it. No pronouncements, every claim quote-checked.</p>
           <a class="open" href="https://heimdall.guywithgames.com/" target="_blank" rel="noopener">Open the Augur →</a>
         </div>
-        <div class="live-card fade">
-          <span class="live-badge"><span class="d"></span> live</span>
+        <div class="live-item fade">
+          <span class="live-tag"><span class="d"></span> live</span>
           <h3>The Story Universe</h3>
           <p>An AI-driven story world that keeps running on its own across three machines — characters, factions, and arcs evolving in the background. The public World Browser reads straight from the canonical chronicle.</p>
           <a class="open" href="https://www.guywithgames.com/universe/" target="_blank" rel="noopener">Open the World Browser →</a>
@@ -293,18 +250,77 @@
       </div>
     </section>
 
+    <!-- ===================== THE LAB (hardware — second) ===================== -->
+    <section id="lab">
+      <p class="kicker">The hardware</p>
+      <h2 class="sec-head">The Lab — six hosts, one private mesh</h2>
+      <p class="sec-sub">Each host does what its hardware is good at, not what's convenient. They all talk over the same WireGuard mesh, so internal traffic stays internal even when machines are continents apart.</p>
+      <div class="fleet">
+        <article class="node fade">
+          <h3>Betelgeuse <span class="role">AI inference</span></h3>
+          <div class="spec">GMKtec EVO-X2 · Ryzen AI MAX+ 395 (16C/32T) · Radeon 8060S, 96 GiB UMA VRAM (96/32 split) · 128 GB unified · Ubuntu</div>
+          <ul>
+            <li>The GPU box: two LLMs resident, embeddings, the Story Universe narrative engine, PictureAI</li>
+            <li>Strix Halo iGPU does double duty for the AI stack and the desktop — no discrete card, Vulkan path</li>
+          </ul>
+        </article>
+        <article class="node fade">
+          <h3>Cygnus <span class="role">data &amp; infra</span></h3>
+          <div class="spec">Beelink SER9 MAX · Ryzen 7 H 255 (8C/16T) · Radeon 780M · 64 GB DDR5 · Ubuntu 26.04</div>
+          <ul>
+            <li>The fleet's data/infra tier: GitLab, the KeySecrets vault, MongoDB, Qdrant, SearXNG, Tor</li>
+            <li>The Heimdall Augur's workers and web live here too, calling Betelgeuse's GPU for inference</li>
+          </ul>
+        </article>
+        <article class="node fade">
+          <h3>UYScuti <span class="role">gaming + dev</span></h3>
+          <div class="spec">Alienware 18 Area-51 · Core Ultra 9 275HX · RTX 5080 Laptop (16 GB) · Windows 11 Pro</div>
+          <ul>
+            <li>My daily driver — code, games, anything that wants a real keyboard and a discrete GPU</li>
+            <li>Home to the Windows-native work (the kernel-driver telemetry, VMs) and the manual third DR copy</li>
+          </ul>
+        </article>
+        <article class="node fade">
+          <h3>hera-pi <span class="role">always-on edge</span></h3>
+          <div class="spec">Raspberry Pi 5 · Cortex-A76 ×4 · 8 GB · NVMe · Debian 13</div>
+          <ul>
+            <li>The low-power always-on node: the Story Universe's Chronicle Keeper, the DDNS updater, the public reverse proxy, the off-box backup target</li>
+          </ul>
+        </article>
+        <article class="node fade">
+          <h3>Guy <span class="role">public host</span></h3>
+          <div class="spec">Linode 4 GB · Rocky Linux 9 · Apache + Postfix/Dovecot</div>
+          <ul>
+            <li>The public face: this site, mail (<code>mail.guywithgames.com</code>), and the live World Browser</li>
+          </ul>
+        </article>
+        <article class="node fade">
+          <h3>Shop <span class="role">secondary web</span></h3>
+          <div class="spec">Linode Nanode · Rocky Linux 9 · Apache</div>
+          <ul>
+            <li>A small secondary web host (<code>shopmom.net</code>), off the mesh, reached by direct SSH</li>
+          </ul>
+        </article>
+      </div>
+      <div class="pillars">
+        <div class="pillar fade"><h4>NetBird mesh</h4><p>Managed WireGuard. Every host gets a <code>100.87.x.x</code> address and reaches the others directly — SSH, Mongo, the vault API, the story pub/sub — none of it on the public internet.</p></div>
+        <div class="pillar fade"><h4>BIND9 private DNS</h4><p>An authoritative private zone gives every service a stable name; move a service and one DNS record changes — nothing is hardcoded to an IP.</p></div>
+        <div class="pillar fade"><h4>Right workload, right node</h4><p>Heavy compute on the GPU box, data/infra on Cygnus, always-on light work on the Pi, public entry points on the VPSes where uptime beats throughput.</p></div>
+        <div class="pillar fade"><h4>Let's Encrypt TLS</h4><p>Every public service uses free auto-renewing certs from <a href="https://letsencrypt.org/" target="_blank" rel="noopener">Let's Encrypt</a> (ISRG) — worth a <a href="https://letsencrypt.org/donate/" target="_blank" rel="noopener">donation</a> to keep it free for everyone.</p></div>
+      </div>
+    </section>
+
     <!-- ===================== PROJECTS ===================== -->
     <section id="projects">
-      <div class="sec-kicker">What I build</div>
+      <p class="kicker">What I build</p>
       <h2 class="sec-head">Projects</h2>
       <p class="sec-sub">AI tooling, distributed systems, security work, a from-scratch OS, and games — built end to end and run in production on the lab. Skim the headlines; expand the ones that interest you.</p>
 
-      <!-- AI & STORY -->
       <div class="cat">AI &amp; Story</div>
       <div class="proj-grid">
 
         <article class="proj fade">
-          <div class="proj-head"><h4>Story Universe</h4><span class="live-pill">live</span></div>
+          <div class="proj-head"><h4>Story Universe</h4><span class="lp">live</span></div>
           <p class="summary">A persistent, AI-driven narrative world that runs unattended across three machines — closer to an MMO backend than a chatbot.</p>
           <ul>
             <li><b>Three hosts, split by strength:</b> a Raspberry Pi holds the canonical world state in SQLite and broadcasts a world-clock over ZeroMQ; my GPU box generates each event with the in-house LLM; a public VPS renders the live World Browser.</li>
@@ -317,7 +333,7 @@
         </article>
 
         <article class="proj fade">
-          <div class="proj-head"><h4>Halfax AI Stack</h4><span class="live-pill">live</span></div>
+          <div class="proj-head"><h4>Halfax AI Stack</h4><span class="lp">live</span></div>
           <p class="summary">A private multi-model AI server on my own hardware, OpenAI-compatible so any tool that talks to OpenAI talks to mine instead.</p>
           <ul>
             <li><b>Two models resident on one iGPU.</b> A Qwen3-Next-80B-A3B mixture-of-experts model (lm1) drives all the analytical work — code, reasoning, the Augur — and a 21B uncensored model (lm2) serves the Story Universe, together in the AMD Strix Halo's <b>96 GiB of UMA VRAM</b> via Vulkan (~63 GiB resident).</li>
@@ -331,7 +347,7 @@
         </article>
 
         <article class="proj fade">
-          <div class="proj-head"><h4>Heimdall Augur</h4><span class="live-pill">live</span></div>
+          <div class="proj-head"><h4>Heimdall Augur</h4><span class="lp">live</span></div>
           <p class="summary">Ingests ~20 editorial news feeds, clusters cross-source coverage of the same story, and <b>computes corroboration across opposing blocs</b> — truth as a property of the source graph, not an opinion.</p>
           <ul>
             <li><b>~20 sources, deliberately adversarial.</b> The Western core (BBC, NPR, Guardian, DW, France 24, ABC, Al Jazeera) sits alongside state and regional press (TASS, Press TV, China Daily, SCMP, Times of Israel, Arab News, Daily Sabah, Yonhap, the Hindu…) plus SEC EDGAR filings and the Bluesky firehose.</li>
@@ -350,7 +366,7 @@
           <ul>
             <li><b>Not a fork.</b> Custom React webview, Zustand state, an in-process MCP stdio client, OpenAI-compatible streaming to local llama.cpp. Distributed only as a sideloaded VSIX from the lab.</li>
             <li><b>The agent loop is a real state machine</b> (pending → in_progress → completed | awaiting_user | error | cancelled), and every successful turn flushes history to disk — quit or crash mid-task and it auto-resumes where it stopped.</li>
-            <li><b>One GPU slot, prioritized:</b> autocomplete &lt; chat &lt; agent, so a long agent task never starves typing-time completion. Applies preview via diff and write through MCP with mtime conflict detection.</li>
+            <li><b>One GPU slot, prioritized:</b> autocomplete &lt; chat &lt; agent, so a long agent task never starves typing-time completion. Applies preview via diff and writes through MCP with mtime conflict detection.</li>
           </ul>
         </article>
 
@@ -364,7 +380,6 @@
         </article>
       </div>
 
-      <!-- INFRASTRUCTURE & OPERATIONS -->
       <div class="cat">Infrastructure &amp; Operations</div>
       <div class="proj-grid">
 
@@ -414,7 +429,7 @@
           <ul>
             <li><b>Built from source-of-truth:</b> Tor from the project's signed apt repo, the Browser tarball GPG-verified at build time — no third-party Docker Hub image in the trust path.</li>
             <li><b>Never public:</b> ports bind LAN + Netbird only, with a second <code>SocksPolicy</code> gate; a health check builds a real circuit each interval rather than just checking the port.</li>
-            <li><b>Country-pinned siblings</b> (DE / NL / JP, <code>StrictNodes 1</code>) let the Augur read state media as a non-Western reader sees it.</li>
+            <li><b>Country-pinned siblings</b> (DE / NL / JP) let the Augur read state media as a non-Western reader sees it.</li>
           </ul>
         </article>
 
@@ -422,7 +437,7 @@
           <div class="proj-head"><h4>tor-recon</h4><span class="tag">Python + SOCKS5</span></div>
           <p class="summary">Audits my own public surface from a Tor exit — an IP on none of my allowlists — so I see exactly what an outside scanner sees.</p>
           <ul>
-            <li><b>Parses the SOCKS5 reply byte</b> to tell a target's refusal (<code>0x05</code>) from the Tor exit's own port policy (<code>0x02</code>), which most probes conflate into false findings.</li>
+            <li><b>Parses the SOCKS5 reply byte</b> to tell a target's refusal from the Tor exit's own port policy, which most probes conflate into false findings.</li>
             <li><b>Negative assertions:</b> verifies that services which should never be public (the agent API, MongoDB, the vault, GitLab, dashboards) actually refuse from outside, across every external face.</li>
             <li><b>First runs earned their keep:</b> caught a silently-expired mail cert, a public Flask dev server running as root over plaintext, and an orphan UPnP forward. Each fixed and re-verified.</li>
           </ul>
@@ -433,7 +448,7 @@
           <p class="summary">Joins active scans, BIND9 records, DHCP leases, audit hits, and Netbird peer state against one device identity — so a device shows up once, with everything any tool knows about it.</p>
           <ul>
             <li><b>Drift-aware:</b> re-running a scan flags new hosts, disappeared services, unexpected ports, and mesh peers gone dark.</li>
-            <li><b>Live dashboard</b> drills from a device into every record and distinguishes "a new device" from "an old device with new behavior" — the call security tooling exists to make.</li>
+            <li><b>Live dashboard</b> drills from a device into every record and distinguishes "a new device" from "an old device with new behavior."</li>
           </ul>
         </article>
 
@@ -448,7 +463,6 @@
         </article>
       </div>
 
-      <!-- SYSTEMS & SECURITY -->
       <div class="cat">Systems &amp; Security</div>
       <div class="proj-grid">
 
@@ -468,7 +482,7 @@
           <ul>
             <li><b>Correlates real-time BGP</b> (RIPE RIS Live, RouteViews replay) <b>with Steam behavioral data</b> (player counts, reviews, patch impact) to surface patterns nobody else tools for.</li>
             <li><b>Forensic features:</b> hijack-vs-misconfig classification, AS "personality profiles," prefix-ghosting, review-bomb detection, sentiment drift, review-DNA fingerprinting.</li>
-            <li><b>TimescaleDB</b> time-series with auto-bootstrap that pulls weeks of history on first run and catches up intelligently after downtime.</li>
+            <li><b>TimescaleDB</b> time-series with auto-bootstrap that pulls weeks of history on first run and catches up after downtime.</li>
           </ul>
         </article>
 
@@ -478,12 +492,11 @@
           <ul>
             <li><b>Per-recipient cryptographic sharing:</b> every secret has its own data key, sealed individually to each recipient; revoking is one wrapped-key delete. The wrap is hybrid post-quantum by default (X25519 + ML-KEM-768) — the server won't start without ML-KEM.</li>
             <li><b>Conservative crypto:</b> Argon2id, ChaCha20-Poly1305, mandatory TOTP; master passwords are never stored, existing only as a session-key input in memory.</li>
-            <li><b>The consumption story — <code>halfax-secrets</code>:</b> a tiny lib + <code>ks-get</code> CLI fetches credentials over the API at runtime, so programs hold no <code>.env</code> files; per-host <code>kss_</code> service tokens authenticate unattended scripts. Exactly five named plaintext files remain on disk — the bootstrap anchors — and everything else fetches live.</li>
+            <li><b>The consumption story — <code>halfax-secrets</code>:</b> a tiny lib + <code>ks-get</code> CLI fetches credentials over the API at runtime, so programs hold no <code>.env</code> files; per-host <code>kss_</code> service tokens authenticate unattended scripts.</li>
           </ul>
         </article>
       </div>
 
-      <!-- GAMES -->
       <div class="cat">Games</div>
       <div class="proj-grid">
         <article class="proj fade">
@@ -493,86 +506,22 @@
       </div>
     </section>
 
-    <!-- ===================== THE LAB ===================== -->
-    <section id="lab">
-      <div class="sec-kicker">The hardware</div>
-      <h2 class="sec-head">The Lab — six hosts, one private mesh</h2>
-      <p class="sec-sub">Each host does what its hardware is good at, not what's convenient. They all talk over the same WireGuard mesh, so internal traffic stays internal even when machines are continents apart.</p>
-      <div class="fleet-grid">
-        <article class="node fade">
-          <h3>Betelgeuse <span class="role">AI inference</span></h3>
-          <div class="spec">GMKtec EVO-X2 · Ryzen AI MAX+ 395 (16C/32T) · Radeon 8060S, 96 GiB UMA VRAM (96/32 split) · 128 GB unified · Ubuntu</div>
-          <ul>
-            <li>The GPU box: two LLMs resident, embeddings, the Story Universe narrative engine, PictureAI</li>
-            <li>Strix Halo iGPU does double duty for the AI stack and the desktop — no discrete card, Vulkan path</li>
-          </ul>
-        </article>
-        <article class="node fade">
-          <h3>Cygnus <span class="role core">data &amp; infra</span></h3>
-          <div class="spec">Beelink SER9 MAX · Ryzen 7 H 255 (8C/16T) · Radeon 780M · 64 GB DDR5 · Ubuntu 26.04</div>
-          <ul>
-            <li>The fleet's data/infra tier (since mid-2026): GitLab, the KeySecrets vault, MongoDB, Qdrant, SearXNG, Tor</li>
-            <li>The Heimdall Augur's workers and web also live here, calling Betelgeuse's GPU for inference</li>
-          </ul>
-        </article>
-        <article class="node fade">
-          <h3>UYScuti <span class="role edge">gaming + dev</span></h3>
-          <div class="spec">Alienware 18 Area-51 · Core Ultra 9 275HX · RTX 5080 Laptop (16 GB) · Windows 11 Pro</div>
-          <ul>
-            <li>My daily driver — code, games, anything that wants a real keyboard and a discrete GPU</li>
-            <li>Home to the Windows-native work (the kernel-driver telemetry, VMs) and the manual third DR copy</li>
-          </ul>
-        </article>
-        <article class="node fade">
-          <h3>hera-pi <span class="role edge">always-on edge</span></h3>
-          <div class="spec">Raspberry Pi 5 · Cortex-A76 ×4 · 8 GB · NVMe · Debian 13</div>
-          <ul>
-            <li>The low-power always-on node: the Story Universe's Chronicle Keeper, the DDNS updater, the public reverse proxy, the off-box backup target</li>
-          </ul>
-        </article>
-        <article class="node fade">
-          <h3>Guy <span class="role pub">public host</span></h3>
-          <div class="spec">Linode 4 GB · Rocky Linux 9 · Apache + Postfix/Dovecot</div>
-          <ul>
-            <li>The public face: this site, mail (<code>mail.guywithgames.com</code>), and the live World Browser</li>
-          </ul>
-        </article>
-        <article class="node fade">
-          <h3>Shop <span class="role pub">secondary web</span></h3>
-          <div class="spec">Linode Nanode · Rocky Linux 9 · Apache</div>
-          <ul>
-            <li>A small secondary web host (<code>shopmom.net</code>), off the mesh, reached by direct SSH</li>
-          </ul>
-        </article>
-      </div>
-
-      <div class="pillars">
-        <div class="pillar fade"><h4>NetBird mesh</h4><p>Managed WireGuard. Every host gets a <code>100.87.x.x</code> address and reaches the others directly — SSH, Mongo, the vault API, the story pub/sub — none of it on the public internet.</p></div>
-        <div class="pillar fade"><h4>BIND9 private DNS</h4><p>An authoritative private zone gives every service a stable name; move a service and one DNS record changes — nothing is hardcoded to an IP.</p></div>
-        <div class="pillar fade"><h4>Right workload, right node</h4><p>Heavy compute on the GPU box, data/infra on Cygnus, always-on light work on the Pi, public entry points on the VPSes where uptime beats throughput.</p></div>
-        <div class="pillar fade"><h4>Let's Encrypt TLS</h4><p>Every public service uses free auto-renewing certs from <a href="https://letsencrypt.org/" target="_blank" rel="noopener">Let's Encrypt</a> (ISRG) — worth a <a href="https://letsencrypt.org/donate/" target="_blank" rel="noopener">donation</a> to keep it free for everyone.</p></div>
-      </div>
-    </section>
-
     <!-- ===================== FOOTER ===================== -->
     <footer id="links">
       <div class="foot-grid">
-        <div>
-          <div class="sec-kicker">Elsewhere</div>
-          <div class="foot-links" style="margin-top:10px;">
-            <a href="https://gamer.guywithgames.com/" target="_blank" rel="noopener">Halfax AI Chat</a>
-            <a href="https://heimdall.guywithgames.com/" target="_blank" rel="noopener">Heimdall Augur</a>
-            <a href="https://www.guywithgames.com/universe/" target="_blank" rel="noopener">Story Universe</a>
-            <a href="https://www.guywithbeer.net/" target="_blank" rel="noopener">GuyWithBeer</a>
-            <a href="https://www.shopmom.net/" target="_blank" rel="noopener">ShopMom</a>
-          </div>
+        <div class="foot-links">
+          <a href="https://gamer.guywithgames.com/" target="_blank" rel="noopener">Halfax AI Chat</a>
+          <a href="https://heimdall.guywithgames.com/" target="_blank" rel="noopener">Heimdall Augur</a>
+          <a href="https://www.guywithgames.com/universe/" target="_blank" rel="noopener">Story Universe</a>
+          <a href="https://www.guywithbeer.net/" target="_blank" rel="noopener">GuyWithBeer</a>
+          <a href="https://www.shopmom.net/" target="_blank" rel="noopener">ShopMom</a>
         </div>
-        <div class="socials" aria-label="social links" style="align-items:center;">
+        <div class="socials" aria-label="social links">
           <a href="https://discord.gg/HrnWnTJsyz" target="_blank" rel="noopener" title="Discord" aria-label="Discord">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.095 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.095 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.095 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.095 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
           </a>
           <a href="https://steamcommunity.com/id/halfax/" target="_blank" rel="noopener" title="Steam" aria-label="Steam">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M11.979 0C5.678 0 .511 4.86.022 10.945l6.432 2.658a3.387 3.387 0 0 1 1.912-.59c.064 0 .127.003.19.008l2.861-4.142V8.83c0-2.596 2.113-4.708 4.708-4.708 2.596 0 4.708 2.112 4.708 4.708 0 2.596-2.112 4.708-4.708 4.708h-.11l-4.076 2.91c0 .05.004.1.004.15 0 1.948-1.582 3.53-3.53 3.53-1.7 0-3.126-1.207-3.455-2.813L.335 15.17C1.633 20.249 6.358 24 11.979 24c6.627 0 12-5.373 12-12S18.606 0 11.979 0zM7.54 18.21l-1.473-.61c.262.543.714.985 1.3 1.2a2.654 2.654 0 0 0 3.326-1.723 2.636 2.636 0 0 0-.006-2.028 2.646 2.646 0 0 0-1.425-1.435 2.632 2.632 0 0 0-1.936-.116l1.522.63A1.946 1.946 0 0 1 7.54 18.21zm10.585-7.433a3.139 3.139 0 0 0-3.136-3.136 3.14 3.14 0 0 0-3.137 3.136 3.14 3.14 0 0 0 3.137 3.136 3.139 3.139 0 0 0 3.136-3.136zm-5.488.005a2.358 2.358 0 0 1 2.357-2.357 2.357 2.357 0 1 1-2.357 2.357z"/></svg>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M11.979 0C5.678 0 .511 4.86.022 10.945l6.432 2.658a3.387 3.387 0 0 1 1.912-.59c.064 0 .127.003.19.008l2.861-4.142V8.83c0-2.596 2.113-4.708 4.708-4.708 2.596 0 4.708 2.112 4.708 4.708 0 2.596-2.112 4.708-4.708 4.708h-.11l-4.076 2.91c0 .05.004.1.004.15 0 1.948-1.582 3.53-3.53 3.53-1.7 0-3.126-1.207-3.455-2.813L.335 15.17C1.633 20.249 6.358 24 11.979 24c6.627 0 12-5.373 12-12S18.606 0 11.979 0zM7.54 18.21l-1.473-.61c.262.543.714.985 1.3 1.2a2.654 2.654 0 0 0 3.326-1.723 2.636 2.636 0 0 0-.006-2.028 2.646 2.646 0 0 0-1.425-1.435 2.632 2.632 0 0 0-1.936-.116l1.522.63A1.946 1.946 0 0 1 7.54 18.21zm10.585-7.433a3.139 3.139 0 0 0-3.136-3.136 3.14 3.14 0 0 0-3.137 3.136 3.14 3.14 0 0 0 3.137 3.136 3.139 3.139 0 0 0 3.136-3.136zm-5.488.005a2.358 2.358 0 0 1 2.357-2.357 2.357 2.357 0 1 1-2.357 2.357z"/></svg>
           </a>
         </div>
       </div>
@@ -581,11 +530,10 @@
   </main>
 
   <script>
-    // reveal-on-scroll
     const io = new IntersectionObserver((entries) => {
       for (const e of entries) { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }
-    }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
-    document.querySelectorAll('.fade').forEach((el) => io.observe(el));
+    }, { rootMargin: '0px 0px -6% 0px', threshold: 0.06 });
+    document.querySelectorAll('.fade:not(.in)').forEach((el) => io.observe(el));
   </script>
 </body>
 </html>
