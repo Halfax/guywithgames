@@ -22,13 +22,13 @@
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #0f141b;
-      --bg-2: #131a22;
-      --ink: #e9eef5;
-      --muted: #94a2b4;
-      --faint: #61707f;
-      --line: #1d2630;
-      --line-2: #27313d;
+      --bg: #1b2531;
+      --bg-2: #212d3b;
+      --ink: #eef2f8;
+      --muted: #a6b3c4;
+      --faint: #76838f;
+      --line: #2f3b49;
+      --line-2: #3b4856;
       --accent: #5aaeff;
       --accent-dim: #6f9fce;
       --accent-soft: rgba(90,174,255,0.10);
@@ -38,7 +38,7 @@
     html { scroll-behavior: smooth; }
     body {
       margin: 0;
-      background: linear-gradient(180deg, #0c1118, var(--bg) 30%);
+      background: linear-gradient(180deg, #212d3b, var(--bg) 28%);
       color: var(--ink);
       font-family: "Inter", "Segoe UI", system-ui, sans-serif;
       font-size: 16px; line-height: 1.62;
@@ -53,7 +53,7 @@
     .accent { color: var(--accent); }
 
     /* ---- nav ---- */
-    .topbar { position: sticky; top: 0; z-index: 50; background: rgba(15,20,27,0.85); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); }
+    .topbar { position: sticky; top: 0; z-index: 50; background: rgba(27,37,49,0.86); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); }
     .topbar-inner { width: min(var(--max), 90vw); margin: 0 auto; min-height: 60px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
     .brand { display: flex; align-items: center; gap: 9px; font-family: "Space Grotesk"; font-weight: 600; color: var(--ink); }
     .brand:hover { text-decoration: none; }
@@ -313,7 +313,7 @@
         </article>
       </div>
       <div class="pillars">
-        <div class="pillar fade"><h4>NetBird mesh</h4><p>Managed WireGuard. Every host gets a <code>100.87.x.x</code> address and reaches the others directly — SSH, Mongo, the vault API, the story pub/sub — none of it on the public internet.</p></div>
+        <div class="pillar fade"><h4>NetBird mesh</h4><p>Managed WireGuard. Every host reaches the others directly over a private mesh address — SSH, the database, the vault API, the story pub/sub — none of it on the public internet.</p></div>
         <div class="pillar fade"><h4>BIND9 private DNS</h4><p>An authoritative private zone gives every service a stable name; move a service and one DNS record changes — nothing is hardcoded to an IP.</p></div>
         <div class="pillar fade"><h4>Right workload, right node</h4><p>Heavy compute on the GPU box, data/infra on Cygnus, always-on light work on the Pi, public entry points on the VPSes where uptime beats throughput.</p></div>
         <div class="pillar fade"><h4>Let's Encrypt TLS</h4><p>Every public service uses free auto-renewing certs from <a href="https://letsencrypt.org/" target="_blank" rel="noopener">Let's Encrypt</a> (ISRG) — worth a <a href="https://letsencrypt.org/donate/" target="_blank" rel="noopener">donation</a> to keep it free for everyone.</p></div>
@@ -563,7 +563,7 @@
           <ul>
             <li><b>Per-recipient cryptographic sharing:</b> every secret has its own data key, sealed individually to each recipient; revoking is one wrapped-key delete. The wrap is hybrid post-quantum by default (X25519 + ML-KEM-768) — the server won't start without ML-KEM.</li>
             <li><b>Conservative crypto:</b> Argon2id, ChaCha20-Poly1305, mandatory TOTP; master passwords are never stored, existing only as a session-key input in memory.</li>
-            <li><b>The consumption story — <code>halfax-secrets</code>:</b> a tiny lib + <code>ks-get</code> CLI fetches credentials over the API at runtime, so programs hold no <code>.env</code> files; per-host <code>kss_</code> service tokens authenticate unattended scripts.</li>
+            <li><b>The consumption story — <code>halfax-secrets</code>:</b> a tiny lib + <code>ks-get</code> CLI fetches credentials over the API at runtime, so programs hold no <code>.env</code> files; per-host service tokens authenticate unattended scripts.</li>
           </ul>
         </article>
       </div>
