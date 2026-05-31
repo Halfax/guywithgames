@@ -401,7 +401,7 @@
 
         <article class="proj fade">
           <div class="proj-head"><h4>Story Universe</h4><span class="lp">live</span></div>
-          <p class="summary">A persistent, AI-driven narrative world that runs unattended across three machines — closer to an MMO backend than a chatbot.</p>
+          <p class="summary">A persistent, AI-driven narrative world that runs unattended across three machines — closer to an MMO backend than a chatbot, and it will pause the entire world before it fabricates a single scene.</p>
           <ul>
             <li><b>Three hosts, split by strength:</b> a Raspberry Pi holds the canonical world state in SQLite and broadcasts a world-clock over ZeroMQ; my GPU box generates each event with the in-house LLM; a public VPS renders the live World Browser.</li>
             <li><b>It remembers itself.</b> Every accepted event is written to a ChromaDB semantic memory; the engine retrieves relevant past events and injects them as context before each generation, so the story builds on itself instead of restarting cold.</li>
@@ -414,7 +414,7 @@
 
         <article class="proj fade">
           <div class="proj-head"><h4>Halfax AI Stack</h4><span class="lp">live</span></div>
-          <p class="summary">A private multi-model AI server on my own hardware, OpenAI-compatible so any tool that talks to OpenAI talks to mine instead.</p>
+          <p class="summary">A private multi-model AI server on my own hardware that runs an <b>80-billion-parameter model on an integrated GPU</b> — fast — even though the vendor's own compute stack doesn't work on this chip. OpenAI-compatible, so any tool that talks to OpenAI talks to mine instead.</p>
           <ul>
             <li><b>Two models resident on one iGPU.</b> A Qwen3-Next-80B-A3B mixture-of-experts model (lm1) drives all the analytical work — code, reasoning, the Augur — and a 21B uncensored model (lm2) serves the Story Universe, together in the AMD Strix Halo's <b>96 GiB of UMA VRAM</b> via Vulkan (~63 GiB resident).</li>
             <li><b>MoE is the trick.</b> On a bandwidth-bound integrated GPU, an 80B model that only activates ~3B parameters per token runs roughly 10× faster than a dense model its size — capability without the bandwidth tax.</li>
@@ -442,7 +442,7 @@
 
         <article class="proj fade">
           <div class="proj-head"><h4>Halfax AI VSCode Extension</h4><span class="tag">TypeScript</span></div>
-          <p class="summary">A from-scratch IDE client — chat, autonomous edits, autocomplete, one-click apply — that talks to <em>my</em> GPU, logs to plain JSON I own, and works with the internet unplugged.</p>
+          <p class="summary">A from-scratch IDE client — chat, autonomous edits, autocomplete, one-click apply — that talks to <em>my</em> GPU, logs to plain JSON I own, works with the internet unplugged, and <b>resumes its agent mid-task after a crash — which none of Copilot, Cursor, or Cascade do.</b></p>
           <ul>
             <li><b>Not a fork.</b> Custom React webview, Zustand state, an in-process MCP stdio client, OpenAI-compatible streaming to local llama.cpp. Distributed only as a sideloaded VSIX from the lab.</li>
             <li><b>The agent loop is a real state machine</b> (pending → in_progress → completed | awaiting_user | error | cancelled), and every successful turn flushes history to disk — quit or crash mid-task and it auto-resumes where it stopped.</li>
@@ -495,7 +495,7 @@
 
         <article class="proj fade">
           <div class="proj-head"><h4>Recovery Plan + Drift Detector</h4><span class="tag">Bash + Python</span></div>
-          <p class="summary">Not just backups — a recovery <em>tree</em>: the backups plus the runbook to use them, both off-boxed, both reproducible, with a guard that catches silent drift.</p>
+          <p class="summary">Not just backups — a recovery <em>tree</em>: the backups plus the runbook to use them, both off-boxed, both reproducible, with a drift guard that <b>recently caught a service that had been silently dead for six months.</b></p>
           <ul>
             <li><b>The chain:</b> Mongo dump, GitLab + secrets bundle, a twice-daily AES-256 Tier-A archive (three local mirrors + off-box rsync to separate hardware in a separate room). A manual third copy lives on the Windows workstation for the "both Linux boxes gone" case.</li>
             <li><b>Cold-metal bootstrap</b> is chained so each step unlocks the next: decrypt archive → restore the vault's bootstrap files → <code>mongorestore</code> → start KeySecrets → <code>ks-get</code> works → clone from GitLab with the PAT pulled from the freshly-up vault.</li>
@@ -515,7 +515,7 @@
 
         <article class="proj fade">
           <div class="proj-head"><h4>tor-recon</h4><span class="tag">Python + SOCKS5</span></div>
-          <p class="summary">Audits my own public surface from a Tor exit — an IP on none of my allowlists — so I see exactly what an outside scanner sees.</p>
+          <p class="summary">Audits my own public surface from a Tor exit — an IP on none of my allowlists — so I see exactly what an outside scanner sees. On its first runs it caught a public dev server running as <b>root over plaintext</b> and a silently-expired TLS cert my own use never noticed.</p>
           <ul>
             <li><b>Parses the SOCKS5 reply byte</b> to tell a target's refusal from the Tor exit's own port policy, which most probes conflate into false findings.</li>
             <li><b>Negative assertions:</b> verifies that services which should never be public (the agent API, MongoDB, the vault, GitLab, dashboards) actually refuse from outside, across every external face.</li>
@@ -534,7 +534,7 @@
 
         <article class="proj fade">
           <div class="proj-head"><h4>Halfax System Reporter</h4><span class="tag">Windows kernel driver</span></div>
-          <p class="summary">A hardware-telemetry platform fronted by a custom WDM (Ring 0) driver that reads MSRs, PCI config space, and SMBus/I2C directly — the access level commercial tools use, written from scratch.</p>
+          <p class="summary">A hardware-telemetry platform fronted by a custom WDM (Ring 0) driver that reads MSRs, PCI config space, and SMBus/I2C directly — the same access level commercial tools like HWiNFO use, written from scratch. A driver that loads into Ring 0 is a different league than calling an API.</p>
           <ul>
             <li><b>Three layers:</b> the kernel driver for raw access, a C++ user-mode broker that wraps IOCTLs into JSON, and native helpers for CPUID topology, RAM SPD timings, NVMe SMART, and EDID.</li>
             <li><b>From MSRs:</b> per-core temps with thermal margins, RAPL power, turbo ratios, C-state residency, microcode version — with multi-method fallback chains so even locked-down systems yield most readings.</li>
@@ -548,7 +548,7 @@
 
         <article class="proj fade">
           <div class="proj-head"><h4>HalfaxOS</h4><span class="tag">x86_64, from scratch</span></div>
-          <p class="summary">A 64-bit capability-based OS written entirely from scratch in C and assembly — no borrowed kernel code. Boots via GRUB2 Multiboot2 on VMware and real hardware.</p>
+          <p class="summary">A 64-bit capability-based OS written entirely from scratch in C and assembly — no borrowed kernel code, boots on VMware and real hardware. Most hobby "OSes" stop at a bootloader; this one has a working TCP/IP stack, a window manager, and Ring-3 ELF programs. <b>The largest single thing I've written, and every line is mine.</b></p>
           <ul>
             <li><b>Capability security model:</b> typed, permission-checked handles replace UNIX file descriptors; <code>cap_dup()</code> can only attenuate, never escalate — making whole classes of bugs structurally impossible. Same direction as Fuchsia and CHERI.</li>
             <li><b>Kernel internals:</b> 38 syscalls, SMP preemptive scheduler with per-process CR3, 4-level paging VMM, message-passing IPC, Ring-3 userspace with an ELF64 loader, ACPI/APIC multicore + IOAPIC routing.</li>
@@ -558,7 +558,7 @@
 
         <article class="proj fade">
           <div class="proj-head"><h4>ComboServer</h4><span class="tag">BGP + Steam analytics</span></div>
-          <p class="summary">An unusual question: when the internet itself misbehaves — a route leak, a cable cut, a country going dark — what happens to the people playing games on top of it?</p>
+          <p class="summary">An unusual question I couldn't find anyone else asking: when the internet itself misbehaves — a route leak, a cable cut, a country going dark — what happens to the people playing games on top of it? BGP routing analysis and Steam behavioral analytics are separate worlds; correlating them was the framing I went looking for and didn't find prior art on.</p>
           <ul>
             <li><b>Correlates real-time BGP</b> (RIPE RIS Live, RouteViews replay) <b>with Steam behavioral data</b> (player counts, reviews, patch impact) to surface patterns nobody else tools for.</li>
             <li><b>Forensic features:</b> hijack-vs-misconfig classification, AS "personality profiles," prefix-ghosting, review-bomb detection, sentiment drift, review-DNA fingerprinting.</li>
@@ -568,7 +568,7 @@
 
         <article class="proj fade">
           <div class="proj-head"><h4>Halfax KeySecrets</h4><span class="tag">secrets vault, HTTPS-only</span></div>
-          <p class="summary">A self-hosted, end-to-end encrypted vault for me, family, and a few trusted friends — the server only ever sees ciphertext.</p>
+          <p class="summary">A self-hosted, end-to-end encrypted vault for me, family, and a few trusted friends — <b>hybrid post-quantum by default</b>, and the server only ever sees ciphertext: even an admin with the full database cannot read anyone's passwords.</p>
           <ul>
             <li><b>Per-recipient cryptographic sharing:</b> every secret has its own data key, sealed individually to each recipient; revoking is one wrapped-key delete. The wrap is hybrid post-quantum by default (X25519 + ML-KEM-768) — the server won't start without ML-KEM.</li>
             <li><b>Conservative crypto:</b> Argon2id, ChaCha20-Poly1305, mandatory TOTP; master passwords are never stored, existing only as a session-key input in memory.</li>
