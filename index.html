@@ -474,6 +474,26 @@
         </article>
 
         <article class="proj fade">
+          <div class="proj-head"><h4>hal-web-mcp</h4><span class="tag">Python + MCP</span></div>
+          <p class="summary">The AI agent's <b>web reach — behind a real SSRF wall.</b> Typed web tools instead of letting the model shell out to <code>curl</code>, so a prompt-injected agent can't be turned into a request-forging weapon against my own network.</p>
+          <ul>
+            <li><b>Six typed tools</b> (get, head, search, extract, cache, config): SearXNG-federated search and Readability article extraction, with HTML auto-converted to markdown so smaller models can actually read it.</li>
+            <li><b>The safety boundary is the whole point:</b> it DNS-resolves every URL up front and refuses loopback, private, link-local, and carrier-grade-NAT ranges; unwraps IPv4-mapped IPv6; and rejects mixed public+private DNS answers — the DNS-rebinding trick most homemade fetchers miss.</li>
+            <li><b>Hardened end to end:</b> an http/https-only scheme allowlist, every redirect hop re-validated with HTTPS→HTTP downgrades refused, and a streaming byte cap that kills the connection rather than trusting <code>Content-Length</code>. A per-domain rate limiter stops agent feedback loops; 31 tests cover it.</li>
+          </ul>
+        </article>
+
+        <article class="proj fade">
+          <div class="proj-head"><h4>Halfax AI MCP</h4><span class="tag">Python + MCP</span></div>
+          <p class="summary">The bridge that lets any MCP-capable agent reach my AI stack and hardware — <b>49 tools</b>, with a command surface that's deliberately <em>not</em> a shell.</p>
+          <ul>
+            <li><b>Inference with teeth:</b> one call fans the same prompt to every loaded model in parallel (wall-time = the slowest), and another forces grammar-constrained JSON so the output physically can't come back malformed.</li>
+            <li><b>"Run a command" is an allowlist, not a shell:</b> operation names map to specific binaries with fixed args, service restarts are frozen to a handful of named units, and any model-supplied argument carrying shell metacharacters is rejected — far narrower than handing an agent SSH.</li>
+            <li><b>File ops deny before they allow:</b> <code>.ssh</code>, <code>.gnupg</code>, cloud credentials, and shell histories stay unreachable even if the agent's roots are widened; writes are atomic, with timestamped backups, mtime conflict detection, and a dry-run.</li>
+          </ul>
+        </article>
+
+        <article class="proj fade">
           <div class="proj-head"><h4>AI Collaboration Memory</h4><span class="tag">Markdown + git</span></div>
           <p class="summary">My AI assistants don't start cold and aren't locked to one vendor: I treat their rules like Architecture Decision Records — flat markdown at the project root, off-boxed like production data.</p>
           <ul>
@@ -573,6 +593,16 @@
             <li><b>Per-recipient cryptographic sharing:</b> every secret has its own data key, sealed individually to each recipient; revoking is one wrapped-key delete. The wrap is hybrid post-quantum by default (X25519 + ML-KEM-768) — the server won't start without ML-KEM.</li>
             <li><b>Conservative crypto:</b> Argon2id, ChaCha20-Poly1305, mandatory TOTP; master passwords are never stored, existing only as a session-key input in memory.</li>
             <li><b>The consumption story — <code>halfax-secrets</code>:</b> a tiny lib + <code>ks-get</code> CLI fetches credentials over the API at runtime, so programs hold no <code>.env</code> files; per-host service tokens authenticate unattended scripts.</li>
+            <li><b>An MCP front door for AI agents, multiply gated:</b> only one of its nine tools ever returns plaintext, mutations need both an env flag and a change-role token (deletes add a confirm), and it never logs a secret value — so an agent can fetch a credential at task-time without it ever touching a config file or the model's context.</li>
+          </ul>
+        </article>
+
+        <article class="proj fade">
+          <div class="proj-head"><h4>Usenet Reader</h4><span class="tag">Python + PySide6/Qt</span></div>
+          <p class="summary">A desktop Usenet newsreader with a <b>hand-rolled NNTP client written straight against RFC 3977</b> — Python 3.13 removed <code>nntplib</code>, so I reimplemented the slice I needed over raw sockets, TLS and all.</p>
+          <ul>
+            <li>Classic three-pane UI (groups / threaded articles / body) built from <code>References</code> headers, multi-server subscriptions, and full read + post + quoted reply.</li>
+            <li>All network I/O on worker threads so the Qt UI never blocks — and honest in its own README about the bits that aren't wired up yet.</li>
           </ul>
         </article>
       </div>
@@ -580,8 +610,32 @@
       <div class="cat">Games</div>
       <div class="proj-grid">
         <article class="proj fade">
+          <div class="proj-head"><h4>Halfax Dungeons</h4><span class="tag">Godot 4 roguelike</span></div>
+          <p class="summary">A from-scratch Angband-style roguelike, <b>100 levels deep</b> — ported file-by-file from a ~8,900-line Python build to ~7,200 lines of Godot 4 GDScript. The standout isn't the game; it's the <b>Borg, an autonomous agent that plays the whole thing by itself.</b></p>
+          <ul>
+            <li><b>The game:</b> depth-scaled difficulty (rarer items and elite monsters deeper, minibosses at floors 33/66/90 and a final boss at 100), melee + ranged combat with Bresenham line-of-fire, a magic system, town generation, and save/load — all driven by 12 hand-authored data tables (43 monsters, 25 weapons, 16 armor, plus artifacts, wands, scrolls, potions).</li>
+            <li><b>The Borg autoplayer:</b> an autonomous bot on BFS pathfinding with path caching and anti-oscillation, reimplemented cleanly in GDScript — it runs the dungeon <em>headless</em> as a balance and regression harness, so the game effectively tests itself.</li>
+            <li><b>Built with discipline:</b> the old Python version is deprecated but kept, with a documented file-by-file migration table to the Godot port so the two implementations never drift.</li>
+          </ul>
+        </article>
+
+        <article class="proj fade">
+          <div class="proj-head"><h4>Skyhaven: Scrolls of the Elder Realm</h4><span class="tag">browser RPG</span></div>
+          <p class="summary">A Skyrim-inspired RPG built in <b>pure HTML, CSS, and JavaScript — no framework, no build tools</b> — with a parallel Godot 4 port scaffolded.</p>
+          <ul>
+            <li><b>Hand-authored depth:</b> ~11 playable races and 6 classes in full character creation, 13 skills, ~66 items, 13 enemy types, 10 locations, 8 NPCs, and 7 multi-stage quests.</li>
+            <li><b>Real Elder-Scrolls systems:</b> magicka/stamina pools, skill leveling, stealth, smithing / enchanting / alchemy, turn-based combat, and localStorage saves — themed throughout, dragons and all.</li>
+          </ul>
+        </article>
+
+        <article class="proj fade">
           <div class="proj-head"><h4>Halcity</h4><span class="tag">Python + Pygame</span></div>
-          <p class="summary">A SimCity-style city builder from scratch: a 150×100 procedural map, 16 building types, auto-tiling roads, and an underground water/sewer layer that feeds back into happiness and pollution.</p>
+          <p class="summary">A SimCity-style city builder in pure Python + Pygame (~3,900 lines), grown up from an earlier Tkinter prototype — with a genuinely deep simulation under the pixel art.</p>
+          <ul>
+            <li><b>A two-layer world:</b> a 150×100 surface map plus a Tab-toggled underground layer for water and sewer pipes (each servicing a 4-tile Manhattan radius), with coverage math feeding back into happiness and pollution.</li>
+            <li><b>A real economy:</b> 10 tracked stats — money, population, jobs, food, energy, happiness, pollution, water, sewage, prestige — updated by an explicit per-turn formula, with random events and a prestige→decree system of city-wide buffs.</li>
+            <li>Building subtypes (5 power-plant types, three variants each of residential / commercial / industrial / farm), each with a runtime-rendered 48×48 sprite, smart auto-tiling roads, and JSON save/load that auto-migrates old saves.</li>
+          </ul>
         </article>
       </div>
     </section>
