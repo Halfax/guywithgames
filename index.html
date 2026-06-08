@@ -271,7 +271,7 @@
         <div class="live-item fade">
           <span class="live-tag"><span class="d"></span> live</span>
           <h3>Heimdall Augur</h3>
-          <p>Reads ~26 news sources across opposing editorial blocs, then <b>computes</b> what's actually corroborated — a fact only counts when adversarial sources independently assert it. No pronouncements, every claim quote-checked.</p>
+          <p>Reads ~24 news sources — and actively searches the wider web for more — then reads how each one <b>frames</b> a story from the writing itself, and confirms a fact when sources that frame it differently still agree. No pronouncements, every claim quote-checked.</p>
           <a class="open" href="https://heimdall.guywithgames.com/" target="_blank" rel="noopener">Open the Augur →</a>
         </div>
         <div class="live-item fade">
@@ -443,11 +443,11 @@
 
         <article class="proj fade">
           <div class="proj-head"><h4>Heimdall Augur</h4><span class="lp">live</span></div>
-          <p class="summary">Ingests ~20 editorial news feeds, clusters cross-source coverage of the same story, and <b>computes corroboration across opposing blocs</b> — truth as a property of the source graph, not an opinion.</p>
+          <p class="summary">Ingests ~24 editorial news feeds — and actively searches the wider web to pull in coverage it doesn't subscribe to — clusters cross-source reporting of the same story, and confirms the facts that survive <b>differently-framed</b> coverage. Cutting through the skew to the shared facts, not an opinion.</p>
           <ul>
-            <li><b>~26 sources, deliberately adversarial.</b> The Western core (BBC, NPR, Guardian, DW, France 24, ABC, Al Jazeera) sits alongside state and regional press (TASS, Press TV, SCMP, Times of Israel, Al Arabiya, Daily Sabah, Dawn, MercoPress, Premium Times, Yonhap, the Hindu…) plus SEC EDGAR filings and the Bluesky firehose.</li>
+            <li><b>~24 feeds plus the open web, deliberately diverse.</b> Western mainstream (BBC, NPR, Guardian, DW, France 24, ABC, Al Jazeera) and divergent US voices (Fox, NY Post, The Intercept, Mother Jones) sit alongside state and regional press (TASS, Press TV, SCMP, Times of Israel, Al Arabiya, Daily Sabah, Dawn, MercoPress, Premium Times, Yonhap, the Hindu…), SEC EDGAR filings, and the Bluesky firehose — and when a story is thinly covered it <b>searches the web itself</b> (a self-hosted SearXNG) to pull in outlets it doesn't even subscribe to.</li>
             <li><b>Cluster on meaning, anchor against drift.</b> Events are embedded (nomic-embed) and kNN-clustered in Qdrant, with a wire-syndication dedup (AP→BBC + AP→NPR isn't two confirmations) and a seed-anchor gate so aging clusters can't drift off-topic.</li>
-            <li><b>Corroboration is computed, not pronounced.</b> The model extracts atomic factual claims with <b>verbatim quotes</b>; every quote is validated against the source text (fabricated ones are dropped), then the machine counts how many <em>opposed</em> editorial blocs assert each claim. A fact carried across the Russia/Western/Iran/Israel divide is corroborated <em>because</em> adversaries agree on it.</li>
+            <li><b>Corroboration is computed, not pronounced.</b> The model extracts atomic factual claims with <b>verbatim quotes</b>; every quote is validated against the source text (fabricated ones are dropped), then — reading each article <b>blind to who published it</b> — it groups them by how the story is actually framed in the writing, and confirms a fact when sources that frame it <em>differently</em> still assert it. Agreement across genuinely divergent framings is the strongest signal; a plain fact many sources report is confirmed too. <em>(Earlier it leaned on hand-labeled country "blocs" — but assigning those labels was itself a bias to see past, so the framing is now read from the article, not assigned by the operator.)</em></li>
             <li><b>Two ways to read it.</b> A consolidated story written strictly from the validated facts (contested points attributed to both sides, spin surfaced and avoided), tab-linked to the evidence view with the spine, contradictions, and quotes.</li>
           </ul>
           <details class="more"><summary>why no verdicts</summary>
