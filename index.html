@@ -578,8 +578,9 @@
           <div class="proj-head"><h4>Network Intelligence</h4><span class="tag">discovery + correlation</span></div>
           <p class="summary">Most homelabs end up with five disconnected tools — nmap here, DHCP leases there, an audit log somewhere else. This <b>joins them against one device identity</b> — active scans, BIND9 records, DHCP leases, audit hits, mesh peer state — so a device shows up once, with everything any tool knows about it.</p>
           <ul>
-            <li><b>Drift-aware:</b> re-running a scan flags new hosts, disappeared services, unexpected ports, and mesh peers gone dark.</li>
+            <li><b>Drift-aware:</b> runs as an always-on service with scheduled sweeps, flagging new hosts, disappeared services, unexpected ports, and mesh peers gone dark.</li>
             <li><b>Live dashboard</b> drills from a device into every record and distinguishes "a new device" from "an old device with new behavior."</li>
+            <li><b>Privacy-preserving by design:</b> the full map stays on the LAN, but a sanitized <b>counts-only</b> feed — devices, containers, subnets, mesh health, never an IP, MAC, or hostname — is what powers the public <a href="/livelook/">Fleet Live-Look</a>.</li>
           </ul>
         </article>
 
