@@ -231,6 +231,7 @@
             <a class="launch go" href="https://heimdall.guywithgames.com/" target="_blank" rel="noopener"><span class="ld"></span> Heimdall Augur</a>
             <a class="launch go" href="/livelook/"><span class="ld"></span> Fleet Live</a>
             <a class="launch go" href="https://www.guywithgames.com/universe/" target="_blank" rel="noopener"><span class="ld"></span> Story Universe</a>
+            <a class="launch go" href="https://grace.guywithgames.com/" target="_blank" rel="noopener"><span class="ld"></span> Ashes of Grace</a>
             <a class="launch ghost" href="#projects">Browse projects ↓</a>
           </div>
         </div>
@@ -295,6 +296,12 @@
           <h3>The Story Universe</h3>
           <p>An AI-driven story world that keeps running on its own across three machines — characters, factions, and arcs evolving in the background. The public World Browser reads straight from the canonical chronicle.</p>
           <a class="open" href="https://www.guywithgames.com/universe/" target="_blank" rel="noopener">Open the World Browser →</a>
+        </div>
+        <div class="live-item fade">
+          <span class="live-tag"><span class="d"></span> live</span>
+          <h3>Ashes of Grace</h3>
+          <p>A narrative "interactive-book" RPG set in a state-run-reincarnation dystopia — death isn't a fail state, it's the loop. Branching, stat-gated choices with no hidden dice; your skills, memories, and convictions carry across every life toward one of ~30 endings. Runs entirely in your browser, saves locally, no account.</p>
+          <a class="open" href="https://grace.guywithgames.com/" target="_blank" rel="noopener">Play it →</a>
         </div>
       </div>
     </section>
@@ -643,6 +650,16 @@
       <div class="cat">Games</div>
       <div class="proj-grid">
         <article class="proj fade">
+          <div class="proj-head"><h4>Ashes of Grace</h4><span class="lp">live</span></div>
+          <p class="summary">A data-driven narrative "interactive-book" RPG in a <b>dark-satirical, state-run-reincarnation dystopia</b> — vanilla JS, no build, no server, no dependencies; it runs entirely in the player's browser and is playable now at <a href="https://grace.guywithgames.com/" target="_blank" rel="noopener">grace.guywithgames.com</a>.</p>
+          <ul>
+            <li><b>Death is the loop, not a fail state.</b> Each death is a <em>Reissue</em>: the State re-rolls your body, but your attributes, memories, convictions, and the bonds <em>you</em> remember persist — so a finite "cheat death" resource and your choices compound across lives toward one of ~30 endings across 10 chapters.</li>
+            <li><b>Deterministic choices, no hidden dice.</b> Stat-checks are pure thresholds, not RNG; a locked choice shows its requirement, and knowledge-gated options only appear once you <em>remember</em> the right thing — branching that rewards what you've built, not luck.</li>
+            <li><b>Strict engine/content split.</b> A single IIFE engine knows nothing about the story; every scene is data registered with <code>Story.scene(...)</code>, so writing a chapter never touches engine code. Versioned, checksummed, lightly-obfuscated saves live in <code>localStorage</code> with a copy-pasteable export code — and a <code>node</code> smoke test asserts scene-graph integrity plus a 500-run fuzz (no dead-ends, no loops) after every change.</li>
+          </ul>
+        </article>
+
+        <article class="proj fade">
           <div class="proj-head"><h4>Halfax Dungeons</h4><span class="tag">Godot 4 roguelike</span></div>
           <p class="summary">A from-scratch Angband-style roguelike, <b>100 levels deep</b> — ported file-by-file from a ~8,900-line Python build to ~7,200 lines of Godot 4 GDScript. The standout isn't the game; it's the <b>Borg, an autonomous agent that plays the whole thing by itself.</b></p>
           <ul>
@@ -681,6 +698,7 @@
           <a href="https://heimdall.guywithgames.com/" target="_blank" rel="noopener">Heimdall Augur</a>
           <a href="/livelook/">Fleet Live</a>
           <a href="https://www.guywithgames.com/universe/" target="_blank" rel="noopener">Story Universe</a>
+          <a href="https://grace.guywithgames.com/" target="_blank" rel="noopener">Ashes of Grace</a>
           <a href="https://www.guywithbeer.net/" target="_blank" rel="noopener">GuyWithBeer</a>
           <a href="https://www.shopmom.net/" target="_blank" rel="noopener">ShopMom</a>
         </div>
