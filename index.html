@@ -280,7 +280,7 @@
     <section id="live">
       <p class="kicker">Live right now</p>
       <h2 class="sec-head">Things you can open and use</h2>
-      <p class="sec-sub">Every one of these runs on my own hardware and serves to the public through a hardened reverse proxy. Click in.</p>
+      <p class="sec-sub">Not demos, not screenshots — production services running on my own hardware right now, served to the public through a hardened reverse proxy. Go poke at them.</p>
       <div class="live-grid">
         <div class="live-item fade">
           <span class="live-tag"><span class="d"></span> live</span>
@@ -435,7 +435,7 @@
     <section id="projects">
       <p class="kicker">What I build</p>
       <h2 class="sec-head">Projects</h2>
-      <p class="sec-sub">AI tooling, distributed systems, security work, a from-scratch OS, and games — built end to end and run in production on the lab. Skim the headlines; expand the ones that interest you.</p>
+      <p class="sec-sub">AI tooling, distributed systems, security research, an operating system from bare metal, and games — every one built end to end and run for real on the lab, not left as a weekend demo. Skim the headlines; expand what grabs you.</p>
 
       <div class="cat">AI &amp; Story</div>
       <div class="proj-grid">
@@ -469,7 +469,7 @@
 
         <article class="proj fade">
           <div class="proj-head"><h4>Heimdall Augur</h4><span class="lp">live</span></div>
-          <p class="summary">Ingests ~30 editorial news feeds — and actively searches the wider web to pull in coverage it doesn't subscribe to — clusters cross-source reporting of the same story, and confirms the facts that survive <b>differently-framed</b> coverage. Cutting through the skew to the shared facts, not an opinion.</p>
+          <p class="summary"><b>A news engine that fact-checks itself.</b> It ingests ~30 editorial feeds — and searches the open web for coverage it doesn't even subscribe to — clusters every outlet's take on the same story, and confirms only the facts that survive <b>differently-framed</b> reporting. It cuts through the spin to the shared truth and refuses to hand you an opinion.</p>
           <ul>
             <li><b>~30 feeds plus the open web, deliberately diverse.</b> Western mainstream (BBC, NPR, Guardian, DW, France 24, ABC, Al Jazeera) and divergent US voices (Fox, NY Post, The Intercept, Mother Jones) sit alongside state and regional press — Russian state TASS now read <em>against</em> independent Russian outlets (Meduza, The Moscow Times), plus Press TV, SCMP, Times of Israel, Al Arabiya, Daily Sabah, Dawn, MercoPress, Premium Times, Yonhap, Mainichi (Japan), Bellingcat (OSINT), and India read across four desks (the Hindu, Times of India, Hindustan Times, Indian Express) — alongside SEC EDGAR filings and the Bluesky firehose. When a story is thinly covered it <b>searches the web itself</b> (a self-hosted SearXNG) to pull in outlets it doesn't even subscribe to.</li>
             <li><b>Cluster on meaning, anchor against drift.</b> Events are embedded (nomic-embed) and kNN-clustered in Qdrant, with a wire-syndication dedup (AP→BBC + AP→NPR isn't two confirmations) and a seed-anchor gate so aging clusters can't drift off-topic.</li>
@@ -610,7 +610,7 @@
 
         <article class="proj fade">
           <div class="proj-head"><h4>HalfaxOS</h4><span class="tag">x86_64, from scratch</span></div>
-          <p class="summary">A 64-bit capability-based OS written entirely from scratch in C and assembly — no borrowed kernel code, boots on VMware and real hardware. Most hobby "OSes" stop at a bootloader; this one has a from-scratch TCP/IP stack and a windowed desktop where the shell, terminal emulator, and window compositor are all Ring-3 programs — not kernel code. <b>The largest single thing I've written, and every line is mine.</b></p>
+          <p class="summary">A 64-bit, capability-based operating system written <b>entirely from scratch</b> in C and assembly — no borrowed kernel code — that boots on VMware <em>and</em> real hardware. Most hobby "OSes" stop at a bootloader printing "hello"; this one has its own <b>TCP/IP stack</b> and a <b>windowed desktop</b> where the shell, terminal, and compositor are all Ring-3 programs, not kernel code. <b>The largest single thing I've ever written — and every line is mine.</b></p>
           <ul>
             <li><b>Capability security model:</b> typed, permission-checked handles replace UNIX file descriptors (<code>cap_dup()</code> only attenuates, never escalates), and no syscall takes a raw user pointer — memory crosses the boundary only as a <code>(region, offset, length)</code> capability the kernel granted. Closer to seL4 than Unix, by design; same direction as Fuchsia and CHERI.</li>
             <li><b>Userspace is the system:</b> the shell, the terminal emulator, and the window compositor all run as Ring-3 programs. A process's stdout/stdin are capability IPC ports, so the terminal hosts the shell with no kernel-side console, and the compositor shares each window's pixel buffer with its client zero-copy via a memory-region capability. ACPI S5 powers the machine off from an on-screen menu.</li>
@@ -631,7 +631,7 @@
 
         <article class="proj fade">
           <div class="proj-head"><h4>Halfax KeySecrets</h4><span class="tag">secrets vault, HTTPS-only</span></div>
-          <p class="summary">A self-hosted, end-to-end encrypted vault for me, family, and a few trusted friends — <b>hybrid post-quantum by default</b>, and the server only ever sees ciphertext: even an admin with the full database cannot read anyone's passwords.</p>
+          <p class="summary">A self-hosted, end-to-end encrypted secrets vault — <b>hybrid post-quantum by default</b> (X25519 + ML-KEM-768), built before most vendors ship it at all. The server only ever sees ciphertext: <b>steal the entire database and you get nothing</b> — even an admin with full disk access cannot read a single password.</p>
           <ul>
             <li><b>Per-recipient cryptographic sharing:</b> every secret has its own data key, sealed individually to each recipient; revoking is one wrapped-key delete. The wrap is hybrid post-quantum by default (X25519 + ML-KEM-768) — the server won't start without ML-KEM.</li>
             <li><b>Conservative crypto:</b> Argon2id, ChaCha20-Poly1305, mandatory TOTP; master passwords are never stored, existing only as a session-key input in memory.</li>
