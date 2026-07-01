@@ -210,9 +210,9 @@
             hardware I own. <b>No cloud LLMs in the loop — nothing I don't own, and nothing that leaves the house.</b>
           </p>
           <p class="lede">
-            Inside it: a multi-model LLM server (two models living together on a single GPU's <b>96 GiB</b>), an always-on
-            AI-driven story world, a cross-source news engine that <b>fact-checks itself against the sources it reads</b>, and even a
-            from-scratch operating system. I don't just build these — I run them <b>like real infrastructure</b>: wired across a small
+            Inside it: a multi-model LLM server running <b>three models resident together</b> on a single GPU's <b>96 GiB</b> —
+            headlined by a <b>120-billion-parameter reasoner</b> — an always-on AI-driven story world, a cross-source news engine
+            that <b>fact-checks itself against the sources it reads</b>, and even a from-scratch operating system. I don't just build these — I run them <b>like real infrastructure</b>: wired across a small
             private fleet, backed up automatically, and reproducible enough to <b>rebuild the entire stack from scratch after a total
             loss</b> — the backups even land on a machine in another room.
           </p>
@@ -267,7 +267,7 @@
       </div>
       <div class="figs fade in">
         <div class="fig"><div class="n">6</div><div class="k">hosts in the fleet</div></div>
-        <div class="fig"><div class="n">2</div><div class="k">LLMs on one iGPU</div></div>
+        <div class="fig"><div class="n">3</div><div class="k">LLMs on one iGPU</div></div>
         <div class="fig"><div class="n">1</div><div class="k">OS from scratch</div></div>
         <div class="fig"><div class="n">0</div><div class="k">cloud LLMs in the loop</div></div>
       </div>
@@ -317,7 +317,7 @@
           <h3>Betelgeuse <span class="role">AI inference</span></h3>
           <div class="spec">GMKtec EVO-X2 · Ryzen AI MAX+ 395 (16C/32T) · Radeon 8060S, 96 GiB UMA VRAM (96/32 split) · 128 GB unified · Ubuntu</div>
           <ul>
-            <li>The GPU box: two LLMs resident, embeddings, the Story Universe narrative engine, PictureAI</li>
+            <li>The GPU box: three LLMs resident (a 120B reasoner, a creative model, a coder), embeddings, the Story Universe narrative engine, PictureAI</li>
             <li>Strix Halo iGPU does double duty for the AI stack and the desktop — no discrete card, Vulkan path</li>
           </ul>
         </article>
@@ -442,20 +442,20 @@
           <p class="summary">A persistent, AI-driven narrative world that runs unattended across three machines — closer to an MMO backend than a chatbot, and it will pause the entire world before it fabricates a single scene.</p>
           <ul>
             <li><b>Three hosts, split by strength:</b> a Raspberry Pi holds the canonical world state in SQLite and broadcasts a world-clock over ZeroMQ; my GPU box generates each event with the in-house LLM; a public VPS renders the live World Browser.</li>
-            <li><b>It remembers itself.</b> Every accepted event is written to a ChromaDB semantic memory; the engine retrieves relevant past events and injects them as context before each generation, so the story builds on itself instead of restarting cold.</li>
-            <li><b>It pauses, it never lies.</b> If a dependency is down the engine halts generation rather than fabricate a beat — there's no path that lets an invented event into the canonical world.</li>
+            <li><b>It builds on itself.</b> Every generation is grounded in the canonical chronicle — the recent world events and the active arc's full history are fed back in as context — so each new beat continues the story instead of restarting cold.</li>
+            <li><b>It pauses, it never lies.</b> If a dependency is down — or a generation comes back malformed — the engine skips that beat rather than fabricate one. A validation guard blocks anything that isn't real prose, so no invented or half-formed event can enter the canonical world.</li>
           </ul>
           <details class="more"><summary>prose-quality loop</summary>
-            <p>Generated beats run through a filter that rejects atmospheric-formula openings, cliché tension families, and time-of-day contradictions; each rejection is fed back as a negative example with rising temperature, up to six tries. Combined with grammar-constrained JSON decoding, parse failures dropped from ~51% of LLM calls to 0%.</p>
+            <p>Generated beats run through a filter that rejects atmospheric-formula openings, cliché tension families, time-of-day contradictions, and any output that leaks the prompt template instead of writing prose; each rejection is fed back as a negative example with rising temperature, up to six tries, and a beat that still won't come back clean is skipped rather than persisted. Combined with grammar-constrained JSON decoding, parse failures dropped from ~51% of LLM calls to 0%.</p>
           </details>
         </article>
 
         <article class="proj fade">
           <div class="proj-head"><h4>Halfax AI Stack</h4><span class="lp">live</span></div>
-          <p class="summary">A private multi-model AI server on my own hardware that runs an <b>80-billion-parameter model on an integrated GPU</b> — fast — even though the vendor's own compute stack doesn't work on this chip. OpenAI-compatible, so any tool that talks to OpenAI talks to mine instead.</p>
+          <p class="summary">A private multi-model AI server on my own hardware that runs a <b>120-billion-parameter model on an integrated GPU</b> — fast — even though the vendor's own compute stack doesn't work on this chip. OpenAI-compatible, so any tool that talks to OpenAI talks to mine instead.</p>
           <ul>
-            <li><b>Two models resident on one iGPU.</b> A Qwen3-Next-80B-A3B mixture-of-experts model (lm1) drives all the analytical work — code, reasoning, the Augur — and a 21B uncensored model (lm2) serves the Story Universe, together in the AMD Strix Halo's <b>96 GiB of UMA VRAM</b> via Vulkan (~63 GiB resident).</li>
-            <li><b>MoE is the trick.</b> On a bandwidth-bound integrated GPU, an 80B model that only activates ~3B parameters per token runs roughly 10× faster than a dense model its size — capability without the bandwidth tax.</li>
+            <li><b>Three models resident on one iGPU.</b> A <b>GPT-OSS 120B</b> mixture-of-experts reasoner (lm1) drives the analytical work — the Augur, agent coding, reasoning; an abliterated 24B creative model (lm2) serves the Story Universe; and a fast Qwen2.5-Coder (lm3) handles editor autocomplete — all together in the AMD Strix Halo's <b>96 GiB of UMA VRAM</b> via Vulkan (~78 GiB resident).</li>
+            <li><b>MoE is the trick.</b> On a bandwidth-bound integrated GPU, a 120B model that activates only ~5B parameters per token runs roughly an order of magnitude faster than a dense model its size — frontier capability without the bandwidth tax.</li>
             <li><b>Supervised + self-healing.</b> Each model runs as a watched <code>llama-server</code> child; a watchdog restarts a dead one within seconds, and requests can target a slot or auto-failover.</li>
             <li><b>Output that can't be malformed.</b> <code>json_schema</code> / <code>grammar</code> pass straight through to llama.cpp, which masks any token that would break the schema before it's sampled.</li>
           </ul>
