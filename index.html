@@ -3,18 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GuyWithGames — Halfax AI, the Story Universe, and a self-hosted homelab</title>
+  <title>GuyWithGames — a private 120B AI stack, the Story Universe, and a self-hosted homelab</title>
   <meta name="description" content="Halfax runs a 120-billion-parameter LLM on an integrated GPU — three models resident at once — plus an always-on AI-driven Story Universe, a self-fact-checking news engine, a from-scratch OS, and a fully recoverable self-hosted homelab. All on owned hardware. No cloud LLMs in the loop.">
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230f141b'/%3E%3Ccircle cx='16' cy='16' r='8' fill='%235aaeff'/%3E%3C/svg%3E">
   <meta name="theme-color" content="#0f141b">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="GuyWithGames — Halfax AI, the Story Universe, and a self-hosted homelab">
+  <meta property="og:title" content="GuyWithGames — a private 120B AI stack, the Story Universe, and a self-hosted homelab">
   <meta property="og:description" content="A 120-billion-parameter LLM on an integrated GPU, three models resident at once — plus an always-on AI-driven Story Universe, a self-fact-checking news engine, a from-scratch OS, and a fully recoverable homelab. Built on owned hardware, no cloud in the loop.">
   <meta property="og:url" content="https://www.guywithgames.com">
   <meta property="og:image" content="https://www.guywithgames.com/halfax-ai-banner.webp">
   <meta property="og:site_name" content="GuyWithGames">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="GuyWithGames — Halfax AI, the Story Universe, and a self-hosted homelab">
+  <meta name="twitter:title" content="GuyWithGames — a private 120B AI stack, the Story Universe, and a self-hosted homelab">
   <meta name="twitter:description" content="A 120-billion-parameter LLM on an integrated GPU, three models at once — plus an AI-driven Story Universe, a self-fact-checking news engine, a from-scratch OS, and a fully recoverable homelab. Owned hardware, no cloud.">
   <meta name="twitter:image" content="https://www.guywithgames.com/halfax-ai-banner.webp">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -204,6 +204,11 @@
         <div class="hero-main fade in">
           <p class="kicker">Systems &amp; infrastructure engineer · I build and run private AI</p>
           <h1>I run a private <span class="g">AI stack</span> — a 120-billion-parameter brain on my own GPU — and the homelab that runs it.</h1>
+          <p class="lede" style="font-size:1.2rem;color:var(--ink);border-left:3px solid var(--accent);padding-left:16px;margin-bottom:22px;">
+            One idea runs through all of it: <b>never trust a confident claim — human or AI — until it's checked against what's
+            real.</b> It's why my news engine corroborates instead of pronounces, why my story world pauses rather than invent, and
+            how I catch an AI agent the moment it starts confidently making things up.
+          </p>
           <p class="lede">
             I'm Halfax — a <b>senior infrastructure &amp; automation engineer</b>. By day: large-scale storage, cloud, and
             end-to-end automation. Off the clock I turn that same discipline loose on a lab where I own and control <b>every layer,
@@ -224,10 +229,9 @@
             splitting a big problem across them, handing results between them, having them cross-check each other. Orchestrating them
             is the easy half. The real skill is the <b>conducting</b>: knowing my own systems well enough to <b>catch an agent the
             moment it drifts</b> — when it's confidently producing something that <em>looks</em> right but doesn't match what I know
-            to be true — and pulling it back before it ships. It's the same instinct that runs through everything here — <b>never
-            trust a confident claim until it's checked against what's real</b> — turned on the AI itself: a fast, capable partner that
-            still needs someone who knows the ground truth to keep it honest. <b>The back-and-forth is where the good work comes
-            from.</b> A few of these are live right now — go poke at them.
+            to be true — and pulling it back before it ships. That's the thesis up top, turned on the AI itself: a fast, capable
+            partner that still needs someone who knows the ground truth to keep it honest. <b>The back-and-forth is where the good
+            work comes from.</b> A few of these are live right now — go poke at them.
           </p>
           <div class="launch-row">
             <a class="launch go" href="https://gamer.guywithgames.com/" target="_blank" rel="noopener"><span class="ld"></span> Halfax AI Chat</a>
@@ -373,12 +377,19 @@
     <!-- ===================== HOW IT WORKS ===================== -->
     <section id="how">
       <p class="kicker">What makes it all work</p>
-      <h2 class="sec-head">A brain I own, and a memory every agent shares</h2>
+      <h2 class="sec-head">A brain I own, a memory every agent shares — and rules they all obey</h2>
       <p class="how-lede">
-        The projects below aren't islands. They're held together by two things I built on purpose:
-        <b>a private AI server I fully own</b>, and <b>a memory-sharing system that lets every AI coding agent I use
-        work from the same durable context</b> — instead of each one starting cold and learning my stack in its own
-        vendor silo. This is the part that makes a one-person lab punch far above its size.
+        The projects below aren't islands. They're held together by three things I built on purpose:
+        <b>a private AI server I fully own</b>, <b>a shared memory so every AI agent works from the same durable context</b>
+        instead of starting cold in its own vendor silo, and <b>a governance layer that makes them all work <em>my</em> way</b> —
+        my written rules outrank the model's defaults. I don't just use these assistants; I <b>direct</b> them, and I know my
+        own systems well enough to catch one the moment it drifts. This is what makes a one-person lab punch far above its size.
+      </p>
+      <p class="how-lede" style="color:var(--ink);border-left:3px solid var(--accent);padding-left:16px;">
+        And none of it is theoretical. A capable AI will hand me something that <em>looks</em> right — several times a day — and
+        the craft is catching it against the ground truth and writing the correction into the rulebook so <b>no agent repeats it</b>.
+        The verification isn't a feature I bolted on; it's the discipline the whole lab runs on — <b>including how this very page is
+        kept honest.</b>
       </p>
       <div class="how-grid">
         <div class="how-item fade">
@@ -410,6 +421,26 @@
             shared rulebook in git</b>, and off-boxed like production data. So the knowledge survives a context reset,
             a harness change, or swapping the assistant entirely. The lesson a model learns on Tuesday is still there,
             for <em>every</em> agent, on Friday.
+          </p>
+        </div>
+        <div class="how-item fade">
+          <h3>My rules outrank the model's defaults</h3>
+          <p>
+            The shared rulebook isn't a suggestion — it's the <b>top authority</b>. When a rule I've written collides with a
+            model's own instinct or a vendor's built-in default, <b>my rule wins</b>, whichever assistant is driving. It governs
+            not just <em>what</em> the AI knows but <em>how</em> it works — verify before claiming, don't wave off a hard question,
+            no AI watermarks in my git history. And the load-bearing ones aren't left to good faith: they're compiled into
+            <b>hooks that block the wrong action before it runs</b>. I set the standard; the assistant meets it or gets stopped.
+          </p>
+        </div>
+        <div class="how-item fade">
+          <h3>Many specialists, one conductor</h3>
+          <p>
+            The current edge of the work: getting several <b>specialized agents to act as one</b>. I fan a big job out across them,
+            hand each one's result to the next, and have them <b>cross-check each other</b> before anything lands — then synthesize
+            the survivors. Wiring that up is the easy half; the real skill is the <b>conducting</b> — sequencing who does what, and
+            knowing my own stack well enough to spot the one that's <em>confidently</em> wrong and pull it before it ships. A fast
+            room of assistants is only as good as the person who can tell which one to trust.
           </p>
         </div>
         <div class="how-item fade">
@@ -473,17 +504,18 @@
           <ul>
             <li><b>~30 feeds plus the open web, deliberately diverse.</b> Western mainstream (BBC, NPR, Guardian, DW, France 24, ABC, Al Jazeera) and divergent US voices (Fox, NY Post, The Intercept, Mother Jones) sit alongside state and regional press — Russian state TASS now read <em>against</em> independent Russian outlets (Meduza, The Moscow Times), plus Press TV, SCMP, Times of Israel, Al Arabiya, Daily Sabah, Dawn, MercoPress, Premium Times, Yonhap, Mainichi (Japan), Bellingcat (OSINT), and India read across four desks (the Hindu, Times of India, Hindustan Times, Indian Express) — alongside SEC EDGAR filings and the Bluesky firehose. When a story is thinly covered it <b>searches the web itself</b> (a self-hosted SearXNG) to pull in outlets it doesn't even subscribe to.</li>
             <li><b>Cluster on meaning, anchor against drift.</b> Events are embedded (nomic-embed) and kNN-clustered in Qdrant, with a wire-syndication dedup (AP→BBC + AP→NPR isn't two confirmations) and a seed-anchor gate so aging clusters can't drift off-topic.</li>
-            <li><b>Corroboration is computed, not pronounced.</b> The model extracts atomic factual claims with <b>verbatim quotes</b>; every quote is validated against the source text (fabricated ones are dropped), then — reading each article <b>blind to who published it</b> — it groups them by how the story is actually framed in the writing, and confirms a fact when sources that frame it <em>differently</em> still assert it. Agreement across genuinely divergent framings is the strongest signal; a plain fact many sources report is confirmed too. <em>(Earlier it leaned on hand-labeled country "blocs" — but assigning those labels was itself a bias to see past, so the framing is now read from the article, not assigned by the operator.)</em></li>
+            <li><b>Corroboration is computed, not pronounced.</b> The model extracts atomic factual claims with <b>verbatim quotes</b>; every quote is validated against the source text — <b>fabricated or unverifiable quotes are dropped, often dozens on a single busy story</b>, then — reading each article <b>blind to who published it</b> — it groups them by how the story is actually framed in the writing, and confirms a fact when sources that frame it <em>differently</em> still assert it. Agreement across genuinely divergent framings is the strongest signal; a plain fact many sources report is confirmed too. <em>(Earlier it leaned on hand-labeled country "blocs" — but assigning those labels was itself a bias to see past, so the framing is now read from the article, not assigned by the operator.)</em></li>
+            <li><b>It holds contradictions open instead of resolving them.</b> When sources genuinely conflict it surfaces both, attributed, rather than picking a winner — and it can tell a real contradiction from two <em>different events</em> described in similar words, flagging the narrative tension without inventing a resolution.</li>
             <li><b>Two ways to read it.</b> A consolidated story written strictly from the validated facts (contested points attributed to both sides, spin surfaced and avoided), tab-linked to the evidence view with the spine, contradictions, and quotes.</li>
           </ul>
           <details class="more"><summary>why no verdicts</summary>
-            <p>The first build asked the model to <em>pronounce what events mean</em>. Every model tried — including the 80B — over-read: confident, well-cited-looking significance manufactured from a single beat, and the bigger model did it more persuasively. The failure was the genre, not the model. So the verdict layer was removed and replaced with extract-then-corroborate: the model only reads and quotes; the source graph decides what's true.</p>
+            <p>The first build asked the model to <em>pronounce what events mean</em>. Every model tried — up to the largest I run — over-read: confident, well-cited-looking significance manufactured from a single beat, and the bigger the model, the more persuasively it did it. The failure was the genre, not the model. So the verdict layer was removed and replaced with extract-then-corroborate: the model only reads and quotes; the source graph decides what's true.</p>
           </details>
         </article>
 
         <article class="proj fade">
           <div class="proj-head"><h4>Halfax AI VSCode Extension</h4><span class="tag">TypeScript</span></div>
-          <p class="summary">A from-scratch IDE client — chat, autonomous edits, autocomplete, one-click apply — that talks to <em>my</em> GPU, logs to plain JSON I own, works with the internet unplugged, and <b>resumes its agent mid-task after a crash — which none of Copilot, Cursor, or Cascade do.</b></p>
+          <p class="summary">A from-scratch IDE client — chat, autonomous edits, autocomplete, one-click apply — that talks to <em>my</em> GPU, logs to plain JSON I own, works with the internet unplugged, and <b>auto-resumes its agent mid-task after a crash, exactly where it stopped — a resilience the mainstream AI-coding tools still skip.</b></p>
           <ul>
             <li><b>Not a fork.</b> Custom React webview, Zustand state, an in-process MCP stdio client, OpenAI-compatible streaming to local llama.cpp. Distributed only as a sideloaded VSIX from the lab.</li>
             <li><b>The agent loop is a real state machine</b> (pending → in_progress → completed | awaiting_user | error | cancelled), and every successful turn flushes history to disk — quit or crash mid-task and it auto-resumes where it stopped.</li>
@@ -536,9 +568,10 @@
 
         <article class="proj fade">
           <div class="proj-head"><h4>AI Collaboration Memory</h4><span class="tag">Markdown + git</span></div>
-          <p class="summary">My AI assistants don't start cold and aren't locked to one vendor: I treat their rules like Architecture Decision Records — flat markdown at the project root, off-boxed like production data.</p>
+          <p class="summary">My AI assistants don't start cold, aren't locked to one vendor, and don't get to freelance: I treat their rules like Architecture Decision Records — <b>the top authority for how any assistant acts on my systems</b>, in flat markdown, off-boxed like production data.</p>
           <ul>
             <li><b><code>DECISIONS.md</code> is the durable layer</b> — each rule in ADR shape (rule / why / how to verify), in a shared <code>fleet-docs</code> git repo every host pulls, off-boxed nightly in the encrypted archive.</li>
+            <li><b>The rulebook outranks the model — and some of it is enforced.</b> A rule here beats the model's own instinct <em>and</em> the vendor harness's built-in default; it governs how the AI writes and reasons, not just what it knows. The load-bearing action rules compile into <code>PreToolUse</code> <b>hooks that block the wrong move before it runs</b> — governance with teeth, not a wish list.</li>
             <li><b>One source, every tool.</b> The same file is reachable as <code>DECISIONS.md</code>, <code>.cursorrules</code>, <code>AGENTS.md</code>, and <code>CLAUDE.md</code> via symlink, so Claude Code, Cursor, Windsurf, and my own extension all read the same rules.</li>
             <li><b>Promote-to-durable:</b> when an assistant learns something load-bearing mid-session, the convention is to promote it from per-tool working memory into the shared rulebook — the workflow is itself written down so it applies recursively.</li>
           </ul>
@@ -576,7 +609,7 @@
 
         <article class="proj fade">
           <div class="proj-head"><h4>tor-recon</h4><span class="tag">Python + SOCKS5</span></div>
-          <p class="summary">Tor again, used the wrong way on purpose: not for anonymity, but as a <b>free, rotating IP on none of my own allowlists</b> — so a probe through it sees my public surface exactly as an outside scanner would. Its first runs caught a public dev server running as <b>root over plaintext</b> and a silently-expired TLS cert my own use never noticed.</p>
+          <p class="summary">Security recon that turns Tor into a <b>free attacker's-eye view of my own network</b> — a rotating IP on none of my allowlists, so a probe sees my public surface exactly as an outside scanner would. <b>Its first runs found real holes I'd missed:</b> a public dev server running as <b>root over plaintext</b>, a silently-expired TLS cert, and an orphan port-forward — each caught, fixed, and re-verified.</p>
           <ul>
             <li><b>Parses the SOCKS5 reply byte</b> to tell a target's refusal from the Tor exit's own port policy, which most probes conflate into false findings.</li>
             <li><b>Negative assertions:</b> verifies that services which should never be public (the agent API, MongoDB, the vault, GitLab, dashboards) actually refuse from outside, across every external face.</li>
