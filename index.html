@@ -295,7 +295,7 @@
         <div class="live-item fade">
           <span class="live-tag"><span class="d"></span> live</span>
           <h3>Heimdall Augur</h3>
-          <p>Reads ~30 news sources — and actively searches the wider web for more — then reads how each one <b>frames</b> a story from the writing itself, and confirms a fact when sources that frame it differently still agree. No pronouncements, every claim quote-checked.</p>
+          <p>Reads nearly 50 news sources — and actively searches the wider web for more — then reads how each one <b>frames</b> a story from the writing itself, and confirms a fact when sources that frame it differently still agree. No pronouncements, every claim quote-checked.</p>
           <a class="open" href="https://heimdall.guywithgames.com/" target="_blank" rel="noopener">Open the Augur →</a>
         </div>
         <div class="live-item fade">
@@ -309,6 +309,12 @@
           <h3>Ashes of Grace</h3>
           <p>A narrative "interactive-book" RPG set in a state-run-reincarnation dystopia — death isn't a fail state, it's the loop. Branching, stat-gated choices with no hidden dice; your skills, memories, and convictions carry across every life toward one of ~30 endings. Runs entirely in your browser, saves locally, no account.</p>
           <a class="open" href="https://grace.guywithgames.com/" target="_blank" rel="noopener">Play it →</a>
+        </div>
+        <div class="live-item fade">
+          <span class="live-tag"><span class="d"></span> live</span>
+          <h3>Bird Cam</h3>
+          <p>An always-on outdoor camera anyone can watch — no account, about three seconds behind live even on a phone. Its indoor sibling stays dark until armed behind a login + TOTP, and the privacy is engineered at the <b>stream</b> level, not a settings page: the public endpoint is hardcoded to the outdoor camera with <b>no audio track in the stream at all</b>.</p>
+          <a class="open" href="https://cam.guywithgames.com/bird" target="_blank" rel="noopener">Watch the birds →</a>
         </div>
       </div>
     </section>
@@ -334,6 +340,7 @@
           <ul>
             <li>The fleet's data/infra tier: GitLab, the KeySecrets vault, MongoDB, Qdrant, SearXNG, Tor</li>
             <li>The Heimdall Augur's workers and web live here too, calling Betelgeuse's GPU for inference</li>
+            <li>Plus the public camera rig (the bird cam) and the network-intelligence sweeps behind the live dashboard</li>
           </ul>
         </article>
         <article class="node fade">
@@ -500,9 +507,9 @@
 
         <article class="proj fade">
           <div class="proj-head"><h4>Heimdall Augur</h4><span class="lp">live</span></div>
-          <p class="summary"><b>A news engine that fact-checks itself.</b> It ingests ~30 editorial feeds — and searches the open web for coverage it doesn't even subscribe to — clusters every outlet's take on the same story, and confirms only the facts that survive <b>differently-framed</b> reporting. It cuts through the spin to the shared truth and refuses to hand you an opinion.</p>
+          <p class="summary"><b>A news engine that fact-checks itself.</b> It ingests ~50 editorial feeds — and searches the open web for coverage it doesn't even subscribe to — clusters every outlet's take on the same story, and confirms only the facts that survive <b>differently-framed</b> reporting. It cuts through the spin to the shared truth and refuses to hand you an opinion.</p>
           <ul>
-            <li><b>~30 feeds plus the open web, deliberately diverse.</b> Western mainstream (BBC, NPR, Guardian, DW, France 24, ABC, Al Jazeera) and divergent US voices (Fox, NY Post, The Intercept, Mother Jones) sit alongside state and regional press — Russian state TASS now read <em>against</em> independent Russian outlets (Meduza, The Moscow Times), plus Press TV, SCMP, Times of Israel, Al Arabiya, Daily Sabah, Dawn, MercoPress, Premium Times, Yonhap, Mainichi (Japan), Bellingcat (OSINT), and India read across four desks (the Hindu, Times of India, Hindustan Times, Indian Express) — alongside SEC EDGAR filings and the Bluesky firehose. When a story is thinly covered it <b>searches the web itself</b> (a self-hosted SearXNG) to pull in outlets it doesn't even subscribe to.</li>
+            <li><b>~50 feeds plus the open web, deliberately diverse.</b> Western mainstream (BBC, NPR, Guardian, NYT, DW, France 24, ABC, Al Jazeera) and divergent US voices (Fox, NY Post, The Intercept, Mother Jones, Politico) sit alongside state and regional press — Russian state TASS read <em>against</em> independent Russian outlets (Meduza, The Moscow Times) <em>and</em> the Kyiv Independent, plus Press TV, SCMP, Times of Israel, Al Arabiya, Middle East Eye, Al-Monitor, Daily Sabah, Dawn, MercoPress, Premium Times, Yonhap, Mainichi (Japan), YLE (Finland), Bellingcat (OSINT), tech desks (Ars Technica, The Verge, 404 Media), and India read across four desks (the Hindu, Times of India, Hindustan Times, Indian Express) — alongside SEC EDGAR filings and the Bluesky firehose. When a story is thinly covered it <b>searches the web itself</b> (a self-hosted SearXNG) to pull in outlets it doesn't even subscribe to.</li>
             <li><b>Cluster on meaning, anchor against drift.</b> Events are embedded (nomic-embed) and kNN-clustered in Qdrant, with a wire-syndication dedup (AP→BBC + AP→NPR isn't two confirmations) and a seed-anchor gate so aging clusters can't drift off-topic.</li>
             <li><b>Corroboration is computed, not pronounced.</b> The model extracts atomic factual claims with <b>verbatim quotes</b>; every quote is validated against the source text — <b>fabricated or unverifiable quotes are dropped, often dozens on a single busy story</b>, then — reading each article <b>blind to who published it</b> — it groups them by how the story is actually framed in the writing, and confirms a fact when sources that frame it <em>differently</em> still assert it. Agreement across genuinely divergent framings is the strongest signal; a plain fact many sources report is confirmed too. <em>(Earlier it leaned on hand-labeled country "blocs" — but assigning those labels was itself a bias to see past, so the framing is now read from the article, not assigned by the operator.)</em></li>
             <li><b>It holds contradictions open instead of resolving them.</b> When sources genuinely conflict it surfaces both, attributed, rather than picking a winner — and it can tell a real contradiction from two <em>different events</em> described in similar words, flagging the narrative tension without inventing a resolution.</li>
@@ -540,7 +547,7 @@
           <div class="proj-head"><h4>Homelab MCP Server</h4><span class="tag">Python + Paramiko</span></div>
           <p class="summary">Glue that lets any MCP-capable AI inspect and operate the whole fleet in plain English — "is hera-pi healthy?", "which containers restarted?", "deploy this site."</p>
           <ul>
-            <li><b>Six hosts, 35+ services, under two seconds</b> — checked concurrently over pooled Paramiko SSH with a thread pool; the first call cold-starts the pool, every call after is one round-trip per host.</li>
+            <li><b>Six hosts, 40+ services, under two seconds</b> — checked concurrently over pooled Paramiko SSH with a thread pool; the first call cold-starts the pool, every call after is one round-trip per host.</li>
             <li><b>Fleet tools:</b> systemd / Docker / process control on Linux, PowerShell on Windows, log retrieval, SFTP between any two hosts, arbitrary commands behind a destructive-pattern denylist. The host map is YAML and hot-reloads.</li>
             <li><b>Site deploy + Story Universe orchestration</b> are first-class: this page deploys through it, and one natural-language call can snapshot or fully reset the narrative stack across hosts.</li>
           </ul>
@@ -591,7 +598,7 @@
           <div class="proj-head"><h4>Recovery Plan + Drift Detector</h4><span class="tag">Bash + Python</span></div>
           <p class="summary">Not just backups — a recovery <em>tree</em>: the backups plus the runbook to use them, both off-boxed, both reproducible, with a drift guard that <b>recently caught a service that had been silently dead for six months.</b></p>
           <ul>
-            <li><b>The chain:</b> Mongo dump, GitLab + secrets bundle, the Qdrant vectors and the Augur source-snapshot archive, and a twice-daily AES-256 Tier-A archive — three local mirrors plus nightly off-box rsync to <b>two</b> separate machines (one in a separate room). A fourth copy lands on the Windows workstation <b>automatically</b> — a daytime job that pushes the moment the laptop is online — for the "both Linux boxes gone" case.</li>
+            <li><b>The chain:</b> Mongo dump, GitLab + secrets bundle, the Qdrant vectors and the Augur source-snapshot archive, and a nightly AES-256 Tier-A archive — three local mirrors plus nightly off-box rsync to <b>two</b> separate machines (one in a separate room). A fourth copy lands on the Windows workstation <b>automatically</b> — a daytime job that pushes the moment the laptop is online — for the "both Linux boxes gone" case.</li>
             <li><b>Cold-metal bootstrap</b> is chained so each step unlocks the next: decrypt archive → restore the vault's bootstrap files → <code>mongorestore</code> → start KeySecrets → <code>ks-get</code> works → clone from GitLab with the PAT pulled from the freshly-up vault.</li>
             <li><b>Drift-detect</b> runs paired with the chain: failed/flapping units, crontab vs baseline, enabled units vs captured, untracked recovery-tree files, disk/memory pressure, and backup-log freshness. It recently caught a service that had been silently dead for six months.</li>
           </ul>
